@@ -91,6 +91,11 @@ module NakiIRCBot
             logger.info "password"
             # next socket.send "PASS #{password.strip}\n", 0
             next socket.send "PRIVMSG NickServ :identify #{bot_name} #{password.strip}\n", 0
+          # TODO: get rid of this Libera hard code
+          when /\A:NickServ!NickServ@services\.libera\.chat NOTICE #{Regexp.escape bot_name} :This nickname is registered. Please choose a different nickname, or identify via \x02\/msg NickServ IDENTIFY #{Regexp.escape bot_name} <password>\x02\z/
+            abort "no password" unless password
+            logger.info "password"
+            next socket.send "PRIVMSG NickServ :identify #{bot_name} #{password.strip}\n", 0
           when /\APING :/
             next socket.send "PONG :#{$'}\n", 0   # Quakenet uses timestamp, Freenode and Twitch use server name
           when /\A:([^!]+)!\S+ PRIVMSG #{Regexp.escape bot_name} :\x01VERSION\x01\z/
