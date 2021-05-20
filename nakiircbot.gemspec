@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name         = "nakiircbot"
-  spec.version      = "0.0.0"
+  spec.version      = "0.0.1"
   spec.summary      = "IRC bot framework"
 
   spec.author       = "Victor Maslov aka Nakilon"
