@@ -3,7 +3,7 @@ module NakiIRCBot
   # class << self
   #   attr_accessor :channels
   # end
-  def self.start server, port, bot_name, master_name, welcome001, *channels, password: nil, masterword: nil, processors: [], twitch: false
+  def self.start server, port, bot_name, master_name, welcome001, *channels, password: nil, masterword: nil, processors: [], tags: false
     # @@channels.replace channels.dup
 
     abort "matching bot_name and master_name may cause infinite recursion" if bot_name == master_name
@@ -33,9 +33,9 @@ module NakiIRCBot
         logger.info "> #{str}"
         socket.send str + "\n", 0
       end
-      socket.send "PASS #{password.strip}\n", 0 if twitch
+      # socket.send "PASS #{password.strip}\n", 0 if twitch
       socket_send.call "NICK #{bot_name}"
-      socket_send.call "USER #{bot_name} #{bot_name} #{bot_name} #{bot_name}" unless twitch
+      socket_send.call "USER #{bot_name} #{bot_name} #{bot_name} #{bot_name}" #unless twitch
 
       queue = []
       prev_socket_time = prev_privmsg_time = Time.now
@@ -104,7 +104,7 @@ module NakiIRCBot
           #   socket_send.call "NOTICE",$1,"\001PING #{rand 10000000000}\001"
           # when /^:([^!]+)!\S+ PRIVMSG #{Regexp.escape bot_name} :\001TIME\001$/
           #   socket_send.call "NOTICE",$1,"\001TIME 6:06:06, 6 Jun 06\001"
-          when /\A#{'\S+ ' if twitch}:(?<who>[^!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/
+          when /\A#{'\S+ ' if tags}:(?<who>[^!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/
             next( if processors.empty?
               queue.push [master_name, "nothing to reload"]
             else
@@ -112,7 +112,7 @@ module NakiIRCBot
                 queue.push [master_name, "reloading #{processor}"]
                 load File.absolute_path processor
               end
-            end ) if $~.named_captures == {"who"=>master_name, "where"=>bot_name, "what"=>"#{twitch ? "@#{bot_name} " : "#{masterword.strip} "}reload"}
+            end ) if $~.named_captures == {"who"=>master_name, "where"=>bot_name, "what"=>"#{masterword.strip} reload"}
         end
 
         begin
