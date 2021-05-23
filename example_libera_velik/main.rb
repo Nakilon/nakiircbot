@@ -1,0 +1,58 @@
+remote = {}
+reload = lambda do
+  require "open-uri"
+  require "yaml"
+  remote.replace YAML.load open "https://gist.githubusercontent.com/nakilon/92d5b22935f21b5e248b713057e851a6/raw/remote.yaml", &:read
+end.tap &:call
+
+require "nakiircbot"
+nickname = ENV["TEST"] ? "velik2" : "velik"
+NakiIRCBot.start "irc.libera.chat", "6666", nickname, "nakilon", "Libera.Chat Internet Relay Chat Network", (ENV["TEST"] ? "##nakilon" : "#esolangs"),
+    password: (File.read("password") unless ENV["TEST"]), masterword: File.read("masterword") do |str, add_to_queue|
+
+  next unless /\A:(?<who>[^\s!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/ =~ str
+  add_to_queue.call "nakilon", str if where == nickname && who != "nakilon"
+
+  dest = where == nickname ? who : where
+  next add_to_queue.call dest, what.tr("iI", "oO") if what.downcase == "ping"
+  next add_to_queue.call dest, what.tr("иИ", "оO") if what.downcase == "пинг"
+
+  threaded = lambda do |&block|
+    Thread.new do
+      block.call
+    rescue => e
+      puts e.full_message
+      add_to_queue.call "nakilon", "thread error: #{e}"
+      raise
+    end
+  end
+
+  # input = if where == nickname
+  #   what
+  # elsif /\A@?#{Regexp.escape nickname}[,:]?\s*/ =~ what
+  #   $'
+  # end
+  input = what
+  case input
+  when "\\reload remote"
+    next( threaded.call do
+      reload.call
+      add_to_queue.call dest, "remote execution commands loaded: #{remote.map &:first}"
+    end )
+  end
+  next unless /\A\\(?<cmd>\S+)\s+(?<msg>.+)/ =~ input
+  remote.each do |remote_cmd, function|
+    break( threaded.call do
+      require "net/http"
+      Net::HTTP.start("us-central1-nakilonpro.cloudfunctions.net", 443, use_ssl: true) do |http|
+        require "json"
+        response = http.request_post "/#{function}", JSON.dump(msg), {Authorization: "bearer #{`gcloud auth print-identity-token #{ENV["SERVICE_ACCOUNT"]}`}"}
+        fail response.inspect unless response.is_a? Net::HTTPOK
+        add_to_queue.call dest, "#{who}, #{response.body.force_encoding "utf-8"}"
+      end
+    end) if cmd == remote_cmd
+  end
+end
+
+# test: TEST=_ bundle exec ...
+# prod: SERVICE_ACCOUNT=... bundle exec ...
