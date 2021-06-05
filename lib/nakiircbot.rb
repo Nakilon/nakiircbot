@@ -43,12 +43,11 @@ module NakiIRCBot
         begin
           addr, msg = queue.shift
           next unless addr && msg
+          addr = addr.codepoints.pack("U*")
           fail "I should not PRIVMSG myself" if addr == bot_name
-          msg.scrub!
-          msg.gsub! "\n", "  "
-          msg.gsub! "\r", "  "
-          privmsg = "PRIVMSG #{addr} :#{msg}"
-          privmsg = "PRIVMSG #{addr} :*flood*" if privmsg.bytes.size > 500 && addr.start_with?("#")
+          msg = msg.to_s.codepoints.pack("U*").chomp[/[^\x01].*/m].gsub("\x00", "[NUL]").gsub("\x0A", "[LF]").gsub("\x0D", "[CR]")
+          privmsg = "PRIVMSG #{addr} :#{msg}"[0,513]
+          privmsg[-4..-1] = "..." until privmsg.bytesize <= 475   # Libera in fact cuts last ~31 bytes
           prev_socket_time = prev_privmsg_time = Time.now
           socket_send.call privmsg
           break
