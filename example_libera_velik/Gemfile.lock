@@ -1,13 +1,13 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    nakiircbot (0.0.2)
+    nakiircbot (0.1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  nakiircbot (~> 0.0.2)
+  nakiircbot (~> 0.1.0)
 
 BUNDLED WITH
    2.1.4

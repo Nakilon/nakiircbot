@@ -1,0 +1,3 @@
+env var TEST=_ to use nickname velik2
+env var LOCALHOST=_ to use localhost google cloud function
+env var SERVICE_ACCOUNT=... to use service account

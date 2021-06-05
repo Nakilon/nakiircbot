@@ -2,7 +2,7 @@ remote = []
 reload = lambda do
   require "open-uri"
   require "yaml"
-  remote.replace YAML.load open "https://gist.githubusercontent.com/nakilon/92d5b22935f21b5e248b713057e851a6/raw/remote.yaml?", &:read
+  remote.replace YAML.load open "https://gist.githubusercontent.com/nakilon/92d5b22935f21b5e248b713057e851a6/raw/remote.yaml", &:read
 end.tap &:call
 
 require "nakiircbot"
@@ -22,14 +22,14 @@ NakiIRCBot.start "irc.libera.chat", "6666", nickname, "nakilon", "Libera.Chat In
       block.call
     rescue => e
       puts e.full_message
-      add_to_queue.call "nakilon", "thread error: #{e}"
-      raise
+      add_to_queue.call "nakilon", e
+      add_to_queue.call dest, "thread error" unless dest == "nakilon"
     end
   end
 
   case what
   when /\A\\help\s*\z/
-    add_to_queue.call dest, "available commands: #{remote.map(&:first).join ", "}; usage help: \\help <cmd>"
+    add_to_queue.call dest, "available commands: #{remote.map &:first}; usage help: \\help <cmd>"
   when /\A\\help\s+(\S+)/
     add_to_queue.call dest, (
       if (_, _, help = remote.assoc($1))
@@ -50,16 +50,12 @@ NakiIRCBot.start "irc.libera.chat", "6666", nickname, "nakilon", "Libera.Chat In
       args, kwargs = (ENV["LOCALHOST"] ? [["localhost", 8080], {}] : [["us-central1-nakilonpro.cloudfunctions.net", 443], use_ssl: true])
       require "net/http"
       Net::HTTP.start(*args, **kwargs) do |http|
-        require "json"
-        response = http.request_post "/#{function}", JSON.dump(input), {Authorization: "bearer #{`gcloud auth print-identity-token #{ENV["SERVICE_ACCOUNT"]}`}"}
+        require "base64"
+        response = http.request_post "/#{function}", Base64.strict_encode64(input), {Authorization: "bearer #{`gcloud auth print-identity-token #{ENV["SERVICE_ACCOUNT"]}`}"}
         fail response.inspect unless response.is_a? Net::HTTPOK
-        add_to_queue.call dest, response.body.force_encoding("utf-8")
+        add_to_queue.call dest, response.body
       end
     end) if cmd == remote_cmd
   end
   end
 end
-
-# test: TEST=_ LOCALHOST=_ bundle exec ...
-# test: TEST=_ bundle exec ...
-# prod: SERVICE_ACCOUNT=... bundle exec ...
