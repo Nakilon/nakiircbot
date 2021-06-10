@@ -1,0 +1,6 @@
+# $ rbenv local 2.6.6   # because that's the ruby version image provided by GCF
+# $ bundle exec functions-framework-ruby --target morse
+# $ curl -X POST -d ' йц укasd  œ∑´  ' http://localhost:8080
+# $ gcloud functions deploy ... --entry-point ... --runtime ruby26 --trigger-http --timeout=5s --memory=128MB
+# $ curl -X POST -d ' йц укasd  œ∑´  ' https://...cloudfunctions.net/... -H "Authorization: bearer $(gcloud auth print-identity-token)"
+# $ bundle exec functions-framework-ruby --target demorse

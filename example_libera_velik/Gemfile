@@ -1,2 +1,2 @@
 source "https://rubygems.org"
-gem "nakiircbot", "~>0.1.0"
+gem "nakiircbot", "~>0.1.1"

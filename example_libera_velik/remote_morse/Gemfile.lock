@@ -1,0 +1,48 @@
+GIT
+  remote: https://github.com/nakilon/morsify.git
+  revision: df456b9a848d60ca56596defcf5598f573c74f96
+  specs:
+    morsify (0.1.5)
+      tty-prompt (~> 0.20.0)
+      wavefile (~> 1.1, >= 1.1.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    cloud_events (0.4.0)
+    equatable (0.7.0)
+    functions_framework (0.10.0)
+      cloud_events (>= 0.4, < 2.a)
+      puma (>= 4.3.0, < 6.a)
+      rack (~> 2.1)
+    necromancer (0.5.1)
+    nio4r (2.5.7)
+    pastel (0.7.4)
+      equatable (~> 0.6)
+      tty-color (~> 0.5)
+    puma (5.3.2)
+      nio4r (~> 2.0)
+    rack (2.2.3)
+    tty-color (0.6.0)
+    tty-cursor (0.7.1)
+    tty-prompt (0.20.0)
+      necromancer (~> 0.5.0)
+      pastel (~> 0.7.0)
+      tty-reader (~> 0.7.0)
+    tty-reader (0.7.0)
+      tty-cursor (~> 0.7)
+      tty-screen (~> 0.7)
+      wisper (~> 2.0.0)
+    tty-screen (0.8.1)
+    wavefile (1.1.1)
+    wisper (2.0.1)
+
+PLATFORMS
+  x86_64-darwin-18
+
+DEPENDENCIES
+  functions_framework
+  morsify!
+
+BUNDLED WITH
+   2.2.17
