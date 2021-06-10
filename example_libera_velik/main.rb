@@ -53,7 +53,7 @@ NakiIRCBot.start "irc.libera.chat", "6666", nickname, "nakilon", "Libera.Chat In
         require "json"
         response = http.request_post "/#{function}", JSON.dump(input), {Authorization: "bearer #{`gcloud auth print-identity-token #{ENV["SERVICE_ACCOUNT"]}`}"}
         fail response.inspect unless response.is_a? Net::HTTPOK
-        add_to_queue.call dest, response.body.force_encoding(encoding)
+        add_to_queue.call dest, " " + response.body.force_encoding(encoding)
       end
     end) if cmd == remote_cmd
   end
