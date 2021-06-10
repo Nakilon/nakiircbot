@@ -32,7 +32,7 @@ NakiIRCBot.start "irc.libera.chat", "6666", nickname, "nakilon", "Libera.Chat In
     add_to_queue.call dest, "available commands: #{remote.map &:first}; usage help: \\help <cmd>"
   when /\A\\help\s+(\S+)/
     add_to_queue.call dest, (
-      if (_, _, help = remote.assoc($1))
+      if (*_, help = remote.assoc($1))
         help
       else
         "unknown command #{$1.inspect}"
@@ -45,15 +45,15 @@ NakiIRCBot.start "irc.libera.chat", "6666", nickname, "nakilon", "Libera.Chat In
     end
   when /\A\\(\S+) (.+)/
     cmd, input = $1, $2
-  remote.each do |remote_cmd, function,|
+  remote.each do |remote_cmd, function, encoding, |
     break( threaded.call do
       args, kwargs = (ENV["LOCALHOST"] ? [["localhost", 8080], {}] : [["us-central1-nakilonpro.cloudfunctions.net", 443], use_ssl: true])
       require "net/http"
       Net::HTTP.start(*args, **kwargs) do |http|
-        require "base64"
-        response = http.request_post "/#{function}", Base64.strict_encode64(input), {Authorization: "bearer #{`gcloud auth print-identity-token #{ENV["SERVICE_ACCOUNT"]}`}"}
+        require "json"
+        response = http.request_post "/#{function}", JSON.dump(input), {Authorization: "bearer #{`gcloud auth print-identity-token #{ENV["SERVICE_ACCOUNT"]}`}"}
         fail response.inspect unless response.is_a? Net::HTTPOK
-        add_to_queue.call dest, response.body
+        add_to_queue.call dest, response.body.force_encoding(encoding)
       end
     end) if cmd == remote_cmd
   end
