@@ -67,7 +67,7 @@ NakiIRCBot.start ($0 == __FILE__ ? "irc.libera.chat" : "localhost"), "6666", nic
         results = wikis.map do |article,|
           result = wiki.get_search_results article
           result = wiki.get_search_text_results article if result.empty?
-          "https:" + URI.escape(wiki.get_article_path result.first) unless result.empty?
+          "https:" + URI.escape(URI.escape(wiki.get_article_path result.first), "?") unless result.empty?
         end.compact
         add_to_queue.call dest, results.uniq.join(" ") unless results.empty?
       end
