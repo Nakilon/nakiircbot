@@ -5,9 +5,12 @@ reload = lambda do
   remote.replace YAML.load open "https://gist.githubusercontent.com/nakilon/92d5b22935f21b5e248b713057e851a6/raw/remote.yaml", &:read
 end.tap &:call
 
+require "mediawiki-butt"
+wiki = MediaWiki::Butt.new "https://esolangs.org/w/api.php"
+
 require "nakiircbot"
 nickname = ENV["TEST"] ? "velik2" : "velik"
-NakiIRCBot.start "irc.libera.chat", "6666", nickname, "nakilon", "Libera.Chat Internet Relay Chat Network", (ENV["TEST"] ? "##nakilon" : "#esolangs"),
+NakiIRCBot.start ($0 == __FILE__ ? "irc.libera.chat" : "localhost"), "6666", nickname, "nakilon", "Libera.Chat Internet Relay Chat Network", (ENV["TEST"] ? "##nakilon" : "#esolangs"),
     password: (File.read("password") unless ENV["TEST"]), masterword: File.read("masterword") do |str, add_to_queue|
 
   next unless /\A:(?<who>[^\s!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/ =~ str
@@ -56,6 +59,17 @@ NakiIRCBot.start "irc.libera.chat", "6666", nickname, "nakilon", "Libera.Chat In
           add_to_queue.call dest, " " + response.body.force_encoding(encoding)
         end
       end) if cmd == remote_cmd
+    end
+  else
+    wikis = what.scan(/\[\s*wiki\s*(\S.*?)\s*\]/i)
+    unless wikis.empty?
+      threaded.call do
+        results = wikis.map do |article,|
+          result = wiki.get_search_results(article).first
+          "https:" + wiki.get_article_path(result) if result
+        end.compact
+        add_to_queue.call dest, results.join(" ") unless results.empty?
+      end
     end
   end
 end
