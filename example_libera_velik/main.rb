@@ -1,3 +1,5 @@
+STDOUT.sync = true  # kludge for docker logs
+
 remote = []
 reload = lambda do
   require "open-uri"

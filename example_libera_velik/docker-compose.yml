@@ -1,0 +1,31 @@
+version: "3.2"
+services:
+  bot:
+    container_name: libera-velik
+    image: google/cloud-sdk:alpine
+    working_dir: /usr/src/app
+    command: sh -c "apk add ruby-dev curl-dev build-base ruby-etc && gem install bundler && bundle install && gcloud auth activate-service-account --key-file=key.json && bundle exec ruby main.rb"
+    volumes:
+      - type: bind
+        source: ./main.rb
+        target: /usr/src/app/main.rb
+      - type: bind
+        source: ./Gemfile
+        target: /usr/src/app/Gemfile
+      - type: bind
+        source: ./Gemfile.lock
+        target: /usr/src/app/Gemfile.lock
+      - type: bind
+        source: ./password
+        target: /usr/src/app/password
+      - type: bind
+        source: ./masterword
+        target: /usr/src/app/masterword
+      - type: bind
+        source: ./logs
+        target: /usr/src/app/logs
+      - type: bind
+        source: ${SECRET_key_path}
+        target: /usr/src/app/key.json
+    environment:
+      - SERVICE_ACCOUNT=${SECRET_SERVICE_ACCOUNT}
