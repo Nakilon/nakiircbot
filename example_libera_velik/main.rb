@@ -61,7 +61,7 @@ NakiIRCBot.start ($0 == __FILE__ ? "irc.libera.chat" : "localhost"), "6666", nic
       end) if cmd == remote_cmd
     end
   else
-    wikis = what.scan(/\[\s*wiki\s*(\S.*?)\s*\]/i)
+    wikis = what.scan(/\[\s*wiki\s+(\S.*?)\s*\]/i)
     unless wikis.empty?
       threaded.call do
         results = wikis.map do |article,|
