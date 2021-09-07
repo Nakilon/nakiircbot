@@ -1,6 +1,6 @@
 version: "3.2"
 services:
-  bot:
+  main:
     container_name: libera-velik
     image: google/cloud-sdk:alpine
     working_dir: /usr/src/app
@@ -9,23 +9,29 @@ services:
       - type: bind
         source: ./main.rb
         target: /usr/src/app/main.rb
+        read_only: true
       - type: bind
         source: ./Gemfile
         target: /usr/src/app/Gemfile
+        read_only: true
       - type: bind
         source: ./Gemfile.lock
         target: /usr/src/app/Gemfile.lock
+        read_only: true
       - type: bind
         source: ./password
         target: /usr/src/app/password
+        read_only: true
       - type: bind
         source: ./masterword
         target: /usr/src/app/masterword
+        read_only: true
       - type: bind
         source: ./logs
         target: /usr/src/app/logs
       - type: bind
         source: ${SECRET_key_path}
         target: /usr/src/app/key.json
+        read_only: true
     environment:
       - SERVICE_ACCOUNT=${SECRET_SERVICE_ACCOUNT}
