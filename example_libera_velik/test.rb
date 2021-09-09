@@ -60,5 +60,6 @@ describe "\\wiki" do
     client.puts ":user!user PRIVMSG #channel :\\wiki VPCLMULQDQ"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
     assert reply.start_with? " AVX-512 are 512-bit extensions to the 256-bit Advanced Vector Extensions SIMD instructions "
+    refute reply.end_with? "[LF]"
   end
 end

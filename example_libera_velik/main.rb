@@ -74,7 +74,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           else
             page.paragraphs.map do |par|
               par if par.children.any?{ |_| _.is_a?(Infoboxer::Tree::Text) && !_.to_s.empty? }
-            end.find(&:itself).text
+            end.find(&:itself).text.strip
           end
         }"
       end
