@@ -7,10 +7,11 @@ reload = lambda do
   remote.replace YAML.load open "https://gist.githubusercontent.com/nakilon/92d5b22935f21b5e248b713057e851a6/raw/remote.yaml", &:read
 end.tap &:call
 
+# for [wiki ...]  # TODO: get rid in favor of Infoboxer?
 require "mediawiki-butt"
 esowiki = MediaWiki::Butt.new "https://esolangs.org/w/api.php"
+# for \wiki and \esowiki
 require "infoboxer"
-wikipedia = Infoboxer.wp
 
 # we prepend space to reply only if reply can be arbitrary (forged by invoking IRC user, like \rasel or \wiki)
 
@@ -40,13 +41,15 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
 
   case what
   when /\A\\help\s*\z/
-    add_to_queue.call dest, "available commands: #{%w{wiki} + remote.map(&:first)}; usage help: \\help <cmd>"
+    add_to_queue.call dest, "available commands: #{%w{ wiki esowiki } + remote.map(&:first)}; usage help: \\help <cmd>"
   when /\A\\help\s+(\S+)/
     add_to_queue.call dest, (
       if (*_, help = remote.assoc($1))
         help
       elsif $1 == "wiki"
         "\\wiki <wikipedia article or search query>"
+      elsif $1 == "esowiki"
+        "\\esowiki <esolang wiki article or search query>"
       else
         "unknown command #{$1.inspect}"
       end
@@ -59,6 +62,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
   when /\A\\wiki (.+)/
     query = $1
     threaded.call do
+      wikipedia = Infoboxer.wp
       unless page = wikipedia.get(query){ |_| _.prop :pageterms } || wikipedia.search(query, limit: 1){ |_| _.prop :pageterms }.first
         add_to_queue.call dest, "nothing was found"
       else
@@ -70,6 +74,22 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           end
         }#{
           page.source.fetch("terms").fetch_values("label", "description").join(" -- ").tap do |reply|
+            reply[-4..-1] = "..." until "#{reply} #{page.url}".bytesize <= 450
+          end
+        } #{page.url}"
+      end
+    end
+  when /\A\\esowiki (.+)/
+    query = $1
+    threaded.call do
+      esolangs = Infoboxer.wiki "https://esolangs.org/w/api.php"
+      unless page = esolangs.get(query) || esolangs.search(query, limit: 1).first
+        add_to_queue.call dest, "nothing was found"
+      else
+        add_to_queue.call dest, " #{
+          page.paragraphs.map do |par|
+            par if par.children.any?{ |_| _.is_a?(Infoboxer::Tree::Text) && !_.to_s.empty? }
+          end.find(&:itself).text.strip.tap do |reply|
             reply[-4..-1] = "..." until "#{reply} #{page.url}".bytesize <= 450
           end
         } #{page.url}"

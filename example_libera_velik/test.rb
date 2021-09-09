@@ -21,7 +21,7 @@ describe "fast" do
   end
   it "\\help" do
     client.puts ":user!user PRIVMSG #channel :\\help"
-    assert_equal "PRIVMSG #channel :available commands: [\"wiki\", \"rasel\", \"morse\", \"demorse\"]; usage help: \\help <cmd>\n", client.gets
+    assert_equal "PRIVMSG #channel :available commands: [\"wiki\", \"esowiki\", \"rasel\", \"morse\", \"demorse\"]; usage help: \\help <cmd>\n", client.gets
   end
   it "\\help wiki" do
     client.puts ":user!user PRIVMSG #channel :\\help wiki"
@@ -36,29 +36,37 @@ describe "[wiki ...]" do
   end
 end
 describe "\\wiki" do
-  around{ |test| Timeout.timeout(3){ test.call } }
-  it "\\wiki Москва" do   # this article About template does not provide a single alternative link
+  around{ |test| Timeout.timeout(4){ test.call } }
+  it "москва" do   # this article About template does not provide a single alternative link
     # templates: About, Short
-    client.puts ":user!user PRIVMSG #channel :\\wiki Москва"
+    client.puts ":user!user PRIVMSG #channel :\\wiki москва"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
     assert_equal " Moscow -- capital and most populous city of Russia https://en.wikipedia.org/wiki/Moscow", reply
   end
-  it "\\wiki Linux" do
+  it "linux" do
     # templates: About, Short
-    client.puts ":user!user PRIVMSG #channel :\\wiki Linux"
+    client.puts ":user!user PRIVMSG #channel :\\wiki linux"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
     assert_equal " (see also: Linux kernel) Linux -- family of Unix-like operating systems that use the Linux kernel and are open source https://en.wikipedia.org/wiki/Linux", reply
   end
-  it "\\wiki Linux (Linux kernel)" do
+  it "linux kernel" do
     # templates: Short
-    client.puts ":user!user PRIVMSG #channel :\\wiki Linux kernel"
+    client.puts ":user!user PRIVMSG #channel :\\wiki linux kernel"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
     assert_equal " Linux kernel -- Unix-like operating system kernel, basis for all Linux operating systems / Linux distributions https://en.wikipedia.org/wiki/Linux_kernel", reply
   end
-  it "\\wiki VPCLMULQDQ" do   # search results page (found by section name but it does not matter)
+  it "vpclmulqdq" do   # search results page (found by section name but it does not matter)
     # templates: none
-    client.puts ":user!user PRIVMSG #channel :\\wiki VPCLMULQDQ"
+    client.puts ":user!user PRIVMSG #channel :\\wiki vpclmulqdq"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
     assert_equal " AVX-512 -- Instruction set extension developed by Intel https://en.wikipedia.org/wiki/AVX-512", reply
+  end
+end
+describe "\\esowiki" do
+  around{ |test| Timeout.timeout(2){ test.call } }
+  it "befunge" do
+    client.puts ":user!user PRIVMSG #channel :\\esowiki befunge"
+    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
+    assert_match /\A Befunge is a two-dimensional esoteric programming language.+\. https:\/\/esolangs\.org\/wiki\/Befunge\z/, reply
   end
 end
