@@ -40,7 +40,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
 
   case what
   when /\A\\help\s*\z/
-    add_to_queue.call dest, "available commands: #{remote.map &:first}; usage help: \\help <cmd>"
+    add_to_queue.call dest, "available commands: #{%w{wiki} + remote.map(&:first)}; usage help: \\help <cmd>"
   when /\A\\help\s+(\S+)/
     add_to_queue.call dest, (
       if (*_, help = remote.assoc($1))
