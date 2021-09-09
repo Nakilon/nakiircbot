@@ -5,6 +5,8 @@ services:
     image: google/cloud-sdk:alpine
     working_dir: /usr/src/app
     command: sh -c "apk add ruby-dev curl-dev build-base ruby-etc && gem install bundler && bundle install && gcloud auth activate-service-account --key-file=key.json && bundle exec ruby main.rb"
+    environment:
+      - SERVICE_ACCOUNT=${SECRET_SERVICE_ACCOUNT}
     volumes:
       - type: bind
         source: ./main.rb
@@ -33,5 +35,3 @@ services:
         source: ${SECRET_key_path}
         target: /usr/src/app/key.json
         read_only: true
-    environment:
-      - SERVICE_ACCOUNT=${SECRET_SERVICE_ACCOUNT}

@@ -17,4 +17,8 @@ Thread.new do
     exit
   end
 end
+
+ENV["VELIK_NICKNAME"] = "velik2"
+ENV["VELIK_SERVER"] = "localhost"
+ENV["VELIK_CHANNEL"] = "##nakilon"
 require_relative "main"

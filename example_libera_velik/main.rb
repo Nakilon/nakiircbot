@@ -8,20 +8,21 @@ reload = lambda do
 end.tap &:call
 
 require "mediawiki-butt"
-wiki = MediaWiki::Butt.new "https://esolangs.org/w/api.php"
+esowiki = MediaWiki::Butt.new "https://esolangs.org/w/api.php"
 
 require "nakiircbot"
-nickname = ENV["TEST"] ? "velik2" : "velik"
-NakiIRCBot.start ($0 == __FILE__ ? "irc.libera.chat" : "localhost"), "6666", nickname, "nakilon", "Libera.Chat Internet Relay Chat Network", (ENV["TEST"] ? "##nakilon" : "#esolangs"),
-    password: (File.read("password") unless ENV["TEST"]), masterword: File.read("masterword") do |str, add_to_queue|
+nickname = ENV["VELIK_NICKNAME"] || "velik"
+NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "nakilon", "Libera.Chat Internet Relay Chat Network", (ENV["VELIK_CHANNEL"] || "#esolangs"),
+    password: File.read("password"), masterword: File.read("masterword") do |str, add_to_queue|
 
-  next unless /\A:(?<who>[^\s!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/ =~ str
-  add_to_queue.call "nakilon", str if where == nickname && who != "nakilon"
+  next unless /\A:(?<who>[^\s!]+)!\S+ PRIVMSG (?<dest>\S+) :(?<what>.+)/ =~ str
+  add_to_queue.call "nakilon", str if dest == nickname && who != "nakilon"
+  dest = who if dest == nickname
 
-  dest = where == nickname ? who : where
   next add_to_queue.call dest, what.tr("iI", "oO") if what.downcase == "ping"
   next add_to_queue.call dest, what.tr("иИ", "оO") if what.downcase == "пинг"
 
+  # for remote and slow replies
   threaded = lambda do |&block|
     Thread.new do
       block.call
@@ -67,9 +68,9 @@ NakiIRCBot.start ($0 == __FILE__ ? "irc.libera.chat" : "localhost"), "6666", nic
     unless wikis.empty?
       threaded.call do
         results = wikis.map do |article,|
-          result = wiki.get_search_results article
-          result = wiki.get_search_text_results article if result.empty?
-          "https:" + URI.escape(URI.escape(wiki.get_article_path result.first), "?") unless result.empty?
+          result = esowiki.get_search_results article
+          result = esowiki.get_search_text_results article if result.empty?
+          "https:" + URI.escape(URI.escape(esowiki.get_article_path result.first), "?") unless result.empty?
         end.compact
         add_to_queue.call dest, results.uniq.join(" ") unless results.empty?
       end
