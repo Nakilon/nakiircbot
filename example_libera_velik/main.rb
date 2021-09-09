@@ -74,9 +74,11 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           else
             page.paragraphs.map do |par|
               par if par.children.any?{ |_| _.is_a?(Infoboxer::Tree::Text) && !_.to_s.empty? }
-            end.find(&:itself).text.strip
+            end.find(&:itself).text.strip.tap do |reply|
+              reply[-4..-1] = "..." until "#{reply} #{page.url}".bytesize <= 450
+            end
           end
-        }"
+        } #{page.url}"
       end
     end
   when /\A\\(\S+) (.+)/
