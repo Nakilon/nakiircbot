@@ -28,6 +28,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
 
   # for remote and slow replies
   threaded = lambda do |&block|
+    # note that it loses the access to $1, $2... so you copy their values before the call
     Thread.new do
       block.call
     rescue => e
@@ -54,11 +55,12 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       add_to_queue.call dest, "remote execution commands loaded: #{remote.map &:first}"
     end
   when /\A\\wiki (.+)/
-    page = wikipedia.get($1) || wikipedia.search($1, limit: 1).first
-    unless page
+    query = $1
+    threaded.call do
+    unless page = wikipedia.get(query) || wikipedia.search(query, limit: 1).first
       add_to_queue.call dest, "nothing was found"
     else
-      add_to_queue.call dest, "#{
+      add_to_queue.call dest, " #{
         if about = page.templates(name: "About").first ; _, _, alt, *_ = about.unwrap.map(&:text) ; "(alt: '#{alt}') " ; end
       }#{
         if short = page.templates(name: "Short description").first
@@ -69,6 +71,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           end.find(&:itself).text
         end
       }"
+    end
     end
   when /\A\\(\S+) (.+)/
     cmd, input = $1, $2

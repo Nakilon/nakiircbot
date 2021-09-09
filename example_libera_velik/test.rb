@@ -29,23 +29,23 @@ describe "[wiki ...]" do
   end
 end
 describe "\\wiki" do
-  around{ |test| Timeout.timeout(2){ test.call } }
+  around{ |test| Timeout.timeout(3){ test.call } }
   it "\\wiki Linux" do
     # templates: About, Short
     client.puts ":user!user PRIVMSG #channel :\\wiki Linux"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal "(alt: 'Linux kernel') Family of Unix-like operating systems", reply
+    assert_equal " (alt: 'Linux kernel') Family of Unix-like operating systems", reply
   end
   it "\\wiki Linux (Linux kernel)" do
     # templates: Short
     client.puts ":user!user PRIVMSG #channel :\\wiki Linux kernel"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal "Free and open-source Unix-like operating system kernel", reply
+    assert_equal " Free and open-source Unix-like operating system kernel", reply
   end
   it "\\wiki VPCLMULQDQ" do   # search results page (found by section name but it does not matter)
     # templates: none
     client.puts ":user!user PRIVMSG #channel :\\wiki VPCLMULQDQ"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert reply.start_with? "AVX-512 are 512-bit extensions to the 256-bit Advanced Vector Extensions SIMD instructions "
+    assert reply.start_with? " AVX-512 are 512-bit extensions to the 256-bit Advanced Vector Extensions SIMD instructions "
   end
 end

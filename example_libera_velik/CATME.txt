@@ -1,4 +1,4 @@
-how to decide if we should implement command here or remotely
+to decide if we should implement command here or remotely
   if functionality isn't crucial then remote
   if it can eat eat all resources then remote
   else implement it here, within this Gemfile
@@ -10,3 +10,7 @@ testing remote
   # env var TEST=_ to use nickname velik2
   env var LOCALHOST=_ to use localhost google cloud function
   env var SERVICE_ACCOUNT=... to use service account
+to update
+  $ cd ~/_/libera-velik
+  $ git pull
+  $ docker restart libera-velik
