@@ -57,21 +57,21 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
   when /\A\\wiki (.+)/
     query = $1
     threaded.call do
-    unless page = wikipedia.get(query) || wikipedia.search(query, limit: 1).first
-      add_to_queue.call dest, "nothing was found"
-    else
-      add_to_queue.call dest, " #{
-        if about = page.templates(name: "About").first ; _, _, alt, *_ = about.unwrap.map(&:text) ; "(alt: '#{alt}') " ; end
-      }#{
-        if short = page.templates(name: "Short description").first
-          short.unwrap.text
-        else
-          page.paragraphs.map do |par|
-            par if par.children.any?{ |_| _.is_a?(Infoboxer::Tree::Text) && !_.to_s.empty? }
-          end.find(&:itself).text
-        end
-      }"
-    end
+      unless page = wikipedia.get(query) || wikipedia.search(query, limit: 1).first
+        add_to_queue.call dest, "nothing was found"
+      else
+        add_to_queue.call dest, " #{
+          if about = page.templates(name: "About").first ; _, _, alt, *_ = about.unwrap.map(&:text) ; "(alt: '#{alt}') " ; end
+        }#{
+          if short = page.templates(name: "Short description").first
+            short.unwrap.text
+          else
+            page.paragraphs.map do |par|
+              par if par.children.any?{ |_| _.is_a?(Infoboxer::Tree::Text) && !_.to_s.empty? }
+            end.find(&:itself).text
+          end
+        }"
+      end
     end
   when /\A\\(\S+) (.+)/
     cmd, input = $1, $2
