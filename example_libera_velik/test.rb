@@ -64,9 +64,9 @@ describe "\\wiki" do
 end
 describe "\\esowiki" do
   around{ |test| Timeout.timeout(2){ test.call } }
-  it "befunge" do
-    client.puts ":user!user PRIVMSG #channel :\\esowiki befunge"
+  it "user:nakilon" do
+    client.puts ":user!user PRIVMSG #channel :\\esowiki user:nakilon"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_match /\A Befunge is a two-dimensional esoteric programming language.+\. https:\/\/esolangs\.org\/wiki\/Befunge\z/, reply
+    assert_match /\A Hello, I made the RASEL language\. Also the IRC bot velik .+\. https:\/\/esolangs\.org\/wiki\/User:Nakilon\z/, reply
   end
 end

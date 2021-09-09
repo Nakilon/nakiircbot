@@ -89,7 +89,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
         add_to_queue.call dest, " #{
           page.paragraphs.map do |par|
             par if par.children.any?{ |_| _.is_a?(Infoboxer::Tree::Text) && !_.to_s.empty? }
-          end.find(&:itself).text.strip.tap do |reply|
+          end.find(&:itself).text.strip.gsub(/\n+/, " ").tap do |reply|
             reply[-4..-1] = "..." until "#{reply} #{page.url}".bytesize <= 450
           end
         } #{page.url}"
