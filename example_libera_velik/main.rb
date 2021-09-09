@@ -47,7 +47,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
         help
       elsif $1 == "wp"
         "\\wp <wikipedia article or search query>"
-      elsif $1 == "esowiki"
+      elsif $1 == "wiki"
         "\\wiki <esolang wiki article or search query>"
       else
         "unknown command #{$1.inspect}"
