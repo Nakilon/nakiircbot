@@ -23,6 +23,10 @@ describe "fast" do
     client.puts ":user!user PRIVMSG #channel :\\help"
     assert_equal "PRIVMSG #channel :available commands: [\"wiki\", \"rasel\", \"morse\", \"demorse\"]; usage help: \\help <cmd>\n", client.gets
   end
+  it "\\help wiki" do
+    client.puts ":user!user PRIVMSG #channel :\\help wiki"
+    assert_equal "PRIVMSG #channel :\\wiki <wikipedia article or search query>\n", client.gets
+  end
 end
 describe "[wiki ...]" do
   around{ |test| Timeout.timeout(4){ test.call } }

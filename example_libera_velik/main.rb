@@ -45,6 +45,8 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
     add_to_queue.call dest, (
       if (*_, help = remote.assoc($1))
         help
+      elsif $1 == "wiki"
+        "\\wiki <wikipedia article or search query>"
       else
         "unknown command #{$1.inspect}"
       end
