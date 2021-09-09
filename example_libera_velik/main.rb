@@ -9,6 +9,10 @@ end.tap &:call
 
 require "mediawiki-butt"
 esowiki = MediaWiki::Butt.new "https://esolangs.org/w/api.php"
+require "infoboxer"
+wikipedia = Infoboxer.wp
+
+# we prepend space to reply only if reply can be arbitrary (forged by invoking IRC user, like \rasel or \wiki)
 
 require "nakiircbot"
 nickname = ENV["VELIK_NICKNAME"] || "velik"
@@ -48,6 +52,23 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
     threaded.call do
       reload.call
       add_to_queue.call dest, "remote execution commands loaded: #{remote.map &:first}"
+    end
+  when /\A\\wiki (.+)/
+    page = wikipedia.get($1) || wikipedia.search($1, limit: 1).first
+    unless page
+      add_to_queue.call dest, "nothing was found"
+    else
+      add_to_queue.call dest, "#{
+        if about = page.templates(name: "About").first ; _, _, alt, *_ = about.unwrap.map(&:text) ; "(alt: '#{alt}') " ; end
+      }#{
+        if short = page.templates(name: "Short description").first
+          short.unwrap.text
+        else
+          page.paragraphs.map do |par|
+            par if par.children.any?{ |_| _.is_a?(Infoboxer::Tree::Text) && !_.to_s.empty? }
+          end.find(&:itself).text
+        end
+      }"
     end
   when /\A\\(\S+) (.+)/
     cmd, input = $1, $2

@@ -7,9 +7,12 @@ ENV["VELIK_NICKNAME"] = "velik2"
 ENV["VELIK_SERVER"] = "localhost"
 # ENV["VELIK_CHANNEL"] = "##nakilon"
 Thread.new{ require_relative "main" }
-client = server.accept
-client.gets
-client.gets
+require "timeout"
+client = Timeout.timeout(2){ server.accept.tap(&:gets).tap(&:gets) }
+
+# TODO: actually use proper Minitest assertion methods
+# TODO: do something about replies that get mixed once there is a single fail,
+#       otherwise there is no point in having tests separated
 
 describe "fast" do
   around{ |test| Timeout.timeout(0.1){ test.call } }
@@ -18,17 +21,23 @@ describe "fast" do
     fail unless "PRIVMSG #channel :pong\n" == client.gets
   end
 end
-describe "slow 3" do
-  around{ |test| Timeout.timeout(3){ test.call } }
+describe "[wiki ...]" do
+  around{ |test| Timeout.timeout(4){ test.call } }
   it "[wiki ...]" do
     client.puts ":user!user PRIVMSG #channel :search with spaces [wiki bitwise cyclic tag], users [wiki user:nakilon], ignore dups [wiki user:nakilon], in text [wiki nakilon], weird chars [wiki created by Stack Exchange users]"
     fail unless "PRIVMSG #channel :https://esolangs.org/wiki/Bitwise%20Cyclic%20Tag https://esolangs.org/wiki/User:Nakilon https://esolangs.org/wiki/Velik https://esolangs.org/wiki/%3F%3F%3F\n" == client.gets
   end
 end
-describe "slow 1" do
-  around{ |test| Timeout.timeout(1){ test.call } }
-  it "\\wiki" do
-    client.puts ":user!user PRIVMSG #channel :\\wiki asd"
-    fail unless "PRIVMSG #channel :ok asd\n" == p(client.gets)
+describe "\\wiki" do
+  around{ |test| Timeout.timeout(2){ test.call } }
+  it "\\wiki Linux" do
+    client.puts ":user!user PRIVMSG #channel :\\wiki Linux"
+    fail unless /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
+    assert_equal "(alt: 'Linux kernel') Family of Unix-like operating systems", reply
+  end
+  it "\\wiki Linux (Linux kernel)" do
+    client.puts ":user!user PRIVMSG #channel :\\wiki Linux kernel"
+    fail unless /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
+    assert_equal "Free and open-source Unix-like operating system kernel", reply
   end
 end
