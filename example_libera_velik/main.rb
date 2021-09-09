@@ -7,11 +7,10 @@ reload = lambda do
   remote.replace YAML.load open "https://gist.githubusercontent.com/nakilon/92d5b22935f21b5e248b713057e851a6/raw/remote.yaml", &:read
 end.tap &:call
 
-# for [wiki ...]  # TODO: get rid in favor of Infoboxer?
 require "mediawiki-butt"
-esowiki = MediaWiki::Butt.new "https://esolangs.org/w/api.php"
-# for \wiki and \esowiki
+butt = MediaWiki::Butt.new "https://esolangs.org/w/api.php"
 require "infoboxer"
+esolangs = Infoboxer.wiki "https://esolangs.org/w/api.php"
 
 # we prepend space to reply only if reply can be arbitrary (forged by invoking IRC user, like \rasel or \wiki)
 
@@ -41,15 +40,15 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
 
   case what
   when /\A\\help\s*\z/
-    add_to_queue.call dest, "available commands: #{%w{ wiki esowiki } + remote.map(&:first)}; usage help: \\help <cmd>"
+    add_to_queue.call dest, "available commands: #{%w{ wiki wp } + remote.map(&:first)}; usage help: \\help <cmd>"
   when /\A\\help\s+(\S+)/
     add_to_queue.call dest, (
       if (*_, help = remote.assoc($1))
         help
-      elsif $1 == "wiki"
-        "\\wiki <wikipedia article or search query>"
+      elsif $1 == "wp"
+        "\\wp <wikipedia article or search query>"
       elsif $1 == "esowiki"
-        "\\esowiki <esolang wiki article or search query>"
+        "\\wiki <esolang wiki article or search query>"
       else
         "unknown command #{$1.inspect}"
       end
@@ -59,7 +58,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       reload.call
       add_to_queue.call dest, "remote execution commands loaded: #{remote.map &:first}"
     end
-  when /\A\\wiki (.+)/
+  when /\A\\wp (.+)/
     query = $1
     threaded.call do
       wikipedia = Infoboxer.wp
@@ -79,10 +78,9 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
         } #{page.url}"
       end
     end
-  when /\A\\esowiki (.+)/
+  when /\A\\wiki (.+)/
     query = $1
     threaded.call do
-      esolangs = Infoboxer.wiki "https://esolangs.org/w/api.php"
       unless page = esolangs.get(query) || esolangs.search(query, limit: 1).first
         add_to_queue.call dest, "nothing was found"
       else
@@ -110,16 +108,21 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       end) if cmd == remote_cmd
     end
   else
-    wikis = what.scan(/\[\s*wiki\s+(\S.*?)\s*\]/i)
-    unless wikis.empty?
+    wikis = what.scan(/\[\[(.*?)\]\]/i)
       threaded.call do
         results = wikis.map do |article,|
-          result = esowiki.get_search_results article
-          result = esowiki.get_search_text_results article if result.empty?
-          "https:" + URI.escape(URI.escape(esowiki.get_article_path result.first), "?") unless result.empty?
+          result = butt.get_search_results article
+          result = butt.get_search_text_results article if result.empty?
+          "https:" + URI.escape(URI.escape(butt.get_article_path result.first), "?") unless result.empty?
         end.compact
         add_to_queue.call dest, results.uniq.join(" ") unless results.empty?
       end
-    end
+    # TODO: the following Infobox adaptation can't find one page (see tests)
+    # threaded.call do
+    #   results = wikis.map do |query,|
+    #     esolangs.get(query) || esolangs.search(query, limit: 1).first
+    #   end.compact
+    #   add_to_queue.call dest, results.map(&:url).uniq.join(" ") unless results.empty?
+    # end
   end
 end
