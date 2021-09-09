@@ -41,25 +41,24 @@ describe "\\wiki" do
     # templates: About, Short
     client.puts ":user!user PRIVMSG #channel :\\wiki Москва"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal " Capital and largest city of Russia https://en.wikipedia.org/wiki/Moscow", reply
+    assert_equal " Moscow -- capital and most populous city of Russia https://en.wikipedia.org/wiki/Moscow", reply
   end
   it "\\wiki Linux" do
     # templates: About, Short
     client.puts ":user!user PRIVMSG #channel :\\wiki Linux"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal " (alt: 'Linux kernel') Family of Unix-like operating systems https://en.wikipedia.org/wiki/Linux", reply
+    assert_equal " (see also: Linux kernel) Linux -- family of Unix-like operating systems that use the Linux kernel and are open source https://en.wikipedia.org/wiki/Linux", reply
   end
   it "\\wiki Linux (Linux kernel)" do
     # templates: Short
     client.puts ":user!user PRIVMSG #channel :\\wiki Linux kernel"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal " Free and open-source Unix-like operating system kernel https://en.wikipedia.org/wiki/Linux_kernel", reply
+    assert_equal " Linux kernel -- Unix-like operating system kernel, basis for all Linux operating systems / Linux distributions https://en.wikipedia.org/wiki/Linux_kernel", reply
   end
   it "\\wiki VPCLMULQDQ" do   # search results page (found by section name but it does not matter)
     # templates: none
     client.puts ":user!user PRIVMSG #channel :\\wiki VPCLMULQDQ"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert reply.start_with? " AVX-512 are 512-bit extensions to the 256-bit Advanced Vector Extensions SIMD instructions "
-    assert reply.end_with? ". https://en.wikipedia.org/wiki/AVX-512"
+    assert_equal " AVX-512 -- Instruction set extension developed by Intel https://en.wikipedia.org/wiki/AVX-512", reply
   end
 end

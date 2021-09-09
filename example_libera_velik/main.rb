@@ -59,24 +59,18 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
   when /\A\\wiki (.+)/
     query = $1
     threaded.call do
-      unless page = wikipedia.get(query) || wikipedia.search(query, limit: 1).first
+      unless page = wikipedia.get(query){ |_| _.prop :pageterms } || wikipedia.search(query, limit: 1){ |_| _.prop :pageterms }.first
         add_to_queue.call dest, "nothing was found"
       else
         add_to_queue.call dest, " #{
           if about = page.templates(name: "About").first
             _, _, alt, *_ = about.unwrap.map(&:text)
             # TODO: propose the (disambiguation) page
-            "(alt: '#{alt}') " if alt
+            "(see also: #{alt}) " if alt
           end
         }#{
-          if short = page.templates(name: "Short description").first
-            short.unwrap.text
-          else
-            page.paragraphs.map do |par|
-              par if par.children.any?{ |_| _.is_a?(Infoboxer::Tree::Text) && !_.to_s.empty? }
-            end.find(&:itself).text.strip.tap do |reply|
-              reply[-4..-1] = "..." until "#{reply} #{page.url}".bytesize <= 450
-            end
+          page.source.fetch("terms").fetch_values("label", "description").join(" -- ").tap do |reply|
+            reply[-4..-1] = "..." until "#{reply} #{page.url}".bytesize <= 450
           end
         } #{page.url}"
       end
