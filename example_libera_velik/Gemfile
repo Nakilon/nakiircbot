@@ -2,3 +2,4 @@ source "https://rubygems.org"
 gem "nakiircbot", "~>0.1.1"
 gem "mediawiki-butt"
 gem "json_pure"   # mediawiki-butt does not have it in gemspec yet
+gem "minitest" if "darwin" == Gem::Platform.local.os
