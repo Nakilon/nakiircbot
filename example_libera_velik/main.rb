@@ -63,7 +63,11 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
         add_to_queue.call dest, "nothing was found"
       else
         add_to_queue.call dest, " #{
-          if about = page.templates(name: "About").first ; _, _, alt, *_ = about.unwrap.map(&:text) ; "(alt: '#{alt}') " ; end
+          if about = page.templates(name: "About").first
+            _, _, alt, *_ = about.unwrap.map(&:text)
+            # TODO: propose the (disambiguation) page
+            "(alt: '#{alt}') " if alt
+          end
         }#{
           if short = page.templates(name: "Short description").first
             short.unwrap.text

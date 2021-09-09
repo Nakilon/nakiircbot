@@ -37,6 +37,12 @@ describe "[wiki ...]" do
 end
 describe "\\wiki" do
   around{ |test| Timeout.timeout(3){ test.call } }
+  it "\\wiki Москва" do   # this article About template does not provide a single alternative link
+    # templates: About, Short
+    client.puts ":user!user PRIVMSG #channel :\\wiki Москва"
+    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
+    assert_equal " Capital and largest city of Russia", reply
+  end
   it "\\wiki Linux" do
     # templates: About, Short
     client.puts ":user!user PRIVMSG #channel :\\wiki Linux"
