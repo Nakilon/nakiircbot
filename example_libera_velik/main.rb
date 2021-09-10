@@ -23,6 +23,9 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
   next unless /\A:(?<who>[^\s!]+)!\S+ PRIVMSG (?<dest>\S+) :(?<what>.+)/ =~ str
   add_to_queue.call "nakilon", str if dest == nickname && who != "nakilon"
   dest = who if dest == nickname
+  next if [
+    %w{ #esolangs esolangs },
+  ].include? [dest, who]
 
   next add_to_queue.call dest, what.tr("iI", "oO") if what.downcase == "ping"
   next add_to_queue.call dest, what.tr("иИ", "оO") if what.downcase == "пинг"
