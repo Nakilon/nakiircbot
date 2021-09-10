@@ -16,7 +16,8 @@ esolangs = Infoboxer.wiki "https://esolangs.org/w/api.php"
 
 require "nakiircbot"
 nickname = ENV["VELIK_NICKNAME"] || "velik"
-NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "nakilon", "Libera.Chat Internet Relay Chat Network", (ENV["VELIK_CHANNEL"] || "#esolangs"),
+NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "nakilon", "Libera.Chat Internet Relay Chat Network",
+    *(ENV["VELIK_CHANNEL"] || %w{ #esolangs ##nakilon #ruby-ru #ruby-offtopic }),
     password: (File.read("password") if nickname == "velik"), masterword: File.read("masterword") do |str, add_to_queue|
 
   next unless /\A:(?<who>[^\s!]+)!\S+ PRIVMSG (?<dest>\S+) :(?<what>.+)/ =~ str
