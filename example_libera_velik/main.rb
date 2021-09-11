@@ -119,7 +119,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
               "pod" => {size: 4..8},
               "/*[@error='true']" => [[]],
               "/pod" => {each: {attr_req: {"id": /\A([A-Z][a-z]+)+(:([A-Z][a-z]+)+)?\z/, "scanner": /\A([A-Z][a-z]+)+\z/}}},
-              "./pod[@primary='true']" => [[{req: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}]],
+              "./pod[@primary='true']" => {size: 1..2, each: {req: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}},
               "/pod[@scanner='Numeric']" => {each: {req: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}},
             },
           } ]],
@@ -129,7 +129,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
         [
           pod["primary"] == "true" ? 0 : 1,
           case pod["scanner"]
-          when *%w{ Numeric ContinuedFraction Simplification Integer }
+          when *%w{ Numeric ContinuedFraction Simplification Integer Rational }
             "#{pod["title"]}: \x02#{pod.at_xpath(".//plaintext").text}\x0f"
           when *%w{ NumberLine MathematicalFunctionData }
           else

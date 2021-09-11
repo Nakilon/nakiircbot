@@ -8,7 +8,7 @@ ENV["VELIK_SERVER"] = "localhost"
 # ENV["VELIK_CHANNEL"] = "##nakilon"
 Thread.new{ require_relative "main" }
 require "timeout"
-client = Timeout.timeout(6){ server.accept.tap(&:gets).tap(&:gets) }
+client = Timeout.timeout(7){ server.accept.tap(&:gets).tap(&:gets) }
 
 # TODO: do something about replies that get mixed once there is a single fail,
 #       otherwise there is no point in having tests separated
@@ -85,29 +85,30 @@ describe "\\wa" do
     Timeout.timeout(5){ test.call }
     WebMock.disable!
   end
-  before{ WebMock.reset! }
-  def cmd client, cmd
-    client.puts ":user!user PRIVMSG #channel :\\wa #{cmd}"
-    assert /\APRIVMSG #channel :(.+)\n\z/ =~ client.gets.force_encoding("utf-8")
+  before do
+    WebMock.reset!
+    @client = client
+  end
+  def cmd cmd
+    @client.puts ":user!user PRIVMSG #channel :\\wa #{cmd}"
+    assert /\APRIVMSG #channel :(.+)\n\z/ =~ @client.gets.force_encoding("utf-8")
     $1
   end
-  def stub query, file
+  def stub_and_assert query, file, input, expectation
+    # https://github.com/bblimke/webmock/issues/693#issuecomment-285485320
     stub_request(:get, "http://api.wolframalpha.com/v2/query").with(query: hash_including({})).to_return body: File.read("wa/#{file}.xml")
+    assert_equal expectation, cmd(input)
   end
   it "π" do   # entered by user as greek
-    stub "π", "pig"
-    assert_equal \
-      " Decimal approximation: \x023.1415926535897932384626433832795028841971693993751058209749445923...\x0f | Property: \x02π is a transcendental number\x0f | Continued fraction: \x02[3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]\x0f",
-      cmd(client, "π")
+    stub_and_assert "π", "pig", "π", " Decimal approximation: \x023.1415926535897932384626433832795028841971693993751058209749445923...\x0f | Property: \x02π is a transcendental number\x0f | Continued fraction: \x02[3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]\x0f"
   end
   it "pi" do  # interpreted by server as greek
-    stub "pi", "pil"
-    assert_equal \
-      " Decimal approximation: \x023.1415926535897932384626433832795028841971693993751058209749445923...\x0f | Property: \x02π is a transcendental number\x0f | Continued fraction: \x02[3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]\x0f",
-      cmd(client, "pi")
+    stub_and_assert "pi", "pil", "pi", " Decimal approximation: \x023.1415926535897932384626433832795028841971693993751058209749445923...\x0f | Property: \x02π is a transcendental number\x0f | Continued fraction: \x02[3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]\x0f"
   end
-  it "125 + 375" do
-    stub "125 + 375", "125375"
-    assert_equal " Result: \x02500\x0f | Number name: \x02five hundred\x0f", cmd(client, "125 + 375")
+  it "125 + 375" do   # no assumption
+    stub_and_assert "125 + 375", "125375", "125 + 375", " Result: \x02500\x0f | Number name: \x02five hundred\x0f"
+  end
+  it "1/4 * (4 - 1/2)" do   # multiple primary
+    stub_and_assert "1/4 * (4 - 1/2)", "14412", "1/4 * (4 - 1/2)", " Exact result: \u00027/8\u000F | Decimal form: \u00020.875\u000F | Continued fraction: \u0002[0; 1, 7]\u000F | Egyptian fraction expansion: \u00021/2 + 1/3 + 1/24\u000F"
   end
 end
