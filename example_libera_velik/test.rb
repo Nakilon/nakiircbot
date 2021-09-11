@@ -42,7 +42,7 @@ describe "[[...]]" do
   # end
 end
 describe "\\wp" do
-  around{ |test| Timeout.timeout(6){ test.call } }
+  around{ |test| Timeout.timeout(8){ test.call } }
   it "москва" do   # this article About template does not provide a single alternative link
     # templates: About, Short
     client.puts ":user!user PRIVMSG #channel :\\wp москва"
@@ -94,32 +94,38 @@ describe "\\wa" do
     assert /\APRIVMSG #channel :(.+)\n\z/ =~ @client.gets.force_encoding("utf-8")
     $1
   end
-  def stub_and_assert query, file, expectation
+  def stub_and_assert query, file, expectation = nil
     # https://github.com/bblimke/webmock/issues/693#issuecomment-285485320
     stub_request(:get, "http://api.wolframalpha.com/v2/query").with(query: hash_including({})).to_return body: File.read("wa/#{file}.xml") if file  # pass nil file to prepare webmock
-    assert_equal expectation, cmd(query)
+    cmd(query).tap do |reply|
+      refute_match "unsupported scanner", reply
+      assert_equal expectation, reply if expectation
+    end
   end
   it "pig" do   # entered by user as greek
-    stub_and_assert "π", "pig", " Decimal approximation: \x023.1415926535897932384626433832795028841971693993751058209749445923...\x0f | Property: \x02π is a transcendental number\x0f | Continued fraction: \x02[3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]\x0f"
+    stub_and_assert "π", "pig"
   end
-  it "pil" do  # interpreted by server as greek
-    stub_and_assert "pi", "pil", " Decimal approximation: \x023.1415926535897932384626433832795028841971693993751058209749445923...\x0f | Property: \x02π is a transcendental number\x0f | Continued fraction: \x02[3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]\x0f"
+  it "pil" do   # interpreted by server as greek
+    stub_and_assert "pi", "pil"
   end
   describe "Mathematics" do
-    it "arithmetic" do   # no assumption
-      stub_and_assert "125 + 375", "arithmetic", " Result: \x02500\x0f | Number name: \x02five hundred\x0f"
+    it "arithmetic" do  # no assumption
+      stub_and_assert "125 + 375", "arithmetic"
     end
     it "fractions" do   # multiple primary
       stub_and_assert "1/4 * (4 - 1/2)", "fractions", " Exact result: \x027/8\x0f | Decimal form: \x020.875\x0f | Continued fraction: \x02[0; 1, 7]\x0f | Egyptian fraction expansion: \x021/2 + 1/3 + 1/24\x0f"
     end
-    it "equation" do
+    it "equation" do    # multiple subpods
       stub_and_assert "x^3 - 4x^2 + 6x - 24 = 0", "equation", " Real solution: \x02x = 4\x0f | Complex solutions: \x02x = -i sqrt(6), x = i sqrt(6)\x0f | Alternate forms: \x02(x - 4) (x^2 + 6) = 0, (x - 4/3)^3 + 2/3 (x - 4/3) - 560/27 = 0\x0f"
     end
     it "factor" do
-      stub_and_assert "factor 2x^5 - 19x^4 + 58x^3 - 67x^2 + 56x - 48", "factor", " Result: \x02(2 x - 3) (x - 4)^2 (x^2 + 1)\x0f | Factorizations over finite fields: \x02GF(2) | x^2 (x + 1)^2\x0f | Factorization over the complexes: \x02(x - 4)^2 (x - i) (x + i) (2 x - 3)\x0f"
+      stub_and_assert "factor 2x^5 - 19x^4 + 58x^3 - 67x^2 + 56x - 48", "factor"
     end
     it "simplify" do
-      stub_and_assert "1/(1+sqrt(2))", "simplify", " Decimal approximation: \x020.4142135623730950488016887242096980785696718753769480731766797379...\x0f | Alternate form: \x02sqrt(2) - 1\x0f | Continued fraction: \x02[0; 2^_]\x0f | Minimal polynomial: \x02x^2 + 2 x - 1\x0f"
+      stub_and_assert "1/(1+sqrt(2))", "simplify"
+    end
+    it "integral" do    # [LF]
+      stub_and_assert "integrate sin x dx from x=0 to pi", "integral", " Visual representation of the integral: \x02\x0f | Indefinite integral: \x02integral sin(x) dx = -cos(x) + constant\x0f | Riemann sums: \x02left sum | (π cot(π/(2 n)))/n = 2 - π^2/(6 n^2) + O((1/n)^4) (assuming subintervals of equal length)\x0f"
     end
   end
 end

@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='4'
+    datatypes=''
+    timedout=''
+    timedoutpods=''
+    timing='1.46'
+    parsetiming='0.886'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP7011i7cd40cfh0ae8700000337671f08bb7d8if'
+    host='https://www4b.wolframalpha.com'
+    server='20'
+    related='https://www4b.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa7021i7cd40cfh0ae87000005f977hih252dea836587610826631541430'
+    version='2.6'
+    inputstring='integrate sin x dx from x=0 to pi'>
+ <pod title='Definite integral'
+     scanner='Integral'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>integral_0^π sin(x) dx = 2</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Step-by-step solution'
+       input='Input__Step-by-step solution'
+       stepbystep='true' />
+  </states>
+ </pod>
+ <pod title='Visual representation of the integral'
+     scanner='Integral'
+     id='VisualRepresentationOfTheIntegral'
+     position='200'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Riemann sums'
+     scanner='Integral'
+     id='RiemannSums'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>left sum | (π cot(π/(2 n)))/n = 2 - π^2/(6 n^2) + O((1/n)^4)
+(assuming subintervals of equal length)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More cases'
+       input='RiemannSums__More cases' />
+  </states>
+  <infos count='1'>
+   <info text='cot(x) is the cotangent function'>
+    <link url='http://reference.wolfram.com/language/ref/Cot.html'
+        text='Documentation'
+        title='Mathematica' />
+    <link url='http://functions.wolfram.com/ElementaryFunctions/Cot'
+        text='Properties'
+        title='Wolfram Functions Site' />
+    <link url='http://mathworld.wolfram.com/Cotangent.html'
+        text='Definition'
+        title='MathWorld' />
+   </info>
+  </infos>
+ </pod>
+ <pod title='Indefinite integral'
+     scanner='Integral'
+     id='IndefiniteIntegral'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>integral sin(x) dx = -cos(x) + constant</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Step-by-step solution'
+       input='IndefiniteIntegral__Step-by-step solution'
+       stepbystep='true' />
+  </states>
+ </pod>
+</queryresult>

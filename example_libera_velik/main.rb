@@ -129,8 +129,8 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           pod["primary"] == "true" ? 0 : 1,
           case pod["scanner"]
           when *(// if pod["primary"] == "true"),
-               *%w{ Numeric ContinuedFraction Simplification Integer Rational Factor }
-            "#{pod["title"]}: \x02#{pod.xpath(".//plaintext").map(&:text).join ", "}\x0f"
+               *%w{ Numeric ContinuedFraction Simplification Integer Rational Factor Integral }
+            "#{pod["title"]}: \x02#{pod.xpath(".//plaintext").map(&:text).join(", ").gsub("\n", " ")}\x0f"
           when *%w{ NumberLine MathematicalFunctionData Reduce Plot Plotter }
           else
             "(unsupported scanner #{pod["scanner"].inspect})"
