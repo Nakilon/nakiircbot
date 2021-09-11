@@ -58,7 +58,7 @@ module NakiIRCBot
           next
         end
         prev_socket_time = Time.now
-        socket_str = _[0][0].gets(chomp: true)
+        socket_str = _[0][0].gets chomp: true
         break unless socket_str
         str = socket_str.force_encoding("utf-8").scrub
         if /\A:\S+ 372 /.match? str   # MOTD

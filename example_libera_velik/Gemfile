@@ -1,8 +1,16 @@
 source "https://rubygems.org"
 gem "nakiircbot", "~>0.1.1"
 
+gem "json_pure"   # mediawiki-butt does not have it in gemspec yet
 gem "mediawiki-butt"
 gem "infoboxer"
+gem "oga"
+gem "nakischema"
 
-gem "json_pure"   # mediawiki-butt does not have it in gemspec yet
-gem "minitest-around" if "darwin" == Gem::Platform.local.os
+if "darwin" == Gem::Platform.local.os
+  gem "minitest", github: "Nakilon/minitest", branch: "patch"
+  gem "minitest-around"
+  gem "webmock", "=3.12.1"
+
+  gem "byebug"
+end

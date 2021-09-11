@@ -8,7 +8,7 @@ ENV["VELIK_SERVER"] = "localhost"
 # ENV["VELIK_CHANNEL"] = "##nakilon"
 Thread.new{ require_relative "main" }
 require "timeout"
-client = Timeout.timeout(2){ server.accept.tap(&:gets).tap(&:gets) }
+client = Timeout.timeout(5){ server.accept.tap(&:gets).tap(&:gets) }
 
 # TODO: do something about replies that get mixed once there is a single fail,
 #       otherwise there is no point in having tests separated
@@ -42,7 +42,7 @@ describe "[[...]]" do
   # end
 end
 describe "\\wp" do
-  around{ |test| Timeout.timeout(4){ test.call } }
+  around{ |test| Timeout.timeout(5){ test.call } }
   it "москва" do   # this article About template does not provide a single alternative link
     # templates: About, Short
     client.puts ":user!user PRIVMSG #channel :\\wp москва"
@@ -74,5 +74,26 @@ describe "\\wiki" do
     client.puts ":user!user PRIVMSG #channel :\\wiki user:nakilon"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
     assert_match /\A Hello, I made the RASEL language\. Also the IRC bot velik .+\. https:\/\/esolangs\.org\/wiki\/User:Nakilon\z/, reply
+  end
+end
+
+require "webmock/minitest"
+require_relative "webmock_patch"
+describe "\\wa" do
+  around do |test|
+    WebMock.enable!
+    Timeout.timeout(5){ test.call }
+    WebMock.disable!
+  end
+  before{ WebMock.reset! }
+  def cmd client, cmd
+    client.puts ":user!user PRIVMSG #channel :\\wa #{cmd}"
+    assert /\APRIVMSG #channel :(.+)\n\z/ =~ client.gets.force_encoding("utf-8")
+    $1
+  end
+  it "π" do
+    stub_request(:get, "http://api.wolframalpha.com/v2/query?appid=#{File.read "wa.key.txt"}&format=plaintext&input=%CF%80").
+      to_return body: File.read("wa/pi.xml")
+    assert_match "3.1415926535897932384626433832795028841971693993751058209749445923... | π is a transcendental number | [3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]", cmd(client, "π")
   end
 end

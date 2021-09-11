@@ -35,7 +35,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
     # note that it loses the access to $1, $2... so you copy their values before the call
     Thread.new do
       block.call
-    rescue => e
+    rescue StandardError, WebMock::NetConnectNotAllowedError => e
       puts e.full_message
       add_to_queue.call "nakilon", e
       add_to_queue.call dest, "thread error" unless dest == "nakilon"
@@ -96,6 +96,48 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           end
         } #{page.url}"
       end
+    end
+  when /\A\\wa (.+)/
+    query = $1
+    require "open-uri"
+    link = URI("http://api.wolframalpha.com/v2/query").tap do |uri|
+      uri.query = URI.encode_www_form({input: query, format: :plaintext, appid: File.read("wa.key.txt")})
+    end
+    require "oga"
+    require "nakischema"
+    threaded.call do
+      xml = Oga.parse_xml open link, &:read
+      Nakischema.validate_oga_xml xml, {
+        exact: {
+          "queryresult" => [[ {
+            attr_req: {"success": "true", "error": "false", "inputstring": query},
+            assertions: [
+              ->n,_{ n.at_xpath("./pod")["id"] == "Input" },
+              ->n,_{ n.xpath("/pod").each{ |_| _["id"] == _["title"].delete(" ") } },
+            ],
+            exact: {"pod" => {size: 8..8}, "assumptions" => [[{}]]},
+            req: {
+              "/*[@error='true']" => [[]],
+              "/pod" => {each: {attr_req: {"id": /\A([A-Z][a-z]+)+(:([A-Z][a-z]+)+)?\z/, "scanner": /\A([A-Z][a-z]+)+\z/}}},
+              "./pod[@title='Input']" => [[{req: {"subpod" => [[{exact: {"plaintext" => [[{text: query}]]}}]]}}]],
+              "./pod[@primary='true']" => [[{req: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}]],
+              "/pod[@scanner='Numeric']" => {each: {req: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}},
+            },
+          } ]],
+        },
+      }
+      add_to_queue.call dest, (xml.xpath("./*/pod").drop(1).map do |pod|
+        [
+          pod["primary"] == "true" ? 0 : 1,
+          case pod["scanner"]
+          when *%w{ Numeric ContinuedFraction }
+            pod.at_xpath(".//plaintext").text
+          when *%w{ NumberLine MathematicalFunctionData }
+          else
+            "(unsupported scanner #{pod["scanner"].inspect})"
+          end
+        ]
+      end.select(&:last).sort_by{ |primary, text| [primary, text.size] }.map(&:last).join " | ")
     end
   when /\A\\(\S+) (.+)/
     cmd, input = $1, $2

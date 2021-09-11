@@ -1,6 +1,6 @@
 to decide if we should implement command here or remotely
   if functionality isn't crucial then remote
-  if it can eat eat all resources then remote
+  if it can eat all resources then remote
   else implement it here, within this Gemfile
 testing
   $ bundle exec ruby test.rb
