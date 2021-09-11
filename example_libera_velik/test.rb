@@ -8,7 +8,7 @@ ENV["VELIK_SERVER"] = "localhost"
 # ENV["VELIK_CHANNEL"] = "##nakilon"
 Thread.new{ require_relative "main" }
 require "timeout"
-client = Timeout.timeout(7){ server.accept.tap(&:gets).tap(&:gets) }
+client = Timeout.timeout(1.5){ sleep 1; server.accept.tap(&:gets).tap(&:gets) }
 
 # TODO: do something about replies that get mixed once there is a single fail,
 #       otherwise there is no point in having tests separated
@@ -42,7 +42,7 @@ describe "[[...]]" do
   # end
 end
 describe "\\wp" do
-  around{ |test| Timeout.timeout(5){ test.call } }
+  around{ |test| Timeout.timeout(6){ test.call } }
   it "москва" do   # this article About template does not provide a single alternative link
     # templates: About, Short
     client.puts ":user!user PRIVMSG #channel :\\wp москва"
@@ -94,21 +94,24 @@ describe "\\wa" do
     assert /\APRIVMSG #channel :(.+)\n\z/ =~ @client.gets.force_encoding("utf-8")
     $1
   end
-  def stub_and_assert query, file, input, expectation
+  def stub_and_assert query, file, expectation
     # https://github.com/bblimke/webmock/issues/693#issuecomment-285485320
-    stub_request(:get, "http://api.wolframalpha.com/v2/query").with(query: hash_including({})).to_return body: File.read("wa/#{file}.xml")
-    assert_equal expectation, cmd(input)
+    stub_request(:get, "http://api.wolframalpha.com/v2/query").with(query: hash_including({})).to_return body: File.read("wa/#{file}.xml") if file  # pass nil file to prepare webmock
+    assert_equal expectation, cmd(query)
   end
-  it "π" do   # entered by user as greek
-    stub_and_assert "π", "pig", "π", " Decimal approximation: \x023.1415926535897932384626433832795028841971693993751058209749445923...\x0f | Property: \x02π is a transcendental number\x0f | Continued fraction: \x02[3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]\x0f"
+  it "pig" do   # entered by user as greek
+    stub_and_assert "π", "pig", " Decimal approximation: \x023.1415926535897932384626433832795028841971693993751058209749445923...\x0f | Property: \x02π is a transcendental number\x0f | Continued fraction: \x02[3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]\x0f"
   end
-  it "pi" do  # interpreted by server as greek
-    stub_and_assert "pi", "pil", "pi", " Decimal approximation: \x023.1415926535897932384626433832795028841971693993751058209749445923...\x0f | Property: \x02π is a transcendental number\x0f | Continued fraction: \x02[3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]\x0f"
+  it "pil" do  # interpreted by server as greek
+    stub_and_assert "pi", "pil", " Decimal approximation: \x023.1415926535897932384626433832795028841971693993751058209749445923...\x0f | Property: \x02π is a transcendental number\x0f | Continued fraction: \x02[3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]\x0f"
   end
-  it "125 + 375" do   # no assumption
-    stub_and_assert "125 + 375", "125375", "125 + 375", " Result: \x02500\x0f | Number name: \x02five hundred\x0f"
+  it "arithmetic" do   # no assumption
+    stub_and_assert "125 + 375", "arithmetic", " Result: \x02500\x0f | Number name: \x02five hundred\x0f"
   end
-  it "1/4 * (4 - 1/2)" do   # multiple primary
-    stub_and_assert "1/4 * (4 - 1/2)", "14412", "1/4 * (4 - 1/2)", " Exact result: \u00027/8\u000F | Decimal form: \u00020.875\u000F | Continued fraction: \u0002[0; 1, 7]\u000F | Egyptian fraction expansion: \u00021/2 + 1/3 + 1/24\u000F"
+  it "fractions" do   # multiple primary
+    stub_and_assert "1/4 * (4 - 1/2)", "fractions", " Exact result: \x027/8\x0f | Decimal form: \x020.875\x0f | Continued fraction: \x02[0; 1, 7]\x0f | Egyptian fraction expansion: \x021/2 + 1/3 + 1/24\x0f"
+  end
+  it "equation" do
+    stub_and_assert "x^3 - 4x^2 + 6x - 24 = 0", "equation", " Real solution: \x02x = 4\x0f | Complex solutions: \x02x = -i sqrt(6), x = i sqrt(6)\x0f | Alternate forms: \x02(x - 4) (x^2 + 6) = 0, (x - 4/3)^3 + 2/3 (x - 4/3) - 560/27 = 0\x0f"
   end
 end
