@@ -115,8 +115,8 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
               ->n,_{ n.at_xpath("./pod")["id"] == "Input" },
               ->n,_{ n.xpath("/pod").each{ |_| _["id"] == _["title"].delete(" ") } },
             ],
-            exact: {"pod" => {size: 8..8}, "assumptions" => [[{}]]},
             req: {
+              "pod" => {size: 4..8},
               "/*[@error='true']" => [[]],
               "/pod" => {each: {attr_req: {"id": /\A([A-Z][a-z]+)+(:([A-Z][a-z]+)+)?\z/, "scanner": /\A([A-Z][a-z]+)+\z/}}},
               "./pod[@primary='true']" => [[{req: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}]],
@@ -129,8 +129,8 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
         [
           pod["primary"] == "true" ? 0 : 1,
           case pod["scanner"]
-          when *%w{ Numeric ContinuedFraction }
-            pod.at_xpath(".//plaintext").text
+          when *%w{ Numeric ContinuedFraction Simplification Integer }
+            "#{pod["title"]}: \x02#{pod.at_xpath(".//plaintext").text}\x0f"
           when *%w{ NumberLine MathematicalFunctionData }
           else
             "(unsupported scanner #{pod["scanner"].inspect})"
