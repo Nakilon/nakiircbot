@@ -35,3 +35,7 @@ services:
         source: ${SECRET_key_path}
         target: /usr/src/app/key.json
         read_only: true
+      - type: bind
+        source: ./wa.key.json
+        target: /usr/src/app/wa.key.json
+        read_only: true
