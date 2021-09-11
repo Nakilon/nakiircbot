@@ -110,41 +110,41 @@ describe "\\wa" do
   end
   describe "Mathematics" do
     describe "main" do
-    describe "Elementary Math" do
-    it "arithmetic" do
-      stub_and_assert "125 + 375", "arithmetic"
-    end
-    it "fractions" do   # multiple primary
-      stub_and_assert "1/4 * (4 - 1/2)", "fractions", " Exact result: \x027/8\x0f | Decimal form: \x020.875\x0f | Continued fraction: \x02[0; 1, 7]\x0f | Egyptian fraction expansion: \x021/2 + 1/3 + 1/24\x0f"
-    end
-    end
-    describe "Algebra" do
-    it "equation" do
-      stub_and_assert "x^3 - 4x^2 + 6x - 24 = 0", "equation"
-    end
-    it "factor" do
-      stub_and_assert "factor 2x^5 - 19x^4 + 58x^3 - 67x^2 + 56x - 48", "factor"
-    end
-    it "simplify" do
-      stub_and_assert "1/(1+sqrt(2))", "simplify"
-    end
-    end
-    describe "Calculus & Analysis" do
-    it "integral" do    # [LF]
-      stub_and_assert "integrate sin x dx from x=0 to pi", "integral", " Visual representation of the integral: \x02\x0f | Indefinite integral: \x02integral sin(x) dx = -cos(x) + constant\x0f | Riemann sums: \x02left sum | (π cot(π/(2 n)))/n = 2 - π^2/(6 n^2) + O((1/n)^4) (assuming subintervals of equal length)\x0f"
-    end
-    it "derivative" do  # subpods with titles
-      stub_and_assert "derivative of x^4 sin x", "derivative", " Indefinite integral: \x02integral x^3 (x cos(x) + 4 sin(x)) dx = x^4 sin(x) + constant\x0f | Expanded form: \x02x^4 cos(x) + 4 x^3 sin(x)\x0f | Alternate form: \x021/2 e^(-i x) x^4 + 1/2 e^(i x) x^4 + 2 i e^(-i x) x^3 - 2 i e^(i x) x^3\x0f | Series expansion at x = 0: \x025 x^4 - (7 x^6)/6 + (3 x^8)/40 - (11 x^10)/5040 + O(x^11) (Taylor series)\x0f | Properties as a real function: \x02Domain: R (all real numbers), Range: R (all real numbers), Surjectivity: surjective onto R, ..."
-    end
-    it "differential" do
-      stub_and_assert "y'' + y = 0", "differential"
-    end
-    end
-    describe "Geometry" do end
-    describe "Plotting & Graphics" do end
-    describe "Differential Equations" do end
-    describe "Statistics" do end
-    describe "Mathematical Functions" do end
+      describe "Elementary Math" do
+        it "arithmetic" do
+          stub_and_assert "125 + 375", "arithmetic"
+        end
+        it "fractions" do   # multiple primary
+          stub_and_assert "1/4 * (4 - 1/2)", "fractions", " Exact result: \x027/8\x0f | Decimal form: \x020.875\x0f | Continued fraction: \x02[0; 1, 7]\x0f | Egyptian fraction expansion: \x021/2 + 1/3 + 1/24\x0f"
+        end
+      end
+      describe "Algebra" do
+        it "equation" do
+          stub_and_assert "x^3 - 4x^2 + 6x - 24 = 0", "equation"
+        end
+        it "factor" do
+          stub_and_assert "factor 2x^5 - 19x^4 + 58x^3 - 67x^2 + 56x - 48", "factor"
+        end
+        it "simplify" do
+          stub_and_assert "1/(1+sqrt(2))", "simplify"
+        end
+      end
+      describe "Calculus & Analysis" do
+        it "integral" do    # [LF]
+          stub_and_assert "integrate sin x dx from x=0 to pi", "integral", " Visual representation of the integral: \x02\x0f | Indefinite integral: \x02integral sin(x) dx = -cos(x) + constant\x0f | Riemann sums: \x02left sum | (π cot(π/(2 n)))/n = 2 - π^2/(6 n^2) + O((1/n)^4) (assuming subintervals of equal length)\x0f"
+        end
+        it "derivative" do  # subpods with titles
+          stub_and_assert "derivative of x^4 sin x", "derivative", " Indefinite integral: \x02integral x^3 (x cos(x) + 4 sin(x)) dx = x^4 sin(x) + constant\x0f | Expanded form: \x02x^4 cos(x) + 4 x^3 sin(x)\x0f | Alternate form: \x021/2 e^(-i x) x^4 + 1/2 e^(i x) x^4 + 2 i e^(-i x) x^3 - 2 i e^(i x) x^3\x0f | Series expansion at x = 0: \x025 x^4 - (7 x^6)/6 + (3 x^8)/40 - (11 x^10)/5040 + O(x^11) (Taylor series)\x0f | Properties as a real function: \x02Domain: R (all real numbers), Range: R (all real numbers), Surjectivity: surjective onto R, ..."
+        end
+        it "differential" do
+          stub_and_assert "y'' + y = 0", "differential"
+        end
+      end
+      describe "Geometry" do end
+      describe "Plotting & Graphics" do end
+      describe "Differential Equations" do end
+      describe "Statistics" do end
+      describe "Mathematical Functions" do end
     end
     describe "Numbers" do end
     describe "Trigonometry" do end
