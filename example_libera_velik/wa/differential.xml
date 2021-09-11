@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='8'
+    datatypes=''
+    timedout=''
+    timedoutpods=''
+    timing='2.166'
+    parsetiming='0.296'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP1691199e2ecciadi360000004098d7f12905g7c1'
+    host='https://www4f.wolframalpha.com'
+    server='12'
+    related='https://www4f.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa1692199e2ecciadi360000004a3954g575eeegf71835045885286472386'
+    version='2.6'
+    inputstring='y&apos;&apos; + y = 0'>
+ <pod title='Input'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>y&apos;&apos;(x) + y(x) = 0</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='ODE names'
+     scanner='ODE'
+     id='ODENames'
+     position='200'
+     error='false'
+     numsubpods='2'>
+  <subpod title='Autonomous equation'>
+   <plaintext>y&apos;&apos;(x) = -y(x)</plaintext>
+  </subpod>
+  <subpod title='Van der Pol&apos;s equation'>
+   <plaintext>y&apos;&apos;(x) + y(x) = 0</plaintext>
+  </subpod>
+  <expressiontypes count='2'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <infos count='1'>
+   <info>
+    <link url='http://mathworld.wolfram.com/vanderPolEquation.html'
+        text='van der Pol&apos;s equation' />
+   </info>
+  </infos>
+ </pod>
+ <pod title='ODE classification'
+     scanner='ODE'
+     id='ODEClassification'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>second-order linear ordinary differential equation</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Alternate form'
+     scanner='Simplification'
+     id='AlternateForm'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>y&apos;&apos;(x) = -y(x)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Differential equation solution'
+     scanner='ODE'
+     id='Solution'
+     position='500'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>y(x) = c_2 sin(x) + c_1 cos(x)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Step-by-step solution'
+       input='Solution__Step-by-step solution'
+       stepbystep='true' />
+  </states>
+ </pod>
+ <pod title='Plots of sample individual solutions'
+     scanner='ODE'
+     id='PlotsOfSampleIndividualSolutions'
+     position='600'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext> | | | | y(0) = 1
+y&apos;(0) = 0
+ | | | | y(0) = 0
+y&apos;(0) = 1</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Sample solution family'
+     scanner='ODE'
+     id='SampleSolutionFamily'
+     position='700'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>  (sampling y(0) and y&apos;(0))</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Possible Lagrangian'
+     scanner='ODE'
+     id='PossibleLagrangian'
+     position='900'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>ℒ(y&apos;, y) = 1/2 ((y&apos;)^2 - y^2)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+</queryresult>

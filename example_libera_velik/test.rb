@@ -130,5 +130,8 @@ describe "\\wa" do
     it "derivative" do  # subpods with titles
       stub_and_assert "derivative of x^4 sin x", "derivative", " Indefinite integral: \x02integral x^3 (x cos(x) + 4 sin(x)) dx = x^4 sin(x) + constant\x0f | Expanded form: \x02x^4 cos(x) + 4 x^3 sin(x)\x0f | Alternate form: \x021/2 e^(-i x) x^4 + 1/2 e^(i x) x^4 + 2 i e^(-i x) x^3 - 2 i e^(i x) x^3\x0f | Series expansion at x = 0: \x025 x^4 - (7 x^6)/6 + (3 x^8)/40 - (11 x^10)/5040 + O(x^11) (Taylor series)\x0f | Properties as a real function: \x02Domain: R (all real numbers), Range: R (all real numbers), Surjectivity: surjective onto R, ..."
     end
+    it "differential" do
+      stub_and_assert "y'' + y = 0", "differential"
+    end
   end
 end
