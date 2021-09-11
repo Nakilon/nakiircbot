@@ -82,7 +82,7 @@ require_relative "webmock_patch"
 describe "\\wa" do
   around do |test|
     WebMock.enable!
-    Timeout.timeout(5){ test.call }
+    Timeout.timeout(7){ test.call }
     WebMock.disable!
   end
   before do
@@ -126,6 +126,9 @@ describe "\\wa" do
     end
     it "integral" do    # [LF]
       stub_and_assert "integrate sin x dx from x=0 to pi", "integral", " Visual representation of the integral: \x02\x0f | Indefinite integral: \x02integral sin(x) dx = -cos(x) + constant\x0f | Riemann sums: \x02left sum | (π cot(π/(2 n)))/n = 2 - π^2/(6 n^2) + O((1/n)^4) (assuming subintervals of equal length)\x0f"
+    end
+    it "derivative" do
+      stub_and_assert "derivative of x^4 sin x", "derivative"
     end
   end
 end

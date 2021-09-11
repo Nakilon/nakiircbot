@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='8'
+    datatypes='D'
+    timedout='Reduce,GlobalExtrema,InterestingDefiniteIntegrals,InterestingMultiDimensionalDefiniteIntegrals'
+    timedoutpods=''
+    timing='7.027'
+    parsetiming='0.596'
+    parsetimedout='false'
+    recalculate='https://www4b.wolframalpha.com/api/v1/recalc.jsp?id=MSPa1901def90ig89c64b9500002f958e0f9ih7afb87565264462549653373'
+    id='MSP1911def90ig89c64b9500000g36c6h7dffi8961'
+    host='https://www4b.wolframalpha.com'
+    server='41'
+    related='https://www4b.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa1921def90ig89c64b95000052c83f3hi8ff32407565264462549653373'
+    version='2.6'
+    inputstring='derivative of x^4 sin x'>
+ <pod title='Derivative'
+     scanner='Derivative'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>d/dx(x^4 sin(x)) = x^3 (4 sin(x) + x cos(x))</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Step-by-step solution'
+       input='Input__Step-by-step solution'
+       stepbystep='true' />
+  </states>
+ </pod>
+ <pod title='Plots'
+     scanner='Plotter'
+     id='Plot'
+     position='200'
+     error='false'
+     numsubpods='2'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='2'>
+   <expressiontype name='2DMathPlot' />
+   <expressiontype name='2DMathPlot' />
+  </expressiontypes>
+ </pod>
+ <pod title='Alternate form'
+     scanner='Simplification'
+     id='AlternateForm'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>1/2 e^(-i x) x^4 + 1/2 e^(i x) x^4 + 2 i e^(-i x) x^3 - 2 i e^(i x) x^3</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Expanded form'
+     scanner='Simplification'
+     id='ExpandedForm'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>x^4 cos(x) + 4 x^3 sin(x)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Numerical roots'
+     scanner='Reduce'
+     id='NumericalRoot'
+     position='500'
+     error='false'
+     numsubpods='5'>
+  <subpod title=''>
+   <plaintext>x ≈ ± 8.30292918259702...</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>x ≈ ± 5.35403184117202...</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>x ≈ ± 2.57043156033596...</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>x = 0</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>x ≈ 11.3348255830187...</plaintext>
+  </subpod>
+  <expressiontypes count='5'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More digits'
+       input='NumericalRoot__More digits' />
+  </states>
+ </pod>
+ <pod title='Properties as a real function'
+     scanner='FunctionProperties'
+     id='PropertiesAsARealFunction'
+     position='600'
+     error='false'
+     numsubpods='4'>
+  <subpod title='Domain'>
+   <plaintext>R (all real numbers)</plaintext>
+  </subpod>
+  <subpod title='Range'>
+   <plaintext>R (all real numbers)</plaintext>
+  </subpod>
+  <subpod title='Surjectivity'>
+   <plaintext>surjective onto R</plaintext>
+  </subpod>
+  <subpod title='Parity'>
+   <plaintext>even</plaintext>
+  </subpod>
+  <expressiontypes count='4'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <infos count='1'>
+   <info text='R is the set of real numbers'>
+    <link url='http://reference.wolfram.com/language/ref/Reals.html'
+        text='Documentation'
+        title='Documentation' />
+    <link url='http://mathworld.wolfram.com/R.html'
+        text='Definition'
+        title='MathWorld' />
+   </info>
+  </infos>
+ </pod>
+ <pod title='Series expansion at x = 0'
+     scanner='Series'
+     id='SeriesExpansionAtx=0.'
+     position='700'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>5 x^4 - (7 x^6)/6 + (3 x^8)/40 - (11 x^10)/5040 + O(x^11)
+(Taylor series)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <infos count='1'>
+   <info>
+    <link url='http://mathworld.wolfram.com/Big-ONotation.html'
+        text='Big‐O notation' />
+   </info>
+  </infos>
+ </pod>
+ <pod title='Indefinite integral'
+     scanner='Integral'
+     id='IndefiniteIntegral'
+     position='800'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>integral x^3 (x cos(x) + 4 sin(x)) dx = x^4 sin(x) + constant</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Step-by-step solution'
+       input='IndefiniteIntegral__Step-by-step solution'
+       stepbystep='true' />
+  </states>
+ </pod>
+</queryresult>

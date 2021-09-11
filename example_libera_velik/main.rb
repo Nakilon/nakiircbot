@@ -117,8 +117,8 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             ],
             children: {
               ".//*[@error='true']" => [[]],
-              ".//pod" => {size: 4..8, each: {attr_req: {"id": /\A([A-Z][a-z]+)+(:([A-Z][a-z]+)+)?\z/, "scanner": /\A([A-Z][a-z]+)+\z/}}},
-              "pod[@primary='true']" => {size: 1..2, each: {children: {"subpod" => {size: 1..2, each: {exact: {"plaintext" => [[{}]]}}}}}},
+              ".//pod" => {size: 4..8, each: {attr_req: {"id": /\A(A|[A-Z][a-z]+)+(:([A-Z][a-z]+)+)?(=0\.)?\z/, "scanner": /\A([A-Z][a-z]+)+\z/}}},
+              "pod[@primary='true']" => {size: 1..2, each: {children: {"subpod" => {size: 1..2, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, exact: {"plaintext" => [[{}]]}}}}}},
               ".//pod[@scanner='Numeric']" => {each: {children: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}},
             },
           } ]],
@@ -129,8 +129,14 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           pod["primary"] == "true" ? 0 : 1,
           case pod["scanner"]
           when *(// if pod["primary"] == "true"),
-               *%w{ Numeric ContinuedFraction Simplification Integer Rational Factor Integral }
-            "#{pod["title"]}: \x02#{pod.xpath(".//plaintext").map(&:text).join(", ").gsub("\n", " ")}\x0f"
+               *%w{ Numeric ContinuedFraction Simplification Integer Rational Factor Integral Series FunctionProperties }
+            "#{pod["title"]}: \x02#{
+              subpods = pod.xpath("subpod")
+              ( subpods.size == 1 ?
+                subpods.first.at_xpath("*").text :
+                subpods.map{ |_| "#{"#{_["title"]}: " unless _["title"].empty?}#{_.at_xpath("*").text}" }.join(", ")
+              ).gsub("\n", " ")
+            }\x0f"
           when *%w{ NumberLine MathematicalFunctionData Reduce Plot Plotter }
           else
             "(unsupported scanner #{pod["scanner"].inspect})"
