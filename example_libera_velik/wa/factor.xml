@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='5'
+    datatypes='Factor'
+    timedout=''
+    timedoutpods=''
+    timing='2.063'
+    parsetiming='1.149'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP213616gab3h5affh7aif00005bfi5dc5de56f0c1'
+    host='https://www4f.wolframalpha.com'
+    server='41'
+    related='https://www4f.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa213716gab3h5affh7aif00001b84fc90e0ac3d1b9059329926228553144'
+    version='2.6'
+    inputstring='factor 2x^5 - 19x^4 + 58x^3 - 67x^2 + 56x - 48'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>factor | 2 x^5 - 19 x^4 + 58 x^3 - 67 x^2 + 56 x - 48</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Result'
+     scanner='Factor'
+     id='Result'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>(2 x - 3) (x - 4)^2 (x^2 + 1)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Step-by-step solution'
+       input='Result__Step-by-step solution'
+       stepbystep='true' />
+  </states>
+ </pod>
+ <pod title='Factorization over the complexes'
+     scanner='Factor'
+     id='IrreducibleFactorization'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>(x - 4)^2 (x - i) (x + i) (2 x - 3)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Plots'
+     scanner='Plotter'
+     id='Plot'
+     position='400'
+     error='false'
+     numsubpods='2'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='2'>
+   <expressiontype name='2DMathPlot' />
+   <expressiontype name='2DMathPlot' />
+  </expressiontypes>
+ </pod>
+ <pod title='Factorizations over finite fields'
+     scanner='Factor'
+     id='FactorizationsOverFiniteFields'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>GF(2) | x^2 (x + 1)^2</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More'
+       input='FactorizationsOverFiniteFields__More' />
+  </states>
+ </pod>
+</queryresult>

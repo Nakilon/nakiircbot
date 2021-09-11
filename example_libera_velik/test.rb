@@ -6,9 +6,9 @@ server = TCPServer.new 6666
 ENV["VELIK_NICKNAME"] = "velik2"
 ENV["VELIK_SERVER"] = "localhost"
 # ENV["VELIK_CHANNEL"] = "##nakilon"
-Thread.new{ require_relative "main" }
+Thread.new{ sleep 0.1; require_relative "main" }
 require "timeout"
-client = Timeout.timeout(1.5){ sleep 1; server.accept.tap(&:gets).tap(&:gets) }
+client = Timeout.timeout(1){ server.tap{p 1}.accept.tap{p 2}.tap(&:gets).tap{p 3}.tap(&:gets) }
 
 # TODO: do something about replies that get mixed once there is a single fail,
 #       otherwise there is no point in having tests separated
@@ -113,5 +113,8 @@ describe "\\wa" do
   end
   it "equation" do
     stub_and_assert "x^3 - 4x^2 + 6x - 24 = 0", "equation", " Real solution: \x02x = 4\x0f | Complex solutions: \x02x = -i sqrt(6), x = i sqrt(6)\x0f | Alternate forms: \x02(x - 4) (x^2 + 6) = 0, (x - 4/3)^3 + 2/3 (x - 4/3) - 560/27 = 0\x0f"
+  end
+  it "factor" do
+    stub_and_assert "factor 2x^5 - 19x^4 + 58x^3 - 67x^2 + 56x - 48", "factor", " Result: \x02(2 x - 3) (x - 4)^2 (x^2 + 1)\x0f | Factorizations over finite fields: \x02GF(2) | x^2 (x + 1)^2\x0f | Factorization over the complexes: \x02(x - 4)^2 (x - i) (x + i) (2 x - 3)\x0f"
   end
 end
