@@ -119,14 +119,13 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             req: {
               "/*[@error='true']" => [[]],
               "/pod" => {each: {attr_req: {"id": /\A([A-Z][a-z]+)+(:([A-Z][a-z]+)+)?\z/, "scanner": /\A([A-Z][a-z]+)+\z/}}},
-              "./pod[@title='Input']" => [[{req: {"subpod" => [[{exact: {"plaintext" => [[{text: query}]]}}]]}}]],
               "./pod[@primary='true']" => [[{req: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}]],
               "/pod[@scanner='Numeric']" => {each: {req: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}},
             },
           } ]],
         },
       }
-      add_to_queue.call dest, (xml.xpath("./*/pod").drop(1).map do |pod|
+      add_to_queue.call dest, " #{xml.xpath("./*/pod").drop(1).map do |pod|
         [
           pod["primary"] == "true" ? 0 : 1,
           case pod["scanner"]
@@ -137,7 +136,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             "(unsupported scanner #{pod["scanner"].inspect})"
           end
         ]
-      end.select(&:last).sort_by{ |primary, text| [primary, text.size] }.map(&:last).join " | ")
+      end.select(&:last).sort_by{ |primary, text| [primary, text.size] }.map(&:last).join " | "}"
     end
   when /\A\\(\S+) (.+)/
     cmd, input = $1, $2

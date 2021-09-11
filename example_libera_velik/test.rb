@@ -69,7 +69,7 @@ describe "\\wp" do
   end
 end
 describe "\\wiki" do
-  around{ |test| Timeout.timeout(2){ test.call } }
+  around{ |test| Timeout.timeout(3){ test.call } }
   it "user:nakilon" do
     client.puts ":user!user PRIVMSG #channel :\\wiki user:nakilon"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
@@ -91,9 +91,18 @@ describe "\\wa" do
     assert /\APRIVMSG #channel :(.+)\n\z/ =~ client.gets.force_encoding("utf-8")
     $1
   end
-  it "π" do
+  it "π" do   # entered by user as greek
     stub_request(:get, "http://api.wolframalpha.com/v2/query?appid=#{File.read "wa.key.txt"}&format=plaintext&input=%CF%80").
-      to_return body: File.read("wa/pi.xml")
-    assert_match "3.1415926535897932384626433832795028841971693993751058209749445923... | π is a transcendental number | [3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]", cmd(client, "π")
+      to_return body: File.read("wa/pig.xml")
+    assert_match \
+      "3.1415926535897932384626433832795028841971693993751058209749445923... | π is a transcendental number | [3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]",
+      cmd(client, "π")
+  end
+  it "pi" do  # interpreted by server as greek
+    stub_request(:get, "http://api.wolframalpha.com/v2/query?appid=#{File.read "wa.key.txt"}&format=plaintext&input=pi").
+      to_return body: File.read("wa/pil.xml")
+    assert_match \
+      "3.1415926535897932384626433832795028841971693993751058209749445923... | π is a transcendental number | [3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]",
+      cmd(client, "pi")
   end
 end

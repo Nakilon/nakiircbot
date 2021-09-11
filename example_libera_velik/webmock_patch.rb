@@ -3,7 +3,6 @@ WebMock.disable!  # the above command does .enable! implicitely
 
 # executes the request to make us know what to stub it with
 WebMock.after_request real_requests_only: true do |req_signature, response|
-  next unless WebMock.enabled?
   puts "Request:\n#{req_signature}"
   if response.body
     dup = response.dup
