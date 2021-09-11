@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='6'
+    datatypes='Math'
+    timedout=''
+    timedoutpods=''
+    timing='1.295'
+    parsetiming='0.374'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP30209c061fc7g6e24h00002hg2iefe95d40d7e'
+    host='https://www4b.wolframalpha.com'
+    server='32'
+    related='https://www4b.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa31209c061fc7g6e24h0000454g3f4i87i1fa5h6584604935687988937'
+    version='2.6'
+    inputstring='1/(1+sqrt(2))'>
+ <pod title='Input'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>1/(1 + sqrt(2))</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Decimal approximation'
+     scanner='Numeric'
+     id='DecimalApproximation'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>0.4142135623730950488016887242096980785696718753769480731766797379...</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More digits'
+       input='DecimalApproximation__More digits' />
+  </states>
+ </pod>
+ <pod title='Alternate form'
+     scanner='Simplification'
+     id='AlternateForm'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>sqrt(2) - 1</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Step-by-step solution'
+       input='AlternateForm__Step-by-step solution'
+       stepbystep='true' />
+  </states>
+ </pod>
+ <pod title='Minimal polynomial'
+     scanner='Simplification'
+     id='MinimalPolynomial'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>x^2 + 2 x - 1</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Number line'
+     scanner='NumberLine'
+     id='NumberLine'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='1DMathPlot' />
+  </expressiontypes>
+ </pod>
+ <pod title='Continued fraction'
+     scanner='ContinuedFraction'
+     id='ContinuedFraction'
+     position='600'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>[0; 2^_]</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Fraction form'
+       input='ContinuedFraction__Fraction form' />
+  </states>
+ </pod>
+</queryresult>

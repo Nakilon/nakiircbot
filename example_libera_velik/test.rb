@@ -6,9 +6,9 @@ server = TCPServer.new 6666
 ENV["VELIK_NICKNAME"] = "velik2"
 ENV["VELIK_SERVER"] = "localhost"
 # ENV["VELIK_CHANNEL"] = "##nakilon"
-Thread.new{ sleep 0.1; require_relative "main" }
+Thread.new{ require_relative "main" }
 require "timeout"
-client = Timeout.timeout(1){ server.tap{p 1}.accept.tap{p 2}.tap(&:gets).tap{p 3}.tap(&:gets) }
+client = server.accept.tap(&:gets).tap(&:gets)
 
 # TODO: do something about replies that get mixed once there is a single fail,
 #       otherwise there is no point in having tests separated
@@ -105,6 +105,7 @@ describe "\\wa" do
   it "pil" do  # interpreted by server as greek
     stub_and_assert "pi", "pil", " Decimal approximation: \x023.1415926535897932384626433832795028841971693993751058209749445923...\x0f | Property: \x02π is a transcendental number\x0f | Continued fraction: \x02[3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14, 2, 1, 1, 2, 2, 2, 2, 1, 84, 2, 1, 1, 15, 3, 13, ...]\x0f"
   end
+  describe "Mathematics" do
   it "arithmetic" do   # no assumption
     stub_and_assert "125 + 375", "arithmetic", " Result: \x02500\x0f | Number name: \x02five hundred\x0f"
   end
@@ -116,5 +117,9 @@ describe "\\wa" do
   end
   it "factor" do
     stub_and_assert "factor 2x^5 - 19x^4 + 58x^3 - 67x^2 + 56x - 48", "factor", " Result: \x02(2 x - 3) (x - 4)^2 (x^2 + 1)\x0f | Factorizations over finite fields: \x02GF(2) | x^2 (x + 1)^2\x0f | Factorization over the complexes: \x02(x - 4)^2 (x - i) (x + i) (2 x - 3)\x0f"
+  end
+  it "simplify" do
+    stub_and_assert "1/(1+sqrt(2))", "simplify", " Decimal approximation: \x020.4142135623730950488016887242096980785696718753769480731766797379...\x0f | Alternate form: \x02sqrt(2) - 1\x0f | Continued fraction: \x02[0; 2^_]\x0f | Minimal polynomial: \x02x^2 + 2 x - 1\x0f"
+  end
   end
 end
