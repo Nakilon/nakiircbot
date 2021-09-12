@@ -5,7 +5,9 @@ reload = lambda do
   require "open-uri"
   require "yaml"
   remote.replace YAML.load open "https://gist.githubusercontent.com/nakilon/92d5b22935f21b5e248b713057e851a6/raw/remote.yaml", &:read
-end.tap &:call
+end
+require "timeout"
+Timeout.timeout(2){ reload.call }
 
 require "mediawiki-butt"
 butt = MediaWiki::Butt.new "https://esolangs.org/w/api.php"
@@ -136,11 +138,13 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
                   *%w{ Data },  # Chemistry
                   *%w{ Identity Date },  # Society & Culture
                   *%w{ Age Unit },  # Everyday Life
+                  *%w{ Arithmetic },
                 ].include?(pod["scanner"])
             if pod["primary"] == "true" || ![
               # *%w{ NumberLine RootsInTheComplexPlane }, # Reduce  # empty
               *%w{ PlotsOfSampleIndividualSolutions SampleSolutionFamily }, # ODE
               *%w{ ReactionStructures:ChemicalReactionData ChemicalNamesAndFormulas:ChemicalReactionData ChemicalProperties:ChemicalReactionData }, # Data
+              *%w{ Illustration }, # Arithmetic
             ].include?(pod["id"])
               subpods = pod.xpath("subpod").
                 map{ |_| [("#{_["title"]}: " unless _["title"].empty?), _.at_xpath("plaintext").text] }.

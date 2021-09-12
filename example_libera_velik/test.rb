@@ -7,8 +7,9 @@ ENV["VELIK_NICKNAME"] = "velik2"
 ENV["VELIK_SERVER"] = "localhost"
 # ENV["VELIK_CHANNEL"] = "##nakilon"
 Thread.new{ require_relative "main" }.abort_on_exception = true
-require "timeout"
 client = server.accept.tap(&:gets).tap(&:gets)
+
+require "timeout"
 
 # TODO: do something about replies that get mixed once there is a single fail,
 #       otherwise there is no point in having tests separated
@@ -110,11 +111,14 @@ describe "\\wa" do
   it "'pil'" do   # interpreted by server as greek
     stub_and_assert "pi", "pil"
   end
-  it "'equation'" do
+  it "'equation'" do  # "not clear what you mean"
     stub_and_assert "equation", "equation", "not clear what you mean"
   end
   it "seconds since" do   # many (4) subpods
     stub_and_assert "seconds since 1 Jan 1970", "since"
+  end
+  it "arithmetic" do  # [LF]
+    stub_and_assert "2+2", "arithmetic", " Result: 4 | Number name: four | Typical human computation times: age 6: 3.2 seconds | age 8: 1.8 seconds | age 10: 1.2 seconds | age 18: 0.83 seconds (ignoring concentration, repetition, variations in education, etc.)"
   end
 
   # https://www.wolframalpha.com/examples/
