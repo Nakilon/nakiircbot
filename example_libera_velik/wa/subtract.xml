@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='3'
+    datatypes='DatePlus'
+    timedout=''
+    timedoutpods=''
+    timing='1.409'
+    parsetiming='1.018'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP17531hbh62d1h7ia5fd20000426d9fcdgea6g193'
+    host='https://www5b.wolframalpha.com'
+    server='41'
+    related='https://www5b.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa17541hbh62d1h7ia5fd200000d78cbeb0205h16e131905016584963001'
+    version='2.6'
+    inputstring='17 hours from now'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>current time + 17 hours</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Result'
+     scanner='Identity'
+     id='Result'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''
+      primary='true'>
+   <plaintext>2:36:36 am MSK | Monday, September 13, 2021</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Clock image'
+     scanner='Date'
+     id='ClockImage'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <userinfoused count='1'>
+  <userinfo name='TimeZone' />
+ </userinfoused>
+</queryresult>

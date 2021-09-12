@@ -103,6 +103,7 @@ describe "\\wa" do
       assert_equal expectation, reply if expectation
     end
   end
+
   it "pig" do   # entered by user as greek
     stub_and_assert "π", "pig"
   end
@@ -177,6 +178,7 @@ describe "\\wa" do
       describe "Transportation" do end
       describe "Materials" do end
     end
+    # ...
   end
   describe "Society & Culture" do
     describe "main" do
@@ -185,10 +187,16 @@ describe "\\wa" do
       describe "History" do end
       describe "Words & Linguistics" do end
       describe "Money & Finance" do end
-      describe "Dates & Times" do end
+      describe "Dates & Times" do
+        it "subtract" do
+          stub_and_assert "17 hours from now", "subtract"
+        end
+        # it "about" do end
+      end
       describe "Food & Nutrition" do end
       describe "Demographics & Social Statistics" do end
     end
+    # ...
   end
   describe "Everyday Life" do
     describe "main" do
@@ -201,5 +209,6 @@ describe "\\wa" do
       describe "Hobbies" do end
       describe "Today's World" do end
     end
+    # ...
   end
 end

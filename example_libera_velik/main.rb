@@ -117,7 +117,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             ],
             children: {
               ".//*[@error='true']" => [[]],
-              ".//pod" => {size: 4..9, each: {attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+(:([A-Z][a-z]+)+)?(=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/}}},
+              ".//pod" => {size: 3..9, each: {attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+(:([A-Z][a-z]+)+)?(=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/}}},
               "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..2, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, exact: {"plaintext" => [[{}]]}}}}}},
               ".//pod[@scanner='Numeric']" => {each: {children: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}},
             },
@@ -135,6 +135,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           elsif [
                   *%w{ Numeric MathematicalFunctionData ContinuedFraction Simplification Integer Rational Factor Integral Series FunctionProperties Reduce ODE },  # Mathematics
                   *%w{ Data },  # Chemistry
+                  *%w{ Identity Date },  # Society & Culture
                 ].include?(pod["scanner"])
             if pod["primary"] == "true" || ![
               # *%w{ NumberLine RootsInTheComplexPlane }, # Reduce  # empty
