@@ -97,7 +97,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
         } #{page.url}"
       end
     end
-  when /\A\\wa (.+)/
+  when /\A\\wa (.+)/  # https://products.wolframalpha.com/docs/WolframAlpha-API-Reference.pdf
     query = $1
     require "open-uri"
     link = URI("http://api.wolframalpha.com/v2/query").tap do |uri|
@@ -118,7 +118,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             children: {
               ".//*[@error='true']" => [[]],
               ".//pod" => {each: {attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+(:([A-Z][a-z]+)+|=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/}}},
-              "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..2, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, exact: {"plaintext" => [[{}]]}}}}}},
+              "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..4, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, exact: {"plaintext" => [[{}]]}}}}}},
               ".//pod[@scanner='Numeric']" => {each: {children: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}},
             },
           } ]],
@@ -146,9 +146,9 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
               subpods = pod.xpath("subpod").
                 map{ |_| [("#{_["title"]}: " unless _["title"].empty?), _.at_xpath("plaintext").text] }.
                 reject{ |title, text| text.empty? }
-              "#{pod["title"]}: \x02#{
+              "#{pod["title"]}: #{
                 CGI.unescapeHTML(subpods.size == 1 ? subpods.first.last : subpods.map(&:join).join(", ")).tr("\n", " ")
-              }\x0f" unless subpods.empty?
+              }" unless subpods.empty?
             end
           else
             "(unsupported scanner #{pod["scanner"].inspect})"

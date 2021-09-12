@@ -6,7 +6,7 @@ server = TCPServer.new 6666
 ENV["VELIK_NICKNAME"] = "velik2"
 ENV["VELIK_SERVER"] = "localhost"
 # ENV["VELIK_CHANNEL"] = "##nakilon"
-Thread.new{ require_relative "main" }
+Thread.new{ require_relative "main" }.abort_on_exception = true
 require "timeout"
 client = server.accept.tap(&:gets).tap(&:gets)
 
@@ -42,7 +42,7 @@ describe "[[...]]" do
   # end
 end
 describe "\\wp" do
-  around{ |test| Timeout.timeout(9){ test.call } }
+  around{ |test| Timeout.timeout(10){ test.call } }
   it "москва" do   # this article About template does not provide a single alternative link
     # templates: About, Short
     client.puts ":user!user PRIVMSG #channel :\\wp москва"
@@ -113,10 +113,14 @@ describe "\\wa" do
   it "'equation'" do
     stub_and_assert "equation", "equation", "not clear what you mean"
   end
+  it "seconds since" do
+    stub_and_assert "seconds since 1 Jan 1970", "since"
+  end
 
+  # https://www.wolframalpha.com/examples/
   describe "by topic" do
     def stub_and_assert_by_topic query, file, expectation = nil
-      stub_and_assert query, "by_topic/#{file}", expectation = nil
+      stub_and_assert query, "by_topic/#{file}", expectation
     end
   describe "Mathematics" do
     describe "main" do
@@ -125,12 +129,12 @@ describe "\\wa" do
           stub_and_assert_by_topic "125 + 375", "arithmetic"
         end
         it "fractions" do   # multiple primary
-          stub_and_assert_by_topic "1/4 * (4 - 1/2)", "fractions", " Exact result: \x027/8\x0f | Decimal form: \x020.875\x0f | Continued fraction: \x02[0; 1, 7]\x0f | Egyptian fraction expansion: \x021/2 + 1/3 + 1/24\x0f"
+          stub_and_assert_by_topic "1/4 * (4 - 1/2)", "fractions", " Exact result: 7/8 | Decimal form: 0.875 | Continued fraction: [0; 1, 7] | Egyptian fraction expansion: 1/2 + 1/3 + 1/24"
         end
       end
       describe "Algebra" do
         it "equation" do  # Reduce?
-          stub_and_assert_by_topic "x^3 - 4x^2 + 6x - 24 = 0", "equation", " Real solution: \x02x = 4\x0f | Complex solutions: \x02x = -i sqrt(6), x = i sqrt(6)\x0f | Alternate forms: \x02(x - 4) (x^2 + 6) = 0, (x - 4/3)^3 + 2/3 (x - 4/3) - 560/27 = 0\x0f"
+          stub_and_assert_by_topic "x^3 - 4x^2 + 6x - 24 = 0", "equation", " Real solution: x = 4 | Complex solutions: x = -i sqrt(6), x = i sqrt(6) | Alternate forms: (x - 4) (x^2 + 6) = 0, (x - 4/3)^3 + 2/3 (x - 4/3) - 560/27 = 0"
         end
         it "factor" do
           stub_and_assert_by_topic "factor 2x^5 - 19x^4 + 58x^3 - 67x^2 + 56x - 48", "factor"
@@ -141,13 +145,13 @@ describe "\\wa" do
       end
       describe "Calculus & Analysis" do
         it "integral" do    # [LF]
-          stub_and_assert_by_topic "integrate sin x dx from x=0 to pi", "integral", " Indefinite integral: \x02integral sin(x) dx = -cos(x) + constant\x0f | Riemann sums: \x02left sum | (π cot(π/(2 n)))/n = 2 - π^2/(6 n^2) + O((1/n)^4) (assuming subintervals of equal length)\x0f"
+          stub_and_assert_by_topic "integrate sin x dx from x=0 to pi", "integral", " Indefinite integral: integral sin(x) dx = -cos(x) + constant | Riemann sums: left sum | (π cot(π/(2 n)))/n = 2 - π^2/(6 n^2) + O((1/n)^4) (assuming subintervals of equal length)"
         end
         it "derivative" do  # subpods with titles
-          stub_and_assert_by_topic "derivative of x^4 sin x", "derivative", " Indefinite integral: \x02integral x^3 (x cos(x) + 4 sin(x)) dx = x^4 sin(x) + constant\x0f | Expanded form: \x02x^4 cos(x) + 4 x^3 sin(x)\x0f | Alternate form: \x021/2 e^(-i x) x^4 + 1/2 e^(i x) x^4 + 2 i e^(-i x) x^3 - 2 i e^(i x) x^3\x0f | Series expansion at x = 0: \x025 x^4 - (7 x^6)/6 + (3 x^8)/40 - (11 x^10)/5040 + O(x^11) (Taylor series)\x0f | Numerical roots: \x02x ≈ ± 8.30292918259702..., x ≈ ± 5.35403184117202..., x ≈ ± 2.57043156033596..., x = 0, x ≈ 11...."
+          stub_and_assert_by_topic "derivative of x^4 sin x", "derivative", " Indefinite integral: integral x^3 (x cos(x) + 4 sin(x)) dx = x^4 sin(x) + constant | Expanded form: x^4 cos(x) + 4 x^3 sin(x) | Alternate form: 1/2 e^(-i x) x^4 + 1/2 e^(i x) x^4 + 2 i e^(-i x) x^3 - 2 i e^(i x) x^3 | Series expansion at x = 0: 5 x^4 - (7 x^6)/6 + (3 x^8)/40 - (11 x^10)/5040 + O(x^11) (Taylor series) | Numerical roots: x ≈ ± 8.30292918259702..., x ≈ ± 5.35403184117202..., x ≈ ± 2.57043156033596..., x = 0, x ≈ 11.334825583..."
         end
         it "differential" do  # ODE
-          stub_and_assert_by_topic "y'' + y = 0", "differential", " Differential equation solution: \x02y(x) = c_2 sin(x) + c_1 cos(x)\x0f | Alternate form: \x02y''(x) = -y(x)\x0f | Possible Lagrangian: \x02ℒ(y', y) = 1/2 ((y')^2 - y^2)\x0f | ODE classification: \x02second-order linear ordinary differential equation\x0f | ODE names: \x02Autonomous equation: y''(x) = -y(x), Van der Pol's equation: y''(x) + y(x) = 0\x0f"
+          stub_and_assert_by_topic "y'' + y = 0", "differential", " Differential equation solution: y(x) = c_2 sin(x) + c_1 cos(x) | Alternate form: y''(x) = -y(x) | Possible Lagrangian: ℒ(y', y) = 1/2 ((y')^2 - y^2) | ODE classification: second-order linear ordinary differential equation | ODE names: Autonomous equation: y''(x) = -y(x), Van der Pol's equation: y''(x) + y(x) = 0"
         end
       end
       describe "Geometry" do end
@@ -176,7 +180,7 @@ describe "\\wa" do
       describe "Chemistry" do
         # it "element" do end
         it "balance" do   # no primary
-          stub_and_assert_by_topic "Al + O2 -> Al2O3", "balance", " Balanced equation: \x024 Al + 3 O_2 ⟶ 2 Al_2O_3\x0f | Word equation: \x02aluminum + oxygen ⟶ aluminum oxide\x0f | Equilibrium constant: \x02K_c = [Al2O3]^2/([Al]^4 [O2]^3)\x0f | Rate of reaction: \x02rate = -1/4 (Δ[Al])/(Δt) = -1/3 (Δ[O2])/(Δt) = 1/2 (Δ[Al2O3])/(Δt) (assuming constant volume and no accumulation of intermediates or side products)\x0f | Reaction thermodynamics: \x02Enthalpy: ΔH_rxn^0 | -3352 kJ/mol - 0 kJ/mol = -3352 kJ/mol (exothermic), Entropy: ΔS..."
+          stub_and_assert_by_topic "Al + O2 -> Al2O3", "balance", " Balanced equation: 4 Al + 3 O_2 ⟶ 2 Al_2O_3 | Word equation: aluminum + oxygen ⟶ aluminum oxide | Equilibrium constant: K_c = [Al2O3]^2/([Al]^4 [O2]^3) | Rate of reaction: rate = -1/4 (Δ[Al])/(Δt) = -1/3 (Δ[O2])/(Δt) = 1/2 (Δ[Al2O3])/(Δt) (assuming constant volume and no accumulation of intermediates or side products) | Reaction thermodynamics: Enthalpy: ΔH_rxn^0 | -3352 kJ/mol - 0 kJ/mol = -3352 kJ/mol (exothermic), Entropy: ΔS_rxn^0 | ..."
         end
       end
       describe "Units & Measures" do end
