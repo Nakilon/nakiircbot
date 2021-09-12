@@ -110,21 +110,21 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       Nakischema.validate_oga_xml xml, {
         exact: {
           "queryresult" => [[ {
-            attr_req: {"success": "true", "error": "false", "inputstring": query.chomp(??)},
+            attr_req: {"success": %w{ true false }, "error": "false", "inputstring": query.chomp(??)},
             assertions: [
-              ->n,_{ n.at_xpath("pod")["id"] == "Input" },
+              ->n,_{ n.at_xpath("pod").nil? || n.at_xpath("pod")["id"] == "Input" },
               ->n,_{ n.xpath(".//pod").each{ |_| _["id"] == _["title"].delete(" ") } },
             ],
             children: {
               ".//*[@error='true']" => [[]],
-              ".//pod" => {size: 2..9, each: {attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+(:([A-Z][a-z]+)+)?(=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/}}},
+              ".//pod" => {each: {attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+(:([A-Z][a-z]+)+|=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/}}},
               "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..2, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, exact: {"plaintext" => [[{}]]}}}}}},
               ".//pod[@scanner='Numeric']" => {each: {children: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}},
             },
           } ]],
         },
       }
-      add_to_queue.call dest, " #{xml.xpath("*/pod").drop(1).map do |pod|
+      add_to_queue.call dest, xml.at_xpath("queryresult")["success"] == "false" ? "not clear what you mean" : " #{xml.xpath("*/pod").drop(1).map do |pod|
         [
           ## scanner:id
           #    do print:     prim good:else

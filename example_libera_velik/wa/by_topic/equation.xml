@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='7'
+    datatypes=''
+    timedout=''
+    timedoutpods=''
+    timing='1.567'
+    parsetiming='0.712'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP300518e417fde3gag3d7000063if4bb6f6hc2h27'
+    host='https://www4f.wolframalpha.com'
+    server='32'
+    related='https://www4f.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa300618e417fde3gag3d7000050hehac8ge8898921627542906415416375'
+    version='2.6'
+    inputstring='x^3 - 4x^2 + 6x - 24 = 0'>
+ <pod title='Input'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>x^3 - 4 x^2 + 6 x - 24 = 0</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Root plot'
+     scanner='Plot'
+     id='RootPlot'
+     position='200'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Alternate forms'
+     scanner='Simplification'
+     id='AlternateForm'
+     position='300'
+     error='false'
+     numsubpods='2'>
+  <subpod title=''>
+   <plaintext>(x - 4) (x^2 + 6) = 0</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>(x - 4/3)^3 + 2/3 (x - 4/3) - 560/27 = 0</plaintext>
+  </subpod>
+  <expressiontypes count='2'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Number line'
+     scanner='Reduce'
+     id='NumberLine'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='1DMathPlot' />
+  </expressiontypes>
+ </pod>
+ <pod title='Real solution'
+     scanner='Reduce'
+     id='RealSolution'
+     position='500'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>x = 4</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Step-by-step solution'
+       input='RealSolution__Step-by-step solution'
+       stepbystep='true' />
+  </states>
+ </pod>
+ <pod title='Complex solutions'
+     scanner='Reduce'
+     id='ComplexSolution'
+     position='600'
+     error='false'
+     numsubpods='2'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>x = -i sqrt(6)</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>x = i sqrt(6)</plaintext>
+  </subpod>
+  <expressiontypes count='2'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='2'>
+   <state name='Approximate forms'
+       input='ComplexSolution__Approximate forms' />
+   <state name='Step-by-step solution'
+       input='ComplexSolution__Step-by-step solution'
+       stepbystep='true' />
+  </states>
+ </pod>
+ <pod title='Roots in the complex plane'
+     scanner='Reduce'
+     id='RootsInTheComplexPlane'
+     position='700'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+</queryresult>
