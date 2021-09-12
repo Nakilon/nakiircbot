@@ -22,11 +22,11 @@ describe "fast" do
   end
   it "\\help" do
     client.puts ":user!user PRIVMSG #channel :\\help"
-    assert_equal "PRIVMSG #channel :available commands: [\"wiki\", \"wp\", \"rasel\", \"morse\", \"demorse\"]; usage help: \\help <cmd>\n", client.gets
+    assert_equal "PRIVMSG #channel :available commands: [\"wiki\", \"wp\", \"wa\", \"rasel\", \"morse\", \"demorse\"]; usage help: \\help <cmd>\n", client.gets
   end
   it "\\help wp" do
     client.puts ":user!user PRIVMSG #channel :\\help wp"
-    assert_equal "PRIVMSG #channel :\\wp <wikipedia article or search query>\n", client.gets
+    assert_equal "PRIVMSG #channel :\\wp <Wikipedia article or search query>\n", client.gets
   end
 end
 describe "[[...]]" do
@@ -118,13 +118,16 @@ describe "\\wa" do
     stub_and_assert "seconds since 1 Jan 1970", "since"
   end
   it "arithmetic" do  # [LF]
-    stub_and_assert "2+2", "arithmetic", " Result: 4 | Number name: four | Typical human computation times: age 6: 3.2 seconds | age 8: 1.8 seconds | age 10: 1.2 seconds | age 18: 0.83 seconds (ignoring concentration, repetition, variations in education, etc.)"
+    stub_and_assert "2+2", "arithmetic", " Result: 4 | Number name: four"
   end
   it "'mass of earth'" do   # microsources, datasources
     stub_and_assert "mass of earth", "earth"
   end
   it "'mass of sun'" do
     stub_and_assert "mass of sun", "sun"
+  end
+  it "'future'" do  # all results are of Grid expressiontype
+    stub_and_assert "future", "future", "results are not printable"
   end
 
   # https://www.wolframalpha.com/examples/
@@ -155,7 +158,7 @@ describe "\\wa" do
         end
         describe "Calculus & Analysis" do
           it "integral" do    # [LF]
-            stub_and_assert_by_topic "integrate sin x dx from x=0 to pi", "integral", " Indefinite integral: integral sin(x) dx = -cos(x) + constant | Riemann sums: left sum | (π cot(π/(2 n)))/n = 2 - π^2/(6 n^2) + O((1/n)^4) (assuming subintervals of equal length)"
+            stub_and_assert_by_topic "integrate sin x dx from x=0 to pi", "integral", " Indefinite integral: integral sin(x) dx = -cos(x) + constant"
           end
           it "derivative" do  # subpods with titles
             stub_and_assert_by_topic "derivative of x^4 sin x", "derivative", " Indefinite integral: integral x^3 (x cos(x) + 4 sin(x)) dx = x^4 sin(x) + constant | Expanded form: x^4 cos(x) + 4 x^3 sin(x) | Alternate form: 1/2 e^(-i x) x^4 + 1/2 e^(i x) x^4 + 2 i e^(-i x) x^3 - 2 i e^(i x) x^3 | Series expansion at x = 0: 5 x^4 - (7 x^6)/6 + (3 x^8)/40 - (11 x^10)/5040 + O(x^11) (Taylor series) | Numerical roots: x ≈ ± 8.30292918259702..., x ≈ ± 5.35403184117202..., x ≈ ± 2.57043156033596..., x = 0, x ≈ 11.334825583..."
@@ -190,7 +193,7 @@ describe "\\wa" do
         describe "Chemistry" do
           # it "element" do end
           it "balance" do   # no primary
-            stub_and_assert_by_topic "Al + O2 -> Al2O3", "balance", " Balanced equation: 4 Al + 3 O_2 ⟶ 2 Al_2O_3 | Word equation: aluminum + oxygen ⟶ aluminum oxide | Equilibrium constant: K_c = [Al2O3]^2/([Al]^4 [O2]^3) | Rate of reaction: rate = -1/4 (Δ[Al])/(Δt) = -1/3 (Δ[O2])/(Δt) = 1/2 (Δ[Al2O3])/(Δt) (assuming constant volume and no accumulation of intermediates or side products) | Reaction thermodynamics: Enthalpy: ΔH_rxn^0 | -3352 kJ/mol - 0 kJ/mol = -3352 kJ/mol (exothermic), Entropy: ΔS_rxn^0 | ..."
+            stub_and_assert_by_topic "Al + O2 -> Al2O3", "balance", " Balanced equation: 4 Al + 3 O_2 ⟶ 2 Al_2O_3 | Word equation: aluminum + oxygen ⟶ aluminum oxide | Equilibrium constant: K_c = [Al2O3]^2/([Al]^4 [O2]^3) | Rate of reaction: rate = -1/4 (Δ[Al])/(Δt) = -1/3 (Δ[O2])/(Δt) = 1/2 (Δ[Al2O3])/(Δt) (assuming constant volume and no accumulation of intermediates or side products)"
           end
         end
         describe "Units & Measures" do end

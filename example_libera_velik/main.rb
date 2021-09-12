@@ -115,17 +115,25 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             assertions: [
               ->n,_{ n.at_xpath("pod").nil? || n.at_xpath("pod")["id"] == "Input" },
               ->n,_{ n.xpath(".//pod").each{ |_| _["id"] == _["title"].delete(" ") } },
+              ->n,_{ n.xpath(".//subpod").size == n.xpath(".//expressiontype").size }
             ],
             children: {
               ".//*[@error='true']" => [[]],
-              ".//pod" => {each: {attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+(:([A-Z][a-z]+)+|=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/}}},
-              "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..4, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, children: {"plaintext" => [[{}]]}}}},
+              "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..4, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, children: {"plaintext" => [[{}]]}}}}}},
+              ".//pod" => {each: {
+                attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+(:([A-Z][a-z]+)+|=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/},
+                children: {
+                  "expressiontypes" => [[{
+                    assertions: [->n,_{ n["count"].to_i == n.xpath("*").size }],
+                    exact: {"expressiontype" => {each: {attr_exact: {"name" => /\A(Default|Grid|1DMathPlot|2DMathPlot)\z/}}}},
+                  }]],
+                },
               } },
             },
           } ]],
         },
       }
-      add_to_queue.call dest, xml.at_xpath("queryresult")["success"] == "false" ? "not clear what you mean" : " #{xml.xpath("*/pod").drop(1).map do |pod|
+      pods = xml.xpath("*/pod").drop(1).map do |pod|
         [
           ## scanner:id
           #    do print:     prim good:else
@@ -146,21 +154,29 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             if pod["primary"] == "true" || ![
               # *%w{ NumberLine RootsInTheComplexPlane }, # Reduce  # empty
               *%w{ PlotsOfSampleIndividualSolutions SampleSolutionFamily }, # ODE
-              *%w{ ReactionStructures:ChemicalReactionData ChemicalNamesAndFormulas:ChemicalReactionData ChemicalProperties:ChemicalReactionData }, # Data
+              *%w{ ReactionStructures:ChemicalReactionData ChemicalNamesAndFormulas:ChemicalReactionData ChemicalProperties:ChemicalReactionData }, # Data (Chemistry)
+              *%w{ Cast:MovieData BasicInformation:MovieData BoxOffice:MovieData Cast:MovieData }, # Data
               *%w{ Illustration }, # Arithmetic
             ].include?(pod["id"])
               subpods = pod.xpath("subpod").
                 map{ |_| [("#{_["title"]}: " unless _["title"].empty?), _.at_xpath("plaintext").text] }.
-                reject{ |title, text| text.empty? }
+                zip(pod.xpath(".//expressiontype").map{ |_| _["name"] }).
+                reject{ |(title, text), type| text.empty? || type == "Grid" }
               "#{pod["title"]}: #{
-                CGI.unescapeHTML(subpods.size == 1 ? subpods.first.last : subpods.map(&:join).join(", ")).tr("\n", " ")
+                CGI.unescapeHTML(subpods.size == 1 ? subpods.first.first.last : subpods.map(&:first).map(&:join).join(", ")).tr("\n", " ")
               }" unless subpods.empty?
             end
           else
             "(unsupported scanner #{pod["scanner"].inspect})"
           end
         ]
-      end.select(&:last).sort_by{ |primary, text| [primary, text.size] }.map(&:last).join " | "}"
+      end.select(&:last)
+      add_to_queue.call dest,
+        xml.at_xpath("queryresult")["success"] == "false" ?
+          "not clear what you mean" :
+          pods.empty? ?
+            "results are not printable" :
+            " #{pods.sort_by{ |primary, text| [primary, text.size] }.map(&:last).join " | "}"
     end
   when /\A\\(\S+) (.+)/
     cmd, input = $1, $2

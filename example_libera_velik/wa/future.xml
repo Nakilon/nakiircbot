@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='4'
+    datatypes='Movie'
+    timedout=''
+    timedoutpods=''
+    timing='2.446'
+    parsetiming='0.134'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP25791gc9849cb3g013ab00006a6f7a2i2h22ie3f'
+    host='https://www4b.wolframalpha.com'
+    server='39'
+    related='https://www4b.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa25801gc9849cb3g013ab00002ba917cgece0g0dh3358653738298740333'
+    version='2.6'
+    inputstring='future'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Il Futuro (movie)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Basic movie information'
+     scanner='Data'
+     id='BasicInformation:MovieData'
+     position='200'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>MovieData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>TheNumbers</datasource>
+   </datasources>
+   <plaintext>title | Il Futuro
+director | Alicia Scherson
+release date | 06/09/2013 (8 years 0.2 months ago)
+runtime | 94 minutes (1 hour 34 minutes)
+writer | Roberto Bolaño
+genre | drama</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More'
+       input='BasicInformation:MovieData__More' />
+  </states>
+ </pod>
+ <pod title='Box office performance'
+     scanner='Data'
+     id='BoxOffice:MovieData'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>MovieData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>TheNumbers</datasource>
+   </datasources>
+   <plaintext>total receipts | $9722 (US dollars)
+highest receipts | $520 (US dollars) (weekend ending September 29, 2013)
+highest rank | 100th (weekend ending September 29, 2013)
+maximum number of screens | 1 (weekend ending September 29, 2013)
+highest average receipts per screen | $520 (US dollars) (weekend ending September 29, 2013)
+(unadjusted box office receipts)
+(US data only)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='3'>
+   <state name='Show history'
+       input='BoxOffice:MovieData__Show history' />
+   <statelist count='2'
+       value='Unadjusted'
+       delimiters=''>
+    <state name='Unadjusted'
+        input='BoxOffice:MovieData__Unadjusted' />
+    <state name='Inflation adjusted'
+        input='BoxOffice:MovieData__Inflation adjusted' />
+   </statelist>
+   <state name='Less'
+       input='BoxOffice:MovieData__Less' />
+  </states>
+ </pod>
+ <pod title='Cast'
+     scanner='Data'
+     id='Cast:MovieData'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>MovieData</microsource>
+   </microsources>
+   <plaintext>actor | character(s)
+Rutger Hauer | Maciste</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <assumptions count='1'>
+  <assumption type='Clash'
+      word='future'
+      template='Assuming &quot;${word}&quot; is ${desc1}. Use as ${desc2} instead'
+      count='2'>
+   <value name='Movie'
+       desc='a movie'
+       input='*C.future-_*Movie-' />
+   <value name='Word'
+       desc='a word'
+       input='*C.future-_*Word-' />
+  </assumption>
+ </assumptions>
+ <sources count='1'>
+  <source url='https://www4b.wolframalpha.com/sources/MovieDataSourceInformationNotes.html'
+      text='Movie data' />
+ </sources>
+</queryresult>

@@ -1,0 +1,198 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='7'
+    datatypes='Star'
+    timedout=''
+    timedoutpods=''
+    timing='3.007'
+    parsetiming='0.6950000000000001'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP2761f5f2b7aa758678b0000640d7bdc710cd58a'
+    host='https://www4b.wolframalpha.com'
+    server='34'
+    related='https://www4b.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa2771f5f2b7aa758678b00002g0cg684ihhcbda16571155540429298421'
+    version='2.6'
+    inputstring='mass of sun'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Sun | mass</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Result'
+     scanner='Data'
+     id='Result'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <microsources>
+    <microsource>StarData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>AllensAstrophysicalQuantities</datasource>
+    <datasource>HYGCatalog</datasource>
+    <datasource>MonitoringStellarOrbits</datasource>
+    <datasource>NationalSpaceScienceDataCenter</datasource>
+    <datasource>R136StarCluster</datasource>
+    <datasource>StarsAndTheirSpectra</datasource>
+    <datasource>StellarClassificationTable</datasource>
+   </datasources>
+   <plaintext>1.988435×10^30 kg (kilograms)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Unit conversions'
+     scanner='Unit'
+     id='UnitConversion'
+     position='300'
+     error='false'
+     numsubpods='4'>
+  <subpod title=''>
+   <plaintext>4.383749×10^30 lb (pounds)</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>1.988435×10^33 grams</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>1.988435×10^27 t (metric tons)</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>1 M_☉ (solar mass)</plaintext>
+  </subpod>
+  <expressiontypes count='4'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Comparisons as mass'
+     scanner='Unit'
+     id='ComparisonAsMass'
+     position='400'
+     error='false'
+     numsubpods='3'>
+  <subpod title=''>
+   <plaintext> ≈ (0.4 to 0.6) × mass of an A-type main-sequence star ( 2 M_☉ )</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext> ≈ 0.67 × mass below which stars primarily fuse hydrogen into helium via the proton-proton chain ( ≈ 1.5 M_☉ )</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext> ≈ 0.71 × Chandrasekhar limit ( ≈ 1.4 M_☉ )</plaintext>
+  </subpod>
+  <expressiontypes count='3'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Corresponding main-sequence star properties'
+     scanner='UnitInformation'
+     id='StellarMassProperties:QuantityData'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <datasources>
+    <datasource>StellarClassificationTable</datasource>
+   </datasources>
+   <plaintext>color |
+temperature class | G2
+effective temperature | 5700 K
+absolute magnitude | +4.7 (bolometric)
+radius | 1 R_☉
+luminosity | 0.98 L_☉
+B-V color index | 0.66
+lifetime | 10 billion yr
+end state | carbon-oxygen white dwarf</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Show examples'
+       input='StellarMassProperties:QuantityData__Show examples' />
+  </states>
+  <infos count='1'>
+   <info>
+    <units count='4'>
+     <unit short='K'
+         long='kelvins' />
+     <unit short='L_☉'
+         long='solar luminosities' />
+     <unit short='R_☉'
+         long='solar radii' />
+     <unit short='yr'
+         long='years' />
+    </units>
+   </info>
+  </infos>
+ </pod>
+ <pod title='Corresponding quantities'
+     scanner='Unit'
+     id='CorrespondingQuantity'
+     position='600'
+     error='false'
+     numsubpods='2'>
+  <subpod title=''>
+   <plaintext>Weight w of a body from w = mg:
+ | 1.95×10^31 N (newtons)
+ | 1.95×10^36 dynes
+ | 1.988×10^33 ponds
+ | 4.384×10^30 lbf (pounds-force)</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>Luminosity L for a main-sequence star from L = L_☉(M/M_☉)^3.5:
+ | 3.848×10^26 W (watts)
+ | 1 L_☉ (solar luminosity)</plaintext>
+  </subpod>
+  <expressiontypes count='2'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Schematic evolution'
+     scanner='Data'
+     id='StellarEvolutionDiagram:StarData'
+     position='700'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>StarData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>HYGCatalog</datasource>
+    <datasource>R136StarCluster</datasource>
+    <datasource>StarsAndTheirSpectra</datasource>
+    <datasource>StellarClassificationTable</datasource>
+    <datasource>AllensAstrophysicalQuantities</datasource>
+    <datasource>MonitoringStellarOrbits</datasource>
+    <datasource>NationalSpaceScienceDataCenter</datasource>
+   </datasources>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <sources count='1'>
+  <source url='https://www4b.wolframalpha.com/sources/StarDataSourceInformationNotes.html'
+      text='Star data' />
+ </sources>
+</queryresult>

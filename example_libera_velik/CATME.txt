@@ -14,3 +14,10 @@ to update
   $ cd ~/_/libera-velik
   $ git pull
   $ docker restart libera-velik
+to add webmocked \wa tests
+  add 'stub_and_assert' with 2nd arg 'nil'
+  $ bundle exec ruby -I../lib test.rb -n '/.../'  # -I because there is not published zero sleep patch for localhost server
+  $ mv body.txt wa/...
+  change 'nil' to any string
+  $ bundle exec ruby -I../lib test.rb -n '/.../'
+  $ git add wa/...
