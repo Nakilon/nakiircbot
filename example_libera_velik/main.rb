@@ -141,33 +141,31 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           # print unsup:                    else
           pod["primary"] == "true" ? 0 : 1,
           if [
-            *%w{ NumberLine Plot Plotter },   # Mathematics
-            *%w{ UnitInformation },
+            *%w{ Plot },   # Mathematics
           ].include? pod["scanner"]  # bad
           elsif [
-                  *%w{ Numeric MathematicalFunctionData ContinuedFraction Simplification Integer Rational Factor Integral Series FunctionProperties Reduce ODE },  # Mathematics
+                  *%w{ Numeric NumberLine MathematicalFunctionData ContinuedFraction Simplification Integer Rational Factor Integral Series FunctionProperties Plotter NumberLine Reduce ODE },  # Mathematics
                   *%w{ Data },  # Chemistry
                   *%w{ Identity Date },  # Society & Culture
                   *%w{ Age Unit },  # Everyday Life
-                  *%w{ Arithmetic },
+                  *%w{ Arithmetic UnitInformation },
                 ].include?(pod["scanner"])
             if pod["primary"] == "true" || ![
               # *%w{ NumberLine RootsInTheComplexPlane }, # Reduce  # empty
               *%w{ PlotsOfSampleIndividualSolutions SampleSolutionFamily }, # ODE
-              *%w{ ReactionStructures:ChemicalReactionData ChemicalNamesAndFormulas:ChemicalReactionData ChemicalProperties:ChemicalReactionData }, # Data (Chemistry)
-              *%w{ Cast:MovieData BasicInformation:MovieData BoxOffice:MovieData Cast:MovieData }, # Data
+              *%w{ ReactionStructures:ChemicalReactionData }, # Data (Chemistry)
               *%w{ Illustration }, # Arithmetic
             ].include?(pod["id"])
               subpods = pod.xpath("subpod").
                 map{ |_| [("#{_["title"]}: " unless _["title"].empty?), _.at_xpath("plaintext").text] }.
                 zip(pod.xpath(".//expressiontype").map{ |_| _["name"] }).
-                reject{ |(title, text), type| text.empty? || type == "Grid" }
+                reject{ |(title, text), type| text.empty? || %w{ Grid 1DMathPlot 2DMathPlot }.include?(type) }
               "#{pod["title"]}: #{
                 CGI.unescapeHTML(subpods.size == 1 ? subpods.first.first.last : subpods.map(&:first).map(&:join).join(", ")).tr("\n", " ")
               }" unless subpods.empty?
             end
           else
-            "(unsupported scanner #{pod["scanner"].inspect})"
+            "(#{nickname}: unsupported scanner #{pod["scanner"]})"
           end
         ]
       end.select(&:last)
