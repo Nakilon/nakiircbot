@@ -44,15 +44,14 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
 
   case what
   when /\A\\help\s*\z/
-    add_to_queue.call dest, "available commands: #{%w{ wiki wp } + remote.map(&:first)}; usage help: \\help <cmd>"
+    add_to_queue.call dest, "available commands: #{%w{ wiki wp wa } + remote.map(&:first)}; usage help: \\help <cmd>"
   when /\A\\help\s+(\S+)/
     add_to_queue.call dest, (
       if (*_, help = remote.assoc($1))
         help
-      elsif $1 == "wp"
-        "\\wp <wikipedia article or search query>"
-      elsif $1 == "wiki"
-        "\\wiki <esolang wiki article or search query>"
+      elsif $1 == "wiki" ; "\\wiki <Esolang wiki article or search query>"
+      elsif $1 == "wp" ; "\\wp <Wikipedia article or search query>"
+      elsif $1 == "wa" ; "\\wa <Wolfram Alpha query>"
       else
         "unknown command #{$1.inspect}"
       end
