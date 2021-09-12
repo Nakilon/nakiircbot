@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='3'
+    datatypes='Person,VisualArts'
+    timedout=''
+    timedoutpods=''
+    timing='2.414'
+    parsetiming='1.547'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP230911a61f67a6ffi5dh0000514e43h478f40fh7'
+    host='https://www4f.wolframalpha.com'
+    server='50'
+    related='https://www4f.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa231011a61f67a6ffi5dh000031fda8ggadcgif2g1047509949900532972'
+    version='2.6'
+    inputstring='what was the age of Leonardo when the Mona Lisa was painted'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>age | of Leonardo da Vinci (artist, etc.) | on Mona Lisa | start date  </plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Result for start of 1503'
+     scanner='Age'
+     id='Result'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>49 years</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Show details'
+       input='Result__Show details' />
+  </states>
+ </pod>
+ <pod title='Unit conversions'
+     scanner='Unit'
+     id='UnitConversion'
+     position='300'
+     error='false'
+     numsubpods='5'>
+  <subpod title=''>
+   <plaintext>17885 days</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>429240 hours</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>2.575×10^7 minutes</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>4.897 average Gregorian decades</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>1.545×10^9 seconds</plaintext>
+  </subpod>
+  <expressiontypes count='5'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='2'>
+   <state name='More digits'
+       input='UnitConversion__More digits' />
+   <state name='Exact forms'
+       input='UnitConversion__Exact forms' />
+  </states>
+ </pod>
+ <assumptions count='1'>
+  <assumption type='Clash'
+      word='Leonardo'
+      template='Assuming &quot;${word}&quot; is ${desc1}. Use as ${desc2} instead'
+      count='2'>
+   <value name='Person'
+       desc='a person'
+       input='*C.Leonardo-_*Person-' />
+   <value name='Species'
+       desc='a species specification'
+       input='*C.Leonardo-_*Species-' />
+  </assumption>
+ </assumptions>
+ <userinfoused count='1'>
+  <userinfo name='TimeZone' />
+ </userinfoused>
+ <sources count='2'>
+  <source url='https://www4f.wolframalpha.com/sources/PeopleDataSourceInformationNotes.html'
+      text='People data' />
+  <source url='https://www4f.wolframalpha.com/sources/VisualArtsDataSourceInformationNotes.html'
+      text='Visual arts data' />
+ </sources>
+</queryresult>

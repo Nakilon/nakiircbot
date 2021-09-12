@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='2'
+    datatypes=''
+    timedout=''
+    timedoutpods=''
+    timing='0.771'
+    parsetiming='0.534'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP30761cie04602ah2g99100001f1da114e205h1gd'
+    host='https://www4f.wolframalpha.com'
+    server='53'
+    related='https://www4f.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa30771cie04602ah2g99100000dib8hd8h2figc831494264905346578628'
+    version='2.6'
+    inputstring='why did the chicken cross the mobius strip'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Why did the chicken cross the Möbius strip?</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Result'
+     scanner='Data'
+     id='Result'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>To get to the same side.
+(A fine question since, as every mathematician knows, a Möbius strip is a nonorientable surface that has only a single side.)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+</queryresult>

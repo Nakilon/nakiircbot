@@ -42,7 +42,7 @@ describe "[[...]]" do
   # end
 end
 describe "\\wp" do
-  around{ |test| Timeout.timeout(8){ test.call } }
+  around{ |test| Timeout.timeout(9){ test.call } }
   it "москва" do   # this article About template does not provide a single alternative link
     # templates: About, Short
     client.puts ":user!user PRIVMSG #channel :\\wp москва"
@@ -202,8 +202,18 @@ describe "\\wa" do
     describe "main" do
       describe "Personal Health" do end
       describe "Personal Finance" do end
-      describe "Surprises" do end
-      describe "Entertainment" do end
+      describe "Surprises" do
+        it "chicken" do
+          stub_and_assert "why did the chicken cross the mobius strip", "chicken"
+        end
+        # it "warp" do end
+      end
+      describe "Entertainment" do
+        # it "acts" do end
+        it "leonardo" do  # trailing '?' gets removed
+          stub_and_assert "what was the age of Leonardo when the Mona Lisa was painted?", "leonardo"
+        end
+      end
       describe "Household Science" do end
       describe "Household Math" do end
       describe "Hobbies" do end
