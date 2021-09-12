@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='5'
+    datatypes='Planet'
+    timedout=''
+    timedoutpods=''
+    timing='1.657'
+    parsetiming='0.638'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP33191h77f2e2387a76hf00006605hdc0b3195i9a'
+    host='https://www5a.wolframalpha.com'
+    server='26'
+    related='https://www5a.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa33201h77f2e2387a76hf00001dii27fg6ghb8cd5866172070025145309'
+    version='2.6'
+    inputstring='mass of earth'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Earth | mass</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Result'
+     scanner='Data'
+     id='Result'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <microsources>
+    <microsource>PlanetData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>AllensAstrophysicalQuantities</datasource>
+    <datasource>NationalSpaceScienceDataCenter</datasource>
+    <datasource>SolarSystemDynamics</datasource>
+   </datasources>
+   <plaintext>5.97×10^24 kg (kilograms)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Unit conversions'
+     scanner='Unit'
+     id='UnitConversion'
+     position='300'
+     error='false'
+     numsubpods='4'>
+  <subpod title=''>
+   <plaintext>1.317×10^25 lb (pounds)</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>5.97×10^27 grams</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>5.97×10^21 t (metric tons)</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>3×10^-6 M_☉ (solar masses)</plaintext>
+  </subpod>
+  <expressiontypes count='4'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Comparisons as mass'
+     scanner='Unit'
+     id='ComparisonAsMass'
+     position='400'
+     error='false'
+     numsubpods='3'>
+  <subpod title=''>
+   <plaintext> ≈ ( 0.0031 ≈ 1/318 ) × Jupiter mass ( 1.89813×10^27 kg )</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext> ≈ Earth mass ( ≈ 5.97×10^24 kg )</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext> ≈ 18 × Mercury mass ( 3.30104×10^23 kg )</plaintext>
+  </subpod>
+  <expressiontypes count='3'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Corresponding quantity'
+     scanner='Unit'
+     id='CorrespondingQuantity'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Weight w of a body from w = mg:
+ | 5.857×10^25 N (newtons)
+ | 5.857×10^30 dynes
+ | 5.972×10^27 ponds
+ | 1.317×10^25 lbf (pounds-force)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <sources count='1'>
+  <source url='https://www5a.wolframalpha.com/sources/PlanetDataSourceInformationNotes.html'
+      text='Planet data' />
+ </sources>
+</queryresult>

@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='3'
+    datatypes='DateDifference'
+    timedout=''
+    timedoutpods=''
+    timing='0.926'
+    parsetiming='0.372'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP24951aggff0g67c8bh2g000053e31523216i598f'
+    host='https://www4f.wolframalpha.com'
+    server='33'
+    related='https://www4f.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa24961aggff0g67c8bh2g00002127783fiffgcai51425433651303739860'
+    version='2.6'
+    inputstring='seconds since 1 Jan 1970'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>seconds since Thursday, January 1, 1970</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Result'
+     scanner='Identity'
+     id='Result'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''
+      primary='true'>
+   <plaintext>1.631×10^9 seconds</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Time span'
+     scanner='Date'
+     id='DifferenceConversions'
+     position='300'
+     error='false'
+     numsubpods='4'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>51 years 8 months 11 days</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>2697 weeks 3 days</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>18882 days</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>51.7 years</plaintext>
+  </subpod>
+  <expressiontypes count='4'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <userinfoused count='1'>
+  <userinfo name='TimeZone' />
+ </userinfoused>
+</queryresult>
