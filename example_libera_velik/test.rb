@@ -99,6 +99,7 @@ describe "\\wa" do
     stub_request(:get, "http://api.wolframalpha.com/v2/query").with(query: hash_including({})).to_return body: File.read("wa/#{file}.xml") if file  # pass nil file to prepare webmock
     cmd(query).tap do |reply|
       refute_match "unsupported scanner", reply
+      refute_match "[LF]", reply
       assert_equal expectation, reply if expectation
     end
   end
@@ -119,8 +120,8 @@ describe "\\wa" do
         end
       end
       describe "Algebra" do
-        it "equation" do
-          stub_and_assert "x^3 - 4x^2 + 6x - 24 = 0", "equation"
+        it "equation" do  # Reduce?
+          stub_and_assert "x^3 - 4x^2 + 6x - 24 = 0", "equation", " Real solution: \x02x = 4\x0f | Complex solutions: \x02x = -i sqrt(6), x = i sqrt(6)\x0f | Alternate forms: \x02(x - 4) (x^2 + 6) = 0, (x - 4/3)^3 + 2/3 (x - 4/3) - 560/27 = 0\x0f"
         end
         it "factor" do
           stub_and_assert "factor 2x^5 - 19x^4 + 58x^3 - 67x^2 + 56x - 48", "factor"
@@ -131,13 +132,13 @@ describe "\\wa" do
       end
       describe "Calculus & Analysis" do
         it "integral" do    # [LF]
-          stub_and_assert "integrate sin x dx from x=0 to pi", "integral", " Visual representation of the integral: \x02\x0f | Indefinite integral: \x02integral sin(x) dx = -cos(x) + constant\x0f | Riemann sums: \x02left sum | (π cot(π/(2 n)))/n = 2 - π^2/(6 n^2) + O((1/n)^4) (assuming subintervals of equal length)\x0f"
+          stub_and_assert "integrate sin x dx from x=0 to pi", "integral", " Indefinite integral: \x02integral sin(x) dx = -cos(x) + constant\x0f | Riemann sums: \x02left sum | (π cot(π/(2 n)))/n = 2 - π^2/(6 n^2) + O((1/n)^4) (assuming subintervals of equal length)\x0f"
         end
         it "derivative" do  # subpods with titles
-          stub_and_assert "derivative of x^4 sin x", "derivative", " Indefinite integral: \x02integral x^3 (x cos(x) + 4 sin(x)) dx = x^4 sin(x) + constant\x0f | Expanded form: \x02x^4 cos(x) + 4 x^3 sin(x)\x0f | Alternate form: \x021/2 e^(-i x) x^4 + 1/2 e^(i x) x^4 + 2 i e^(-i x) x^3 - 2 i e^(i x) x^3\x0f | Series expansion at x = 0: \x025 x^4 - (7 x^6)/6 + (3 x^8)/40 - (11 x^10)/5040 + O(x^11) (Taylor series)\x0f | Properties as a real function: \x02Domain: R (all real numbers), Range: R (all real numbers), Surjectivity: surjective onto R, ..."
+          stub_and_assert "derivative of x^4 sin x", "derivative", " Indefinite integral: \x02integral x^3 (x cos(x) + 4 sin(x)) dx = x^4 sin(x) + constant\x0f | Expanded form: \x02x^4 cos(x) + 4 x^3 sin(x)\x0f | Alternate form: \x021/2 e^(-i x) x^4 + 1/2 e^(i x) x^4 + 2 i e^(-i x) x^3 - 2 i e^(i x) x^3\x0f | Series expansion at x = 0: \x025 x^4 - (7 x^6)/6 + (3 x^8)/40 - (11 x^10)/5040 + O(x^11) (Taylor series)\x0f | Numerical roots: \x02x ≈ ± 8.30292918259702..., x ≈ ± 5.35403184117202..., x ≈ ± 2.57043156033596..., x = 0, x ≈ 11...."
         end
-        it "differential" do
-          stub_and_assert "y'' + y = 0", "differential"
+        it "differential" do  # ODE
+          stub_and_assert "y'' + y = 0", "differential", " Differential equation solution: \x02y(x) = c_2 sin(x) + c_1 cos(x)\x0f | Alternate form: \x02y''(x) = -y(x)\x0f | Possible Lagrangian: \x02ℒ(y', y) = 1/2 ((y')^2 - y^2)\x0f | ODE classification: \x02second-order linear ordinary differential equation\x0f | ODE names: \x02Autonomous equation: y''(x) = -y(x), Van der Pol's equation: y''(x) + y(x) = 0\x0f"
         end
       end
       describe "Geometry" do end
@@ -160,7 +161,45 @@ describe "\\wa" do
     describe "Common Core Math" do end
     describe "Probability" do end
   end
-  describe "Science & Technology" do end
-  describe "Society & Culture" do end
-  describe "Everyday Life" do end
+  describe "Science & Technology" do
+    describe "main" do
+      describe "Physics" do end
+      describe "Chemistry" do
+        # it "element" do end
+        it "balance" do   # no primary
+          stub_and_assert "Al + O2 -> Al2O3", "balance", " Balanced equation: \x024 Al + 3 O_2 ⟶ 2 Al_2O_3\x0f | Word equation: \x02aluminum + oxygen ⟶ aluminum oxide\x0f | Equilibrium constant: \x02K_c = [Al2O3]^2/([Al]^4 [O2]^3)\x0f | Rate of reaction: \x02rate = -1/4 (Δ[Al])/(Δt) = -1/3 (Δ[O2])/(Δt) = 1/2 (Δ[Al2O3])/(Δt) (assuming constant volume and no accumulation of intermediates or side products)\x0f | Reaction thermodynamics: \x02Enthalpy: ΔH_rxn^0 | -3352 kJ/mol - 0 kJ/mol = -3352 kJ/mol (exothermic), Entropy: ΔS..."
+        end
+      end
+      describe "Units & Measures" do end
+      describe "Engineering" do end
+      describe "Computational Sciences" do end
+      describe "Earth Sciences" do end
+      describe "Transportation" do end
+      describe "Materials" do end
+    end
+  end
+  describe "Society & Culture" do
+    describe "main" do
+      describe "People" do end
+      describe "Arts & Media" do end
+      describe "History" do end
+      describe "Words & Linguistics" do end
+      describe "Money & Finance" do end
+      describe "Dates & Times" do end
+      describe "Food & Nutrition" do end
+      describe "Demographics & Social Statistics" do end
+    end
+  end
+  describe "Everyday Life" do
+    describe "main" do
+      describe "Personal Health" do end
+      describe "Personal Finance" do end
+      describe "Surprises" do end
+      describe "Entertainment" do end
+      describe "Household Science" do end
+      describe "Household Math" do end
+      describe "Hobbies" do end
+      describe "Today's World" do end
+    end
+  end
 end

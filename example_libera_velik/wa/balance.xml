@@ -1,0 +1,242 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='9'
+    datatypes='Chemical,ChemicalReactionEntity,Element,Thermodynamic'
+    timedout=''
+    timedoutpods=''
+    timing='4.1850000000000005'
+    parsetiming='0.837'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP30741g7017agdib8ee2500003dbd0ggdeh497d96'
+    host='https://www5a.wolframalpha.com'
+    server='50'
+    related='https://www5a.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa30751g7017agdib8ee25000047803h4h02b1b2582678292769077595422'
+    version='2.6'
+    inputstring='Al + O2 -&gt; Al2O3'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Al
+aluminum + O_2
+oxygen ⟶ Al_2O_3
+aluminum
+oxide</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Balanced equation'
+     scanner='Data'
+     id='BalancedEquationPod:ChemicalReactionData'
+     position='200'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ChemicalReactionData</microsource>
+   </microsources>
+   <plaintext>4 Al + 3 O_2 ⟶ 2 Al_2O_3</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Step-by-step'
+       input='BalancedEquationPod:ChemicalReactionData__Step-by-step'
+       stepbystep='true' />
+  </states>
+ </pod>
+ <pod title='Structures'
+     scanner='Data'
+     id='ReactionStructures:ChemicalReactionData'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ChemicalData</microsource>
+    <microsource>ChemicalReactionData</microsource>
+    <microsource>ElementData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>PubChem</datasource>
+    <datasource>WebElements</datasource>
+   </datasources>
+   <plaintext> + ⟶ </plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Word equation'
+     scanner='Data'
+     id='WordEquation:ChemicalReactionData'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ChemicalReactionData</microsource>
+   </microsources>
+   <plaintext>aluminum + oxygen ⟶ aluminum oxide</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Reaction thermodynamics'
+     scanner='Data'
+     id='Thermodynamics:ChemicalReactionData'
+     position='500'
+     error='false'
+     numsubpods='2'>
+  <subpod title='Enthalpy'>
+   <microsources>
+    <microsource>ChemicalData</microsource>
+    <microsource>ChemicalReactionData</microsource>
+   </microsources>
+   <plaintext>ΔH_rxn^0 | -3352 kJ/mol - 0 kJ/mol = -3352 kJ/mol (exothermic)</plaintext>
+  </subpod>
+  <subpod title='Entropy'>
+   <microsources>
+    <microsource>ChemicalData</microsource>
+    <microsource>ChemicalReactionData</microsource>
+   </microsources>
+   <plaintext>ΔS_rxn^0 | 102 J/(mol K) - 728.2 J/(mol K) = -626.2 J/(mol K) (exoentropic)</plaintext>
+  </subpod>
+  <expressiontypes count='2'>
+   <expressiontype name='Grid' />
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More'
+       input='Thermodynamics:ChemicalReactionData__More' />
+  </states>
+  <infos count='1'>
+   <info>
+    <units count='2'>
+     <unit short='J/(mol K)'
+         long='joules per mole kelvin difference' />
+     <unit short='kJ/mol'
+         long='kilojoules per mole' />
+    </units>
+   </info>
+  </infos>
+ </pod>
+ <pod title='Equilibrium constant'
+     scanner='Data'
+     id='EquilibriumConstant:ChemicalReactionData'
+     position='600'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ChemicalReactionData</microsource>
+   </microsources>
+   <plaintext>K_c = [Al2O3]^2/([Al]^4 [O2]^3)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Step-by-step'
+       input='EquilibriumConstant:ChemicalReactionData__Step-by-step'
+       stepbystep='true' />
+  </states>
+ </pod>
+ <pod title='Rate of reaction'
+     scanner='Data'
+     id='RateOfReaction:ChemicalReactionData'
+     position='700'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ChemicalReactionData</microsource>
+   </microsources>
+   <plaintext>rate = -1/4 (Δ[Al])/(Δt) = -1/3 (Δ[O2])/(Δt) = 1/2 (Δ[Al2O3])/(Δt)
+(assuming constant volume and no accumulation of intermediates or side products)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Step-by-step'
+       input='RateOfReaction:ChemicalReactionData__Step-by-step'
+       stepbystep='true' />
+  </states>
+ </pod>
+ <pod title='Chemical names and formulas'
+     scanner='Data'
+     id='ChemicalNamesAndFormulas:ChemicalReactionData'
+     position='800'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ChemicalData</microsource>
+    <microsource>ChemicalReactionData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>PubChem</datasource>
+   </datasources>
+   <plaintext> | aluminum | oxygen | aluminum oxide
+formula | Al | O_2 | Al_2O_3
+name | aluminum | oxygen | aluminum oxide
+IUPAC name | aluminum | molecular oxygen | dialuminum;oxygen(2-)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Substance properties'
+     scanner='Data'
+     id='ChemicalProperties:ChemicalReactionData'
+     position='900'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ChemicalData</microsource>
+    <microsource>ChemicalReactionData</microsource>
+    <microsource>ThermodynamicData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>PubChem</datasource>
+    <datasource>CRCHandbook</datasource>
+    <datasource>NISTREFPROP</datasource>
+   </datasources>
+   <plaintext> | aluminum | oxygen | aluminum oxide
+molar mass | 26.9815385 g/mol | 31.998 g/mol | 101.96 g/mol
+phase | solid (at STP) | gas (at STP) | solid (at STP)
+melting point | 660.4 °C | -218 °C | 2040 °C
+boiling point | 2460 °C | -183 °C |
+density | 2.7 g/cm^3 | 0.001429 g/cm^3 (at 0 °C) |
+solubility in water | insoluble | |
+surface tension | 0.817 N/m | 0.01347 N/m |
+dynamic viscosity | 1.5×10^-4 Pa s (at 760 °C) | 2.055×10^-5 Pa s (at 25 °C) |
+odor | odorless | odorless | odorless</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <sources count='4'>
+  <source url='https://www5a.wolframalpha.com/sources/ChemicalDataSourceInformationNotes.html'
+      text='Chemical data' />
+  <source url='https://www5a.wolframalpha.com/sources/ChemicalReactionDataSourceInformationNotes.html'
+      text='Chemical reaction data' />
+  <source url='https://www5a.wolframalpha.com/sources/ElementDataSourceInformationNotes.html'
+      text='Element data' />
+  <source url='https://www5a.wolframalpha.com/sources/ThermodynamicDataSourceInformationNotes.html'
+      text='Thermodynamic data' />
+ </sources>
+</queryresult>

@@ -117,8 +117,8 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             ],
             children: {
               ".//*[@error='true']" => [[]],
-              ".//pod" => {size: 4..8, each: {attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+(:([A-Z][a-z]+)+)?(=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/}}},
-              "pod[@primary='true']" => {size: 1..2, each: {children: {"subpod" => {size: 1..2, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, exact: {"plaintext" => [[{}]]}}}}}},
+              ".//pod" => {size: 4..9, each: {attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+(:([A-Z][a-z]+)+)?(=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/}}},
+              "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..2, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, exact: {"plaintext" => [[{}]]}}}}}},
               ".//pod[@scanner='Numeric']" => {each: {children: {"subpod" => [[{exact: {"plaintext" => [[{}]]}}]]}}},
             },
           } ]],
@@ -126,18 +126,28 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       }
       add_to_queue.call dest, " #{xml.xpath("*/pod").drop(1).map do |pod|
         [
+          ## scanner:id
+          #    do print:     prim good:else
+          # don't print: bad      good:bad
+          # print unsup:                    else
           pod["primary"] == "true" ? 0 : 1,
-          case pod["scanner"]
-          when *(// if pod["primary"] == "true"),
-               *%w{ Numeric ContinuedFraction Simplification Integer Rational Factor Integral Series FunctionProperties }
-            "#{pod["title"]}: \x02#{
-              subpods = pod.xpath("subpod")
-              CGI.unescapeHTML( subpods.size == 1 ?
-                subpods.first.at_xpath("*").text :
-                subpods.map{ |_| "#{"#{_["title"]}: " unless _["title"].empty?}#{_.at_xpath("*").text}" }.join(", ")
-              ).gsub("\n", " ")
-            }\x0f"
-          when *%w{ NumberLine MathematicalFunctionData Reduce Plot Plotter ODE }
+          if %w{ NumberLine Plot Plotter }.include? pod["scanner"]  # bad
+          elsif [
+                  *%w{ Numeric MathematicalFunctionData ContinuedFraction Simplification Integer Rational Factor Integral Series FunctionProperties Reduce ODE },  # Mathematics
+                  *%w{ Data },  # Chemistry
+                ].include?(pod["scanner"])
+            if pod["primary"] == "true" || ![
+              # *%w{ NumberLine RootsInTheComplexPlane }, # Reduce  # empty
+              *%w{ PlotsOfSampleIndividualSolutions SampleSolutionFamily }, # ODE
+              *%w{ ReactionStructures:ChemicalReactionData ChemicalNamesAndFormulas:ChemicalReactionData ChemicalProperties:ChemicalReactionData }, # Data
+            ].include?(pod["id"])
+              subpods = pod.xpath("subpod").
+                map{ |_| [("#{_["title"]}: " unless _["title"].empty?), _.at_xpath("plaintext").text] }.
+                reject{ |title, text| text.empty? }
+              "#{pod["title"]}: \x02#{
+                CGI.unescapeHTML(subpods.size == 1 ? subpods.first.last : subpods.map(&:join).join(", ")).tr("\n", " ")
+              }\x0f" unless subpods.empty?
+            end
           else
             "(unsupported scanner #{pod["scanner"].inspect})"
           end
