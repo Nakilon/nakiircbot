@@ -121,7 +121,10 @@ describe "\\wa" do
     stub_and_assert "2+2", "arithmetic", " Result: 4 | Number name: four | Typical human computation times: age 6: 3.2 seconds | age 8: 1.8 seconds | age 10: 1.2 seconds | age 18: 0.83 seconds (ignoring concentration, repetition, variations in education, etc.)"
   end
   it "'mass of earth'" do   # microsources, datasources
-    stub_and_assert "mass of earth", "mass"
+    stub_and_assert "mass of earth", "earth"
+  end
+  it "'mass of sun'" do
+    stub_and_assert "mass of sun", "sun"
   end
 
   # https://www.wolframalpha.com/examples/

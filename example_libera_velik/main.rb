@@ -132,7 +132,10 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           # don't print: bad      good:bad
           # print unsup:                    else
           pod["primary"] == "true" ? 0 : 1,
-          if %w{ NumberLine Plot Plotter }.include? pod["scanner"]  # bad
+          if [
+            *%w{ NumberLine Plot Plotter },   # Mathematics
+            *%w{ UnitInformation },
+          ].include? pod["scanner"]  # bad
           elsif [
                   *%w{ Numeric MathematicalFunctionData ContinuedFraction Simplification Integer Rational Factor Integral Series FunctionProperties Reduce ODE },  # Mathematics
                   *%w{ Data },  # Chemistry
