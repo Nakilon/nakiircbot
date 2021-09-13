@@ -132,6 +132,9 @@ describe "\\wa" do
   it "immigrants" do  # expressiontype TimeSeriesPlot
     stub_and_assert "how many immigrants in moscow", "immigrants"
   end
+  it "'kolmogorov'" do  # expressiontype TimelinePlot
+    stub_and_assert "kolmogorov", "kolmogorov"
+  end
 
   # https://www.wolframalpha.com/examples/
   describe "by topic" do

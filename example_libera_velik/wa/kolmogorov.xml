@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='7'
+    datatypes='Person'
+    timedout=''
+    timedoutpods=''
+    timing='2.45'
+    parsetiming='0.093'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP6182122g12a1hfi0h8ef0000644h67db116a5gf9'
+    host='https://www5a.wolframalpha.com'
+    server='53'
+    related='https://www5a.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa6183122g12a1hfi0h8ef0000118b7g1ibhe7ee3g4970140347629816757'
+    version='2.6'
+    inputstring='kolmogorov'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Andrey Nikolaevich Kolmogorov (mathematician)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Basic information'
+     scanner='Data'
+     id='BasicInformation:PeopleData'
+     position='200'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>PeopleData</microsource>
+   </microsources>
+   <plaintext>full name | Andrey Nikolaevich Kolmogorov
+date of birth | Saturday, April 25, 1903 (118 years ago)
+place of birth | Tambov, Tambov
+date of death | Tuesday, October 20, 1987 (age: 84 years) 
+ (33 years ago)
+place of death | Moscow, Moscow</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Image'
+     scanner='Data'
+     id='Image:PeopleData'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <imagesource>http://www-groups.dcs.st-and.ac.uk/~history/PictDisplay/Kolmogorov.html</imagesource>
+   <microsources>
+    <microsource>PeopleData</microsource>
+   </microsources>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Timeline'
+     scanner='Data'
+     id='Timeline:PeopleData'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>PeopleData</microsource>
+   </microsources>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='TimelinePlot' />
+  </expressiontypes>
+ </pod>
+ <pod title='Scientific contributions'
+     scanner='Data'
+     id='ScientificContributions:PeopleData'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title='Mathematics'>
+   <microsources>
+    <microsource>PeopleData</microsource>
+   </microsources>
+   <plaintext>Hilbert&apos;s sixth problem | Hilbert&apos;s thirteenth problem | Rao-Blackwell theorem | Chapman-Kolmogorov equation | Kolmogorov complexity | ...</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More'
+       input='ScientificContributions:PeopleData__More' />
+  </states>
+ </pod>
+ <pod title='Wikipedia summary'
+     scanner='Data'
+     id='WikipediaSummary:PeopleData'
+     position='600'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Andrey Nikolaevich Kolmogorov (25 April 1903 - 20 October 1987) was a Soviet mathematician who contributed to the mathematics of probability theory, topology, intuitionistic logic, turbulence, classical mechanics, algorithmic information theory and computational complexity.</plaintext>
+   <infos count='1'>
+    <info>
+     <link url='http://en.wikipedia.org/wiki?curid=91161'
+         text='Full entry' />
+    </info>
+   </infos>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Wikipedia page hits history'
+     scanner='Data'
+     id='PopularityPod:WikipediaStatsData'
+     position='700'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='TimeSeriesPlot' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Log scale'
+       input='PopularityPod:WikipediaStatsData__Log scale' />
+  </states>
+ </pod>
+ <sources count='1'>
+  <source url='https://www5a.wolframalpha.com/sources/PeopleDataSourceInformationNotes.html'
+      text='People data' />
+ </sources>
+</queryresult>
