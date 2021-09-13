@@ -1,0 +1,287 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='8'
+    datatypes='ACS,City'
+    timedout=''
+    timedoutpods=''
+    timing='4.356'
+    parsetiming='0.796'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP257823efdhafifc3hide00002ii1a23fbcd1eeff'
+    host='https://www5a.wolframalpha.com'
+    server='54'
+    related='https://www5a.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa257923efdhafifc3hide00003643d855404hb6b45802790122383609046'
+    version='2.6'
+    inputstring='how many immigrants in moscow'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Moscow, Idaho, United States | population | naturalized citizens</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Result'
+     scanner='Data'
+     id='Result'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ACSData</microsource>
+    <microsource>CityData</microsource>
+    <microsource>USStateData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>CensusAmericanCommunitySurvey5YearsCitizenship</datasource>
+   </datasources>
+   <plaintext>463 people (13th highest among ID cities) (2013-2017 American Community Survey 5-year estimates)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='History'
+     scanner='Data'
+     id='History:Population:ACSData'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ACSData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>CensusAmericanCommunitySurvey5YearsCitizenship</datasource>
+   </datasources>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='TimeSeriesPlot' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Show error margins'
+       input='History:Population:ACSData__Show error margins' />
+  </states>
+ </pod>
+ <pod title='Population fraction'
+     scanner='Data'
+     id='AttributeToggle:Population:ACSData'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ACSData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>CensusAmericanCommunitySurvey5YearsCitizenship</datasource>
+   </datasources>
+   <plaintext>1.86% of total population</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Citizenship breakdown'
+     scanner='Data'
+     id='CitizenshipStatus:ACSData'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ACSData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>CensusAmericanCommunitySurvey5YearsCitizenship</datasource>
+   </datasources>
+   <plaintext>total citizens | 23406 people
+citizens born in US | 22618 people
+naturalized citizens | 463 people
+non-citizens | 1427 people
+(2013-2017 American Community Survey 5-year estimates)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='4'>
+   <state name='Show fractions'
+       input='CitizenshipStatus:ACSData__Show fractions' />
+   <state name='More'
+       input='CitizenshipStatus:ACSData__More' />
+   <state name='Show error margins'
+       input='CitizenshipStatus:ACSData__Show error margins' />
+   <state name='Show chart'
+       input='CitizenshipStatus:ACSData__Show chart' />
+  </states>
+ </pod>
+ <pod title='Total population by race'
+     scanner='Data'
+     id='Race:ACSData'
+     position='600'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ACSData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>CensusAmericanCommunitySurvey5YearsRace</datasource>
+   </datasources>
+   <plaintext>white alone | 22550 people
+black or African American alone | 201 people
+American Indian and Alaska native alone | 208 people
+Asian alone | 975 people
+native Hawaiian and other Pacific Islander alone | 7 people
+some other race alone | 220 people
+two or more races | 672 people
+total | 24833 people
+(2013-2017 American Community Survey 5-year estimates)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='4'>
+   <state name='Show fractions'
+       input='Race:ACSData__Show fractions' />
+   <state name='Show details'
+       input='Race:ACSData__Show details' />
+   <state name='Show error margins'
+       input='Race:ACSData__Show error margins' />
+   <state name='Show chart'
+       input='Race:ACSData__Show chart' />
+  </states>
+  <definitions count='7'>
+   <definition word='white alone'
+       desc='A person having origins in any of the original peoples of Europe, the Middle East, or North Africa. It includes people who indicate their race as White or report entries such as Irish, German, Italian, Lebanese, Arab, Moroccan, or Caucasian.' />
+   <definition word='black or African American alone'
+       desc='A person having origins in any of the Black racial groups of Africa. It includes people who indicate their race as Black, African Am., or Negro or report entries such as African American, Kenyan, Nigerian, or Haitian.' />
+   <definition word='American Indian and Alaska native alone'
+       desc='A person having origins in any of the original peoples of North and South America (including Central America) and who maintains tribal affiliation or community attachment. This category includes people who indicate their race as American Indian or Alaska Native or report entries such as Navajo, Blackfeet, Inupiat, Yup&apos;ik, or Central American Indian groups, or South American Indian groups.' />
+   <definition word='Asian alone'
+       desc='A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent including, for example, Cambodia, China, India, Japan, Korea, Malaysia, Pakistan, the Philippine Islands, Thailand, and Vietnam. It includes people who indicate their race as Asian Indian, Chinese, Filipino, Korean, Japanese, Vietnamese, and Other Asian or provide other detailed Asian responses.' />
+   <definition word='native Hawaiian and other Pacific Islander alone'
+       desc='A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands. It includes people who indicate their race as Native Hawaiian, Guamanian or Chamorro, Samoan, and Other Pacific Islander or provide other detailed Pacific Islander responses.' />
+   <definition word='some other race alone'
+       desc='Includes all other responses not included in the White, Black or African American, American Indian or Alaska Native, Asian, and Native Hawaiian or Other Pacific Islander race categories described above. Respondents reporting entries such as multiracial, mixed, interracial, or a Hispanic, Latino, or Spanish group (for example, Mexican, Puerto Rican, Cuban, or Spanish) in response to the race question are included in this category.' />
+   <definition word='two or more races'
+       desc='Refers to combinations of two or more of the following race categories: 1. White, 2. Black or African American, 3. American Indian or Alaska Native, 4. Asian, 5. Native Hawaiian or Other Pacific Islander, 6. Some Other Race.' />
+  </definitions>
+  <notes count='1'>
+   <note>adapted from U.S. Census Bureau definitions</note>
+  </notes>
+ </pod>
+ <pod title='Hispanic population by specific origin'
+     scanner='Data'
+     id='HispanicOrigin:ACSData'
+     position='700'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>ACSData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>CensusAmericanCommunitySurvey5YearsHispanicOrigin</datasource>
+   </datasources>
+   <plaintext>Mexican | 922 people
+Puerto Rican | 31 people
+Cuban | 33 people
+Dominican | 0 people
+Central American | 67 people
+South American | 87 people
+other Hispanic or Latino | 91 people
+total | 1231 people
+(2013-2017 American Community Survey 5-year estimates)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='4'>
+   <state name='Show fractions'
+       input='HispanicOrigin:ACSData__Show fractions' />
+   <state name='Show details'
+       input='HispanicOrigin:ACSData__Show details' />
+   <state name='Show error margins'
+       input='HispanicOrigin:ACSData__Show error margins' />
+   <state name='Show chart'
+       input='HispanicOrigin:ACSData__Show chart' />
+  </states>
+  <definitions count='1'>
+   <definition word='Hispanic or Latino Origin'
+       desc='The terms Hispanic, Latino, and Spanish are used interchangeably. Origin can be viewed as the heritage, nationality group, lineage, or country of birth of the person or the person&apos;s parents or ancestors before their arrival in the United States. People who identify their origin as Hispanic, Latino, or Spanish may be of any race.' />
+  </definitions>
+ </pod>
+ <pod title='Comparisons'
+     scanner='Unit'
+     id='ComparisonAsPersonCount'
+     position='800'
+     error='false'
+     numsubpods='3'>
+  <subpod title=''>
+   <plaintext> ≈ 0.58 × current population of Vatican City ( 792 people )</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext> ≈ 0.84 × current population of Cocos Keeling Islands ( 550 people )</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext> ≈ (2 to 4) × Dunbar&apos;s number ( 100 to 230 people )</plaintext>
+  </subpod>
+  <expressiontypes count='3'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <assumptions count='1'>
+  <assumption type='SubCategory'
+      word='moscow'
+      template='Assuming ${desc1}. Use ${desc2} instead'
+      count='8'>
+   <value name='{Moscow, Idaho, UnitedStates}'
+       desc='Moscow (Idaho, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Idaho.UnitedStates--' />
+   <value name='{Moscow, Pennsylvania, UnitedStates}'
+       desc='Moscow (Pennsylvania, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Pennsylvania.UnitedStates--' />
+   <value name='{Moscow, Wisconsin, UnitedStates}'
+       desc='Moscow (Wisconsin, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Wisconsin.UnitedStates--' />
+   <value name='{Moscow, Maine, UnitedStates}'
+       desc='Moscow (Maine, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Maine.UnitedStates--' />
+   <value name='{Moscow, Tennessee, UnitedStates}'
+       desc='Moscow (Tennessee, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Tennessee.UnitedStates--' />
+   <value name='{Moscow, Kansas, UnitedStates}'
+       desc='Moscow (Kansas, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Kansas.UnitedStates--' />
+   <value name='{Moscow, Maryland, UnitedStates}'
+       desc='Moscow (Maryland, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Maryland.UnitedStates--' />
+   <value name='{Moscow, Ohio, UnitedStates}'
+       desc='Moscow (Ohio, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Ohio.UnitedStates--' />
+  </assumption>
+ </assumptions>
+ <userinfoused count='1'>
+  <userinfo name='Country' />
+ </userinfoused>
+ <sources count='2'>
+  <source url='https://www5a.wolframalpha.com/sources/ACSDataSourceInformationNotes.html'
+      text='ACS data' />
+  <source url='https://www5a.wolframalpha.com/sources/CityDataSourceInformationNotes.html'
+      text='City data' />
+ </sources>
+</queryresult>

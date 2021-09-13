@@ -129,6 +129,9 @@ describe "\\wa" do
   it "'future'" do  # all results are of Grid expressiontype
     stub_and_assert "future", "future", "results are not printable"
   end
+  it "immigrants" do  # expressiontype TimeSeriesPlot
+    stub_and_assert "how many immigrants in moscow", "immigrants"
+  end
 
   # https://www.wolframalpha.com/examples/
   describe "by topic" do

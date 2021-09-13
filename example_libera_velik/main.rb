@@ -121,11 +121,11 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
               ".//*[@error='true']" => [[]],
               "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..4, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, children: {"plaintext" => [[{}]]}}}}}},
               ".//pod" => {each: {
-                attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+(:([A-Z][a-z]+)+|=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/},
+                attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+((:([A-Z]+[a-z]+)+)+|=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/},
                 children: {
                   "expressiontypes" => [[{
                     assertions: [->n,_{ n["count"].to_i == n.xpath("*").size }],
-                    exact: {"expressiontype" => {each: {attr_exact: {"name" => /\A(Default|Grid|1DMathPlot|2DMathPlot)\z/}}}},
+                    exact: {"expressiontype" => {each: {attr_exact: {"name" => /\A(Default|Grid|1DMathPlot|2DMathPlot|TimeSeriesPlot)\z/}}}},
                   }]],
                 },
               } },
@@ -159,7 +159,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
               subpods = pod.xpath("subpod").
                 map{ |_| [("#{_["title"]}: " unless _["title"].empty?), _.at_xpath("plaintext").text] }.
                 zip(pod.xpath(".//expressiontype").map{ |_| _["name"] }).
-                reject{ |(title, text), type| text.empty? || %w{ Grid 1DMathPlot 2DMathPlot }.include?(type) }
+                reject{ |(title, text), type| text.empty? || %w{ Grid 1DMathPlot 2DMathPlot TimeSeriesPlot }.include?(type) }
               "#{pod["title"]}: #{
                 CGI.unescapeHTML(subpods.size == 1 ? subpods.first.first.last : subpods.map(&:first).map(&:join).join(", ")).tr("\n", " ")
               }" unless subpods.empty?
