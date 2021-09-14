@@ -150,6 +150,9 @@ describe "\\wa" do
   it "'kolmogorov'" do  # expressiontype TimelinePlot
     stub_and_assert "kolmogorov", "kolmogorov"
   end
+  it "warheads" do  # subpods > expressiontypes
+    stub_and_assert "russia nuclear warheads", "warheads"
+  end
 
   # https://www.wolframalpha.com/examples/
   describe "by topic" do

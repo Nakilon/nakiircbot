@@ -113,7 +113,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             assertions: [
               ->n,_{ n.at_xpath("pod").nil? || n.at_xpath("pod")["id"] == "Input" },
               ->n,_{ n.xpath(".//pod").each{ |_| _["id"] == _["title"].delete(" ") } },
-              ->n,_{ n.xpath(".//subpod").size == n.xpath(".//expressiontype").size }
+              ->n,_{ (0..1).include?(n.xpath(".//subpod").size - n.xpath(".//expressiontype").size) }
             ],
             children: {
               ".//*[@error='true']" => [[]],
@@ -181,7 +181,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
         args, kwargs = (ENV["LOCALHOST"] ? [["localhost", 8080], {}] : [["us-central1-nakilonpro.cloudfunctions.net", 443], use_ssl: true])
         require "net/http"
         Net::HTTP.start(*args, **kwargs) do |http|
-          require "json"
+          require "json/pure"
           response = http.request_post "/#{function}", JSON.dump(input), {Authorization: "bearer #{`gcloud auth print-identity-token #{ENV["SERVICE_ACCOUNT"]}`}"}
           fail response.inspect unless response.is_a? Net::HTTPOK
           add_to_queue.call dest, " " + response.body.force_encoding(encoding)

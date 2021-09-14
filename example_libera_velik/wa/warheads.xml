@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='4'
+    datatypes='Country,Military'
+    timedout=''
+    timedoutpods=''
+    timing='1.702'
+    parsetiming='0.147'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP26381b7fc1d2dh7602e500004chhca0g74958d49'
+    host='https://www4c.wolframalpha.com'
+    server='51'
+    related='https://www4c.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa26391b7fc1d2dh7602e5000042c67ci5ig60f09b3229248315270249252'
+    version='2.6'
+    inputstring='russia nuclear warheads'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Russia | size of nuclear stockpile</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Result'
+     scanner='Data'
+     id='Result'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CountryData</microsource>
+    <microsource>MilitaryData</microsource>
+   </microsources>
+   <plaintext>7700 (2015)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Size of nuclear stockpile history'
+     scanner='Data'
+     id='History:NuclearWarheads:MilitaryData'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>MilitaryData</microsource>
+   </microsources>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='TimeSeriesPlot' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Log scale'
+       input='History:NuclearWarheads:MilitaryData__Log scale' />
+  </states>
+ </pod>
+ <pod title='Armaments'
+     scanner='Data'
+     id='Armaments:MilitaryData'
+     position='400'
+     error='false'
+     numsubpods='5'>
+  <subpod title='Land'>
+   <microsources>
+    <microsource>MilitaryData</microsource>
+   </microsources>
+   <plaintext>armored infantry fighting vehicles | 18430
+armored personnel carriers | 10970
+artillery | 26977
+main battle tanks | 15398
+(armored infantry fighting vehicles: figure may include APCs)</plaintext>
+  </subpod>
+  <subpod title='Sea'>
+   <microsources>
+    <microsource>MilitaryData</microsource>
+   </microsources>
+   <plaintext>aircraft carriers | 1
+destroyers | 12
+frigates | 10
+submarines | 61</plaintext>
+  </subpod>
+  <subpod title='Air'>
+   <microsources>
+    <microsource>MilitaryData</microsource>
+   </microsources>
+   <plaintext>attack helicopters | 1438
+fighters | 832
+ground-attack fighters | 859
+(attack helicopters: figure may include multi-role helicopters)
+(ground-attack fighters: figure may include some bombers)</plaintext>
+  </subpod>
+  <subpod title='Nuclear warheads'>
+   <microsources>
+    <microsource>MilitaryData</microsource>
+   </microsources>
+   <plaintext>size of nuclear stockpile | 7700
+(estimate may include non-operational warheads and warheads awaiting dismantlement)</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>(2009 estimates unless otherwise noted)</plaintext>
+  </subpod>
+  <expressiontypes count='4'>
+   <expressiontype name='Grid' />
+   <expressiontype name='Grid' />
+   <expressiontype name='Grid' />
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <sources count='2'>
+  <source url='https://www4c.wolframalpha.com/sources/CountryDataSourceInformationNotes.html'
+      text='Country data' />
+  <source url='https://www4c.wolframalpha.com/sources/MilitaryDataSourceInformationNotes.html'
+      text='Military data' />
+ </sources>
+</queryresult>
