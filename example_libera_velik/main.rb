@@ -9,8 +9,6 @@ end
 require "timeout"
 Timeout.timeout(2){ reload.call }
 
-require "mediawiki-butt"
-butt = MediaWiki::Butt.new "https://esolangs.org/w/api.php"
 require "infoboxer"
 esolangs = Infoboxer.wiki "https://esolangs.org/w/api.php"
 
@@ -19,7 +17,7 @@ esolangs = Infoboxer.wiki "https://esolangs.org/w/api.php"
 require "nakiircbot"
 nickname = ENV["VELIK_NICKNAME"] || "velik"
 NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "nakilon", "Libera.Chat Internet Relay Chat Network",
-    *(ENV["VELIK_CHANNEL"] || %w{ #esolangs ##nakilon #ruby-ru #ruby-offtopic }),
+    *(ENV["VELIK_CHANNEL"] || %w{ #esolangs ##nakilon #ruby-ru #ruby-offtopic #programming-ru }),
     password: (File.read("password") if nickname == "velik"), masterword: File.read("masterword") do |str, add_to_queue|
 
   next unless /\A:(?<who>[^\s!]+)!\S+ PRIVMSG (?<dest>\S+) :(?<what>.+)/ =~ str
@@ -123,10 +121,10 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
               ".//pod" => {each: {
                 attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+((:([A-Z]+[a-z]+)+)+|=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/},
                 children: {
-                  "expressiontypes" => [[{
+                  "expressiontypes" => [[ {
                     assertions: [->n,_{ n["count"].to_i == n.xpath("*").size }],
                     exact: {"expressiontype" => {each: {attr_exact: {"name" => /\A(Default|Grid|1DMathPlot|2DMathPlot|TimeSeriesPlot|TimelinePlot)\z/}}}},
-                  }]],
+                  } ]],
                 },
               } },
             },
@@ -192,20 +190,11 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
     end
   else
     wikis = what.scan(/\[\[(.*?)\]\]/i)
-      threaded.call do
-        results = wikis.map do |article,|
-          result = butt.get_search_results article
-          result = butt.get_search_text_results article if result.empty?
-          "https:" + URI.escape(URI.escape(butt.get_article_path result.first), "?") unless result.empty?
-        end.compact
-        add_to_queue.call dest, results.uniq.join(" ") unless results.empty?
-      end
-    # TODO: the following Infobox adaptation can't find one page (see tests)
-    # threaded.call do
-    #   results = wikis.map do |query,|
-    #     esolangs.get(query) || esolangs.search(query, limit: 1).first
-    #   end.compact
-    #   add_to_queue.call dest, results.map(&:url).uniq.join(" ") unless results.empty?
-    # end
+    threaded.call do
+      results = wikis.map do |query,|
+        esolangs.get(query) || esolangs.search(query, limit: 1){ |_| _.what :text }.first
+      end.compact
+      add_to_queue.call dest, results.map(&:url).uniq.join(" ") unless results.empty?
+    end
   end
 end

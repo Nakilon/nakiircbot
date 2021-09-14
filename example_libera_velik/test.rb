@@ -30,17 +30,32 @@ describe "fast" do
   end
 end
 describe "[[...]]" do
-  around{ |test| Timeout.timeout(3){ test.call } }
-  it "' ', ':', dup, unexisting" do   # TODO: split
-    client.puts ":user!user PRIVMSG #channel :search with spaces [[bitwise cyclic tag]], users [[user:nakilon]], ignore dups [[user:nakilon]], in text [[nakilon]], weird chars [[created by Stack Exchange users]]"
+  around{ |test| Timeout.timeout(5){ test.call } }
+  it "spaces" do
+    client.puts ":user!user PRIVMSG #channel :[[bitwise cyclic tag]]"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal "https://esolangs.org/wiki/Bitwise%20Cyclic%20Tag https://esolangs.org/wiki/User:Nakilon https://esolangs.org/wiki/Velik https://esolangs.org/wiki/%3F%3F%3F", reply
+    assert_equal "https://esolangs.org/wiki/Bitwise_Cyclic_Tag", reply
   end
-  # it "brainfuck" do
-  #   client.puts ":user!user PRIVMSG #channel :[[brainfuck]]"
-  #   assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-  #   assert_equal "https://esolangs.org/wiki/Brainfuck", reply
-  # end
+  it "???" do
+    client.puts ":user!user PRIVMSG #channel :[[???]]"
+    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
+    assert_equal "https://esolangs.org/wiki/%3F%3F%3F", reply
+  end
+  it "':', dup, text search" do
+    client.puts ":user!user PRIVMSG #channel :[[user:nakilon]] [[user:nakilon]] [[nakilon]]"
+    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
+    assert_equal "https://esolangs.org/wiki/User:Nakilon https://esolangs.org/wiki/Velik", reply
+  end
+  it "also text search" do
+    client.puts ":user!user PRIVMSG #channel :[[created by Stack Exchange users]]"
+    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
+    assert_equal "https://esolangs.org/wiki/%3F%3F%3F", reply
+  end
+  it "brainfuck" do
+    client.puts ":user!user PRIVMSG #channel :[[brainfuck]]"
+    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
+    assert_equal "https://esolangs.org/wiki/Brainfuck", reply
+  end
 end
 describe "\\wp" do
   around{ |test| Timeout.timeout(10){ test.call } }
