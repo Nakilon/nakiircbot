@@ -50,7 +50,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       if (*_, help = remote.assoc($1))
         help
       elsif $1 == "wiki" ; "\\wiki <Esolang wiki article or search query>"
-      elsif $1 == "wp" ; "\\wp <Wikipedia article or search query>"
+      elsif $1 == "wp" ; "\\wp <Wikipedia article or search query>; \\wp-<lang> <query> (for <lang>.wikipedia.org)"
       elsif $1 == "wa" ; "\\wa <Wolfram Alpha query>"
       else
         "unknown command #{$1.inspect}"
@@ -61,10 +61,11 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       reload.call
       add_to_queue.call dest, "remote execution commands loaded: #{remote.map &:first}"
     end
-  when /\A\\wp (.+)/
-    query = $1
+  when /\A\\wp(?:-([a-z]+(?:-[a-z]+)?))? (.+)/
+    lang, query = $1, $2
     threaded.call do
-      wikipedia = Infoboxer.wp
+      # https://en.wikipedia.org/wiki/List_of_Wikipedias
+      wikipedia = Infoboxer.wikipedia lang || "en"
       unless page = wikipedia.get(query){ |_| _.prop :pageterms } || wikipedia.search(query, limit: 1){ |_| _.prop :pageterms }.first
         add_to_queue.call dest, "nothing was found"
       else

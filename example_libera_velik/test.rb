@@ -26,9 +26,10 @@ describe "fast" do
   end
   it "\\help wp" do
     client.puts ":user!user PRIVMSG #channel :\\help wp"
-    assert_equal "PRIVMSG #channel :\\wp <Wikipedia article or search query>\n", client.gets
+    assert_equal "PRIVMSG #channel :\\wp <Wikipedia article or search query>; \\wp-<lang> <query> (for <lang>.wikipedia.org)\n", client.gets
   end
 end
+
 describe "[[...]]" do
   around{ |test| Timeout.timeout(5){ test.call } }
   it "spaces" do
@@ -57,39 +58,45 @@ describe "[[...]]" do
     assert_equal "https://esolangs.org/wiki/Brainfuck", reply
   end
 end
-describe "\\wp" do
-  around{ |test| Timeout.timeout(10){ test.call } }
-  it "москва" do   # this article About template does not provide a single alternative link
-    # templates: About, Short
-    client.puts ":user!user PRIVMSG #channel :\\wp москва"
-    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal " Moscow -- capital and most populous city of Russia https://en.wikipedia.org/wiki/Moscow", reply
-  end
-  it "linux" do
-    # templates: About, Short
-    client.puts ":user!user PRIVMSG #channel :\\wp linux"
-    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal " (see also: Linux kernel) Linux -- family of Unix-like operating systems that use the Linux kernel and are open source https://en.wikipedia.org/wiki/Linux", reply
-  end
-  it "linux kernel" do
-    # templates: Short
-    client.puts ":user!user PRIVMSG #channel :\\wp linux kernel"
-    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal " Linux kernel -- Unix-like operating system kernel, basis for all Linux operating systems / Linux distributions https://en.wikipedia.org/wiki/Linux_kernel", reply
-  end
-  it "vpclmulqdq" do   # search results page (found by section name but it does not matter)
-    # templates: none
-    client.puts ":user!user PRIVMSG #channel :\\wp vpclmulqdq"
-    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal " AVX-512 -- Instruction set extension developed by Intel https://en.wikipedia.org/wiki/AVX-512", reply
-  end
-end
 describe "\\wiki" do
   around{ |test| Timeout.timeout(3){ test.call } }
   it "user:nakilon" do
     client.puts ":user!user PRIVMSG #channel :\\wiki user:nakilon"
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
     assert_match /\A Hello, I made the RASEL language\. Also the IRC bot velik .+\. https:\/\/esolangs\.org\/wiki\/User:Nakilon\z/, reply
+  end
+end
+
+describe "\\wp" do
+  around{ |test| Timeout.timeout(10){ test.call } }
+  before{ @client = client }
+  def cmd_and_assert cmd, expectation
+    @client.puts ":user!user PRIVMSG #channel :#{cmd}"
+    assert /\APRIVMSG #channel :(.+)\n\z/ =~ @client.gets.force_encoding("utf-8")
+    assert_equal expectation, $1
+  end
+  it "москва" do   # this article About template does not provide a single alternative link
+    # templates: About, Short
+    cmd_and_assert "\\wp москва", " Moscow -- capital and most populous city of Russia https://en.wikipedia.org/wiki/Moscow"
+  end
+  it "linux" do
+    # templates: About, Short
+    cmd_and_assert "\\wp linux", " (see also: Linux kernel) Linux -- family of Unix-like operating systems that use the Linux kernel and are open source https://en.wikipedia.org/wiki/Linux"
+  end
+  it "linux kernel" do
+    # templates: Short
+    cmd_and_assert "\\wp linux kernel", " Linux kernel -- Unix-like operating system kernel, basis for all Linux operating systems / Linux distributions https://en.wikipedia.org/wiki/Linux_kernel"
+  end
+  it "vpclmulqdq" do   # search results page (found by section name but it does not matter)
+    # templates: none
+    cmd_and_assert "\\wp vpclmulqdq", " AVX-512 -- Instruction set extension developed by Intel https://en.wikipedia.org/wiki/AVX-512"
+  end
+  it "wp 1" do
+    cmd_and_assert "\\wp 1", " (see also: AD 1) 1 -- natural number https://en.wikipedia.org/wiki/1"
+  end
+  it "wp-ru 1" do
+    # TODO: recognize Russian analogue of the "About" template
+    cmd_and_assert "\\wp-ru 1", " 1 год -- год I века https://ru.wikipedia.org/wiki/1_%D0%B3%D0%BE%D0%B4"
   end
 end
 
