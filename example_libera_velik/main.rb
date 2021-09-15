@@ -11,6 +11,13 @@ Timeout.timeout(2){ reload.call }
 
 require "infoboxer"
 esolangs = Infoboxer.wiki "https://esolangs.org/w/api.php"
+page_summary_450 = lambda do |page|
+  page.paragraphs.map do |par|
+    par if par.children.any?{ |_| _.is_a?(Infoboxer::Tree::Text) && !_.to_s.empty? }
+  end.find(&:itself).text.strip.gsub(/\n+/, " ").tap do |reply|
+    reply[-4..-1] = "..." until "#{reply} #{page.url}".bytesize <= 450
+  end
+end
 
 # we prepend space to reply only if reply can be arbitrary (forged by invoking IRC user, like \rasel or \wiki)
 
@@ -76,8 +83,19 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             "(see also: #{alt}) " if alt
           end
         }#{
-          page.source.fetch("terms").fetch_values("label", "description").join(" -- ").tap do |reply|
-            reply[-4..-1] = "..." until "#{reply} #{page.url}".bytesize <= 450
+          label, description = page.source.fetch("terms").values_at("label", "description")
+          if description
+            fail unless description.size == 1
+            fail unless label && label.size == 1
+            [label, description].join(" -- ").tap do |reply|
+              reply[-4..-1] = "..." until "#{reply} #{page.url}".bytesize <= 450
+            end
+          else
+            if short = page.templates(name: "Short description").first
+              short.unwrap.text
+            else
+              page_summary_450.call page
+            end
           end
         } #{page.url}"
       end
@@ -88,13 +106,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       unless page = esolangs.get(query) || esolangs.search(query, limit: 1).first
         add_to_queue.call dest, "nothing was found"
       else
-        add_to_queue.call dest, " #{
-          page.paragraphs.map do |par|
-            par if par.children.any?{ |_| _.is_a?(Infoboxer::Tree::Text) && !_.to_s.empty? }
-          end.find(&:itself).text.strip.gsub(/\n+/, " ").tap do |reply|
-            reply[-4..-1] = "..." until "#{reply} #{page.url}".bytesize <= 450
-          end
-        } #{page.url}"
+        add_to_queue.call dest, " #{page_summary_450.call page} #{page.url}"
       end
     end
   when /\A\\wa (.+)/  # https://products.wolframalpha.com/docs/WolframAlpha-API-Reference.pdf

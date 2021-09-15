@@ -7,7 +7,7 @@ ENV["VELIK_NICKNAME"] = "velik2"
 ENV["VELIK_SERVER"] = "localhost"
 # ENV["VELIK_CHANNEL"] = "##nakilon"
 Thread.new{ require_relative "main" }.abort_on_exception = true
-client = server.accept.tap(&:gets).tap(&:gets)
+client = server.accept.tap(&:gets).tap(&:gets).tap(&:gets)
 
 require "timeout"
 
@@ -97,6 +97,9 @@ describe "\\wp" do
   it "wp-ru 1" do
     # TODO: recognize Russian analogue of the "About" template
     cmd_and_assert "\\wp-ru 1", " 1 год -- год I века https://ru.wikipedia.org/wiki/1_%D0%B3%D0%BE%D0%B4"
+  end
+  it "wp-fi esolang" do
+    cmd_and_assert "\\wp-fi esolang", " Esoteerinen ohjelmointikieli tai esolang on ohjelmointikieli, jotka on suunniteltu testaamaan ohjelmointikielen rakenteen rajoja. Yleensä tavoitteena on osoittaa erikoisia tapoja joilla systeemi voi olla Turing-täydellinen, eli kykenevä simuloimaan minkä tahansa muun tietokoneen tai ohjelman toimintaa. Esoteerisen ohjelmointikielen tarkoitus voi olla myös hauskuuttaa. Esimerkiksi ... https://fi.wikipedia.org/wiki/Esoteerinen_ohjelmointikieli"
   end
 end
 
