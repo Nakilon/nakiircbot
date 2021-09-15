@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='2'
+    datatypes=''
+    timedout=''
+    timedoutpods=''
+    timing='0.611'
+    parsetiming='0.219'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP1085140502habg5h169300004b0g8ei04c8d0c31'
+    host='https://www4c.wolframalpha.com'
+    server='7'
+    related='https://www4c.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa1086140502habg5h169300003a62i0e76554a4311085617546941495453'
+    version='2.6'
+    inputstring='anagrams somphi'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>anagrams | somphi</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Anagram'
+     scanner='WordPuzzle'
+     id='Anagram'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>m | o | p | i | s | h</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+</queryresult>

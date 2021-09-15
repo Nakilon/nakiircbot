@@ -166,8 +166,11 @@ describe "\\wa" do
   it "finnish" do   # doesn't really give what you want but xml is important for tests
     stub_and_assert "average finnish word length", "finnish"
   end
-  it "bitch" do
+  it "bitch" do   # excessive expressiontypes
     stub_and_assert "bitch", "bitch"
+  end
+  it "somphi" do
+    stub_and_assert "anagrams somphi", "somphi"
   end
 
   # https://www.wolframalpha.com/examples/

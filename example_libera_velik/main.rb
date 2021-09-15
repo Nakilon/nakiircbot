@@ -158,7 +158,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
                   *%w{ Data },  # Chemistry
                   *%w{ Identity Date },  # Society & Culture
                   *%w{ Age Unit },  # Everyday Life
-                  *%w{ Arithmetic UnitInformation StringEncodings },
+                  *%w{ Arithmetic UnitInformation StringEncodings WordPuzzle },
                 ].include?(pod["scanner"])
             if pod["primary"] == "true" || ![
               # *%w{ NumberLine RootsInTheComplexPlane }, # Reduce  # empty
