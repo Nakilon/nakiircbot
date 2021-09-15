@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='2'
+    datatypes='StringFunction'
+    timedout=''
+    timedoutpods=''
+    timing='0.8200000000000001'
+    parsetiming='0.632'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP5343150i54bd643agfb3000062hggc8hh7cfef32'
+    host='https://www4c.wolframalpha.com'
+    server='41'
+    related='https://www4c.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa5344150i54bd643agfb300003ce687b4d5f34h6g2280401133652745401'
+    version='2.6'
+    inputstring='average finnish word length'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>character count | average finnish</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Result'
+     scanner='StringEncodings'
+     id='Result'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''
+      primary='true'>
+   <plaintext>15 characters</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+</queryresult>

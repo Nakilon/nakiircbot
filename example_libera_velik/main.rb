@@ -126,7 +126,6 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             assertions: [
               ->n,_{ n.at_xpath("pod").nil? || n.at_xpath("pod")["id"] == "Input" },
               ->n,_{ n.xpath(".//pod").each{ |_| _["id"] == _["title"].delete(" ") } },
-              ->n,_{ (0..1).include?(n.xpath(".//subpod").size - n.xpath(".//expressiontype").size) }
             ],
             children: {
               ".//*[@error='true']" => [[]],
@@ -136,7 +135,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
                 children: {
                   "expressiontypes" => [[ {
                     assertions: [->n,_{ n["count"].to_i == n.xpath("*").size }],
-                    exact: {"expressiontype" => {each: {attr_exact: {"name" => /\A(Default|Grid|1DMathPlot|2DMathPlot|TimeSeriesPlot|TimelinePlot)\z/}}}},
+                    exact: {"expressiontype" => {size: 1..15, each: {attr_exact: {"name" => /\A(Default|Grid|1DMathPlot|2DMathPlot|TimeSeriesPlot|TimelinePlot)\z/}}}},
                   } ]],
                 },
               } },
@@ -159,7 +158,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
                   *%w{ Data },  # Chemistry
                   *%w{ Identity Date },  # Society & Culture
                   *%w{ Age Unit },  # Everyday Life
-                  *%w{ Arithmetic UnitInformation },
+                  *%w{ Arithmetic UnitInformation StringEncodings },
                 ].include?(pod["scanner"])
             if pod["primary"] == "true" || ![
               # *%w{ NumberLine RootsInTheComplexPlane }, # Reduce  # empty
@@ -170,7 +169,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
               subpods = pod.xpath("subpod").
                 map{ |_| [("#{_["title"]}: " unless _["title"].empty?), _.at_xpath("plaintext").text] }.
                 zip(pod.xpath(".//expressiontype").map{ |_| _["name"] }).
-                reject{ |(title, text), type| text.empty? || %w{ Grid 1DMathPlot 2DMathPlot TimeSeriesPlot TimelinePlot }.include?(type) }
+                reject{ |(title, text), type| !type || text.empty? || %w{ Grid 1DMathPlot 2DMathPlot TimeSeriesPlot TimelinePlot }.include?(type) }
               "#{pod["title"]}: #{
                 CGI.unescapeHTML(subpods.size == 1 ? subpods.first.first.last : subpods.map(&:first).map(&:join).join(", ")).tr("\n", " ")
               }" unless subpods.empty?

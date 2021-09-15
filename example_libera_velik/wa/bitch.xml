@@ -1,0 +1,464 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='18'
+    datatypes='AdministrativeDivision,Book,Bridge,Building,City,Company,Country,GivenName,HistoricalPeriod,Internet,Lake,Language,Mountain,Movie,Ocean,River,Surname,Translation,Word'
+    timedout=''
+    timedoutpods=''
+    timing='4.93'
+    parsetiming='0.089'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP548611hhci06660d2cf0000069651e48e6d111h0'
+    host='https://www4f.wolframalpha.com'
+    server='22'
+    related='https://www4f.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa548711hhci06660d2cf000004e17294ac11i85hg2121523691492368303'
+    version='2.6'
+    inputstring='bitch'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>bitch (English word)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Definitions'
+     scanner='Data'
+     id='Definition:WordData'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>1 | noun | female of any member of the dog family
+2 | noun | a person (usually but not necessarily a woman) who is thoroughly disliked
+3 | noun | an unpleasant difficulty
+4 | noun | informal terms for objecting
+5 | verb | complain
+6 | verb | say mean things
+(6 meanings)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='American pronunciation'
+     scanner='Data'
+     id='Pronunciation:WordData'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>b&apos;ich (IPA: bˈɪtʃ)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Hyphenation'
+     scanner='Data'
+     id='Hyphenation:WordData'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>bitch (no hyphenation) (5 letters | 1 syllable)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='First known use in English'
+     scanner='Data'
+     id='FirstRecordYear:WordData'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>HistoricalPeriodData</microsource>
+    <microsource>WordData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>TheWikimediaFoundationIncWikipedia</datasource>
+   </datasources>
+   <plaintext>1400 (Late Middle ages | European Renaissance) (621 years ago)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Word origins'
+     scanner='Data'
+     id='LanguageOrigin:WordData'
+     position='600'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>Old English | Old Norse</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Word frequency history'
+     scanner='Data'
+     id='BookMatchFrequency:WordData'
+     position='700'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='TimeSeriesPlot' />
+  </expressiontypes>
+  <states count='2'>
+   <statelist count='2'
+       value='Linear scale'
+       delimiters=''>
+    <state name='Linear scale'
+        input='BookMatchFrequency:WordData__Linear scale' />
+    <state name='Log scale'
+        input='BookMatchFrequency:WordData__Log scale' />
+   </statelist>
+   <statelist count='2'
+       value='Binned'
+       delimiters=''>
+    <state name='Binned'
+        input='BookMatchFrequency:WordData__Binned' />
+    <state name='Raw'
+        input='BookMatchFrequency:WordData__Raw' />
+   </statelist>
+  </states>
+  <definitions count='1'>
+   <definition word='Word frequency history'
+       desc='based on a Google Books sample of one million books in English; Michel, J.-B., Y. K. Shen, A. P. Aiden, A. Veres, M. K. Gray, The Google Books Team, J. P. Pickett, D. Hoiberg, D. Clancy, P. Norvig, J. Orwant, S. Pinker, M. A. Nowak, and E. L. Aiden. &quot;Quantitative Analysis of Culture Using Millions of Digitized Books.&quot; Science 331 (2011)' />
+  </definitions>
+ </pod>
+ <pod title='Inflected forms'
+     scanner='Data'
+     id='InflectedForms:WordData'
+     position='800'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>bitches | bitched | bitching</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Synonyms'
+     scanner='Data'
+     id='Synonyms:WordData'
+     position='900'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>beef | gripe | kick | squawk | bellyache | crab | grouse | holler | backbite (total: 9)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='2'>
+   <state name='Show synonym network'
+       input='Synonyms:WordData__Show synonym network' />
+   <statelist count='2'
+       value='Meanings combined'
+       delimiters=''>
+    <state name='Meanings divided'
+        input='Synonyms:WordData__Meanings divided' />
+    <state name='Meanings combined'
+        input='Synonyms:WordData__Meanings combined' />
+   </statelist>
+  </states>
+ </pod>
+ <pod title='Broader terms'
+     scanner='Data'
+     id='Hypernym:WordData'
+     position='1000'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>canid | canine | disagreeable person | unpleasant person | difficulty | objection | complain | kick | kvetch | plain | quetch | sound off (total: 12)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <statelist count='2'
+       value='Meanings combined'
+       delimiters=''>
+    <state name='Meanings divided'
+        input='Hypernym:WordData__Meanings divided' />
+    <state name='Meanings combined'
+        input='Hypernym:WordData__Meanings combined' />
+   </statelist>
+  </states>
+ </pod>
+ <pod title='Rhymes'
+     scanner='Data'
+     id='Rhyme:WordData'
+     position='1100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>bewitch | ditch | enrich | fitch | glitch | hitch | kitsch | niche | pitch | rich | snitch | stitch | switch | twitch | unhitch | ... (total: 17)
+(based on typical American pronunciation)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='2'>
+   <statelist count='4'
+       value='Sorted alphabetically'
+       delimiters=''>
+    <state name='Sorted alphabetically'
+        input='Rhyme:WordData__Sorted alphabetically' />
+    <state name='Sorted by length'
+        input='Rhyme:WordData__Sorted by length' />
+    <state name='Sorted by syllables'
+        input='Rhyme:WordData__Sorted by syllables' />
+    <state name='Sorted by frequency'
+        input='Rhyme:WordData__Sorted by frequency' />
+   </statelist>
+   <state name='More'
+       input='Rhyme:WordData__More' />
+  </states>
+ </pod>
+ <pod title='Lexically close words'
+     scanner='Data'
+     id='LexicallyCloseWords:WordData'
+     position='1200'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>aitch | batch | botch | butch | ditch | Fitch | hitch | Mitch | pitch | titch | witch (total: 11)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <statelist count='2'
+       value='1-letter difference'
+       delimiters=''>
+    <state name='1-letter difference'
+        input='LexicallyCloseWords:WordData__1-letter difference' />
+    <state name='Up to 2-letter difference'
+        input='LexicallyCloseWords:WordData__Up to 2-letter difference' />
+   </statelist>
+  </states>
+ </pod>
+ <pod title='Anagrams'
+     scanner='Data'
+     id='Anagram:WordData'
+     position='1300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>(none among common words)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Phrase'
+     scanner='Data'
+     id='Phrase:WordData'
+     position='1400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>son of a bitch</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Translations'
+     scanner='Data'
+     id='ManyTranslations:TranslationData'
+     position='1500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CountryData</microsource>
+    <microsource>LanguageData</microsource>
+    <microsource>TranslationData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>Ethnologue</datasource>
+   </datasources>
+   <plaintext>Mandarin Chinese: | 母狗 (noun)
+Hindi: | कुतिया (noun)
+Arabic: | الكَلبَة (noun)
+Spanish: | perra (dog)
+French: | chienne (dog)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More'
+       input='ManyTranslations:TranslationData__More' />
+  </states>
+ </pod>
+ <pod title='Other notable uses'
+     scanner='Data'
+     id='Entities:WordData'
+     position='1600'
+     error='false'
+     numsubpods='2'>
+  <subpod title='Movies'>
+   <microsources>
+    <microsource>MovieData</microsource>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>Bitch Slap</plaintext>
+  </subpod>
+  <subpod title='Internet domains'>
+   <microsources>
+    <microsource>InternetData</microsource>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>bitch.com | bitch.net | bitch.info | bitch.biz</plaintext>
+  </subpod>
+  <expressiontypes count='15'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Crossword puzzle clues'
+     scanner='Data'
+     id='NYTCrosswordPuzzleClues:WordData'
+     position='1700'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>XWordInfo</datasource>
+   </datasources>
+   <plaintext>(none)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Scrabble score'
+     scanner='Data'
+     id='ScrabbleScore:WordData'
+     position='1800'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>WordData</microsource>
+   </microsources>
+   <plaintext>12 (International English) | 12 (North American English)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <sources count='19'>
+  <source url='https://www4f.wolframalpha.com/sources/AdministrativeDivisionDataSourceInformationNotes.html'
+      text='Administrative division data' />
+  <source url='https://www4f.wolframalpha.com/sources/BookDataSourceInformationNotes.html'
+      text='Book data' />
+  <source url='https://www4f.wolframalpha.com/sources/BridgeDataSourceInformationNotes.html'
+      text='Bridge data' />
+  <source url='https://www4f.wolframalpha.com/sources/BuildingDataSourceInformationNotes.html'
+      text='Building data' />
+  <source url='https://www4f.wolframalpha.com/sources/CityDataSourceInformationNotes.html'
+      text='City data' />
+  <source url='https://www4f.wolframalpha.com/sources/CompanyDataSourceInformationNotes.html'
+      text='Company data' />
+  <source url='https://www4f.wolframalpha.com/sources/CountryDataSourceInformationNotes.html'
+      text='Country data' />
+  <source url='https://www4f.wolframalpha.com/sources/GivenNameDataSourceInformationNotes.html'
+      text='Given name data' />
+  <source url='https://www4f.wolframalpha.com/sources/HistoricalPeriodDataSourceInformationNotes.html'
+      text='Historical period data' />
+  <source url='https://www4f.wolframalpha.com/sources/InternetDataSourceInformationNotes.html'
+      text='Internet data' />
+  <source url='https://www4f.wolframalpha.com/sources/LakeDataSourceInformationNotes.html'
+      text='Lake data' />
+  <source url='https://www4f.wolframalpha.com/sources/LanguageDataSourceInformationNotes.html'
+      text='Language data' />
+  <source url='https://www4f.wolframalpha.com/sources/MountainDataSourceInformationNotes.html'
+      text='Mountain data' />
+  <source url='https://www4f.wolframalpha.com/sources/MovieDataSourceInformationNotes.html'
+      text='Movie data' />
+  <source url='https://www4f.wolframalpha.com/sources/OceanDataSourceInformationNotes.html'
+      text='Ocean data' />
+  <source url='https://www4f.wolframalpha.com/sources/RiverDataSourceInformationNotes.html'
+      text='River data' />
+  <source url='https://www4f.wolframalpha.com/sources/SurnameDataSourceInformationNotes.html'
+      text='Surname data' />
+  <source url='https://www4f.wolframalpha.com/sources/TranslationDataSourceInformationNotes.html'
+      text='Translation data' />
+  <source url='https://www4f.wolframalpha.com/sources/WordDataSourceInformationNotes.html'
+      text='Word data' />
+ </sources>
+</queryresult>

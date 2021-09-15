@@ -108,7 +108,7 @@ require_relative "webmock_patch"
 describe "\\wa" do
   around do |test|
     WebMock.enable!
-    Timeout.timeout(5){ test.call }
+    Timeout.timeout(6){ test.call }
     WebMock.disable!
   end
   before do
@@ -162,6 +162,12 @@ describe "\\wa" do
   end
   it "warheads" do  # subpods > expressiontypes
     stub_and_assert "russia nuclear warheads", "warheads"
+  end
+  it "finnish" do   # doesn't really give what you want but xml is important for tests
+    stub_and_assert "average finnish word length", "finnish"
+  end
+  it "bitch" do
+    stub_and_assert "bitch", "bitch"
   end
 
   # https://www.wolframalpha.com/examples/
