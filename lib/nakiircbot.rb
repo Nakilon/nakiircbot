@@ -99,6 +99,8 @@ module NakiIRCBot
           when /\AAUTHENTICATE \+\z/
             logger.info "password"
             next socket.send "AUTHENTICATE #{Base64.strict_encode64 "#{bot_name}\0#{bot_name}\0#{password}"}\n", 0
+          when /\A:[a-z]+\.libera\.chat 903 #{bot_name} :SASL authentication successful\z/
+            next socket_send.call "CAP END"
 
           when /\APING :/
             next socket.send "PONG :#{$'}\n", 0   # Quakenet uses timestamp, Freenode and Twitch use server name
