@@ -34,6 +34,7 @@ module NakiIRCBot
         socket.send str + "\n", 0
       end
       # socket.send "PASS #{password.strip}\n", 0 if twitch
+      socket_send.call "CAP REQ :sasl"
       socket_send.call "NICK #{bot_name}"
       socket_send.call "USER #{bot_name} #{bot_name} #{bot_name} #{bot_name}" #unless twitch
 
@@ -81,20 +82,24 @@ module NakiIRCBot
             # we join only when we are sure we are on the correct server
             # TODO: maybe abort if the server is wrong?
             next socket_send.call "JOIN #{channels.join ","}"
+
           when /\A:tmi.twitch.tv 001 #{Regexp.escape bot_name} :Welcome, GLHF!\z/
             socket_send.call "JOIN #{channels.join ","}"
             socket_send.call "CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands"
             next
-          when /\A:NickServ!NickServ@services\. NOTICE #{Regexp.escape bot_name} :This nickname is registered. Please choose a different nickname, or identify via \x02\/msg NickServ identify <password>\x02\.\z/
-            abort "no password" unless password
-            logger.info "password"
-            # next socket.send "PASS #{password.strip}\n", 0
-            next socket.send "PRIVMSG NickServ :identify #{bot_name} #{password.strip}\n", 0
-          # TODO: get rid of this Libera hard code
-          when /\A:NickServ!NickServ@services\.libera\.chat NOTICE #{Regexp.escape bot_name} :This nickname is registered. Please choose a different nickname, or identify via \x02\/msg NickServ IDENTIFY #{Regexp.escape bot_name} <password>\x02\z/
+          when /\A:NickServ!NickServ@services\. NOTICE #{Regexp.escape bot_name} :This nickname is registered. Please choose a different nickname, or identify via \x02\/msg NickServ identify <password>\x02\.\z/,
+               /\A:NickServ!NickServ@services\.libera\.chat NOTICE #{Regexp.escape bot_name} :This nickname is registered. Please choose a different nickname, or identify via \x02\/msg NickServ IDENTIFY #{Regexp.escape bot_name} <password>\x02\z/
             abort "no password" unless password
             logger.info "password"
             next socket.send "PRIVMSG NickServ :identify #{bot_name} #{password.strip}\n", 0
+          # when /\A:[a-z]+\.libera\.chat CAP \* LS :/
+          #   next socket_send "CAP REQ :sasl" if $'.split.include? "sasl"
+          when /\A:[a-z]+\.libera\.chat CAP \* ACK :sasl\z/
+            next socket_send.call "AUTHENTICATE PLAIN"
+          when /\AAUTHENTICATE \+\z/
+            logger.info "password"
+            next socket.send "AUTHENTICATE #{Base64.strict_encode64 "#{bot_name}\0#{bot_name}\0#{password}"}\n", 0
+
           when /\APING :/
             next socket.send "PONG :#{$'}\n", 0   # Quakenet uses timestamp, Freenode and Twitch use server name
           when /\A:([^!]+)!\S+ PRIVMSG #{Regexp.escape bot_name} :\x01VERSION\x01\z/
