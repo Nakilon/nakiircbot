@@ -18,6 +18,10 @@ page_summary_450 = lambda do |page|
     reply[-4..-1] = "..." until "#{reply} #{page.url}".bytesize <= 450
   end
 end
+get_rescue_nil = lambda do |wiki, query, &block|
+  # Infoboxer raises RuntimeError
+  wiki.get query, &block rescue nil
+end
 
 # we prepend space to reply only if reply can be arbitrary (forged by invoking IRC user, like \rasel or \wiki)
 
@@ -73,7 +77,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
     threaded.call do
       # https://en.wikipedia.org/wiki/List_of_Wikipedias
       wikipedia = Infoboxer.wikipedia lang || "en"
-      unless page = wikipedia.get(query){ |_| _.prop :pageterms } || wikipedia.search(query, limit: 1){ |_| _.prop :pageterms }.first
+      unless page = get_rescue_nil.call(wikipedia, query){ |_| _.prop :pageterms } || wikipedia.search(query, limit: 1){ |_| _.prop :pageterms }.first
         add_to_queue.call dest, "nothing was found"
       else
         add_to_queue.call dest, " #{
@@ -103,7 +107,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
   when /\A\\wiki (.+)/
     query = $1
     threaded.call do
-      unless page = esolangs.get(query) || esolangs.search(query, limit: 1).first
+      unless page = get_rescue_nil.call(esolangs, query) || esolangs.search(query, limit: 1).first
         add_to_queue.call dest, "nothing was found"
       else
         add_to_queue.call dest, " #{page_summary_450.call page} #{page.url}"
@@ -204,7 +208,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
     wikis = what.scan(/\[\[(.*?)\]\]/i)
     threaded.call do
       results = wikis.map do |query,|
-        esolangs.get(query) || esolangs.search(query, limit: 1){ |_| _.what :text }.first
+        get_rescue_nil.call(esolangs, query) || esolangs.search(query, limit: 1){ |_| _.what :text }.first
       end.compact
       add_to_queue.call dest, results.map(&:url).uniq.join(" ") unless results.empty?
     end

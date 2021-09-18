@@ -32,30 +32,29 @@ end
 
 describe "[[...]]" do
   around{ |test| Timeout.timeout(5){ test.call } }
+  before{ @client = client }
+  def cmd_and_assert cmd, expectation
+    @client.puts ":user!user PRIVMSG #channel :#{cmd}"
+    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ @client.gets
+    assert_equal expectation, reply
+  end
   it "spaces" do
-    client.puts ":user!user PRIVMSG #channel :[[bitwise cyclic tag]]"
-    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal "https://esolangs.org/wiki/Bitwise_Cyclic_Tag", reply
+    cmd_and_assert "[[bitwise cyclic tag]]", "https://esolangs.org/wiki/Bitwise_Cyclic_Tag"
   end
-  it "???" do
-    client.puts ":user!user PRIVMSG #channel :[[???]]"
-    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal "https://esolangs.org/wiki/%3F%3F%3F", reply
+  it "'???'" do
+    cmd_and_assert "[[???]]", "https://esolangs.org/wiki/%3F%3F%3F"
   end
-  it "':', dup, text search" do
-    client.puts ":user!user PRIVMSG #channel :[[user:nakilon]] [[user:nakilon]] [[nakilon]]"
-    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal "https://esolangs.org/wiki/User:Nakilon https://esolangs.org/wiki/Velik", reply
+  it ":, dup, text search" do
+    cmd_and_assert "[[user:nakilon]] [[user:nakilon]] [[nakilon]]", "https://esolangs.org/wiki/User:Nakilon https://esolangs.org/wiki/Velik"
   end
   it "also text search" do
-    client.puts ":user!user PRIVMSG #channel :[[created by Stack Exchange users]]"
-    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal "https://esolangs.org/wiki/%3F%3F%3F", reply
+    cmd_and_assert "[[created by Stack Exchange users]]", "https://esolangs.org/wiki/%3F%3F%3F"
   end
-  it "brainfuck" do
-    client.puts ":user!user PRIVMSG #channel :[[brainfuck]]"
-    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ client.gets
-    assert_equal "https://esolangs.org/wiki/Brainfuck", reply
+  it "'brainfuck'" do
+    cmd_and_assert "[[brainfuck]]", "https://esolangs.org/wiki/Brainfuck"
+  end
+  it "brackets" do
+    cmd_and_assert "[[ $n = +([0-9]) ]]", "https://esolangs.org/wiki/Symball"
   end
 end
 describe "\\wiki" do
