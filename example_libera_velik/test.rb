@@ -37,42 +37,42 @@ describe "[[...]] and \\wiki" do
     assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ @client.gets
     assert expectation === reply
   end
-describe "[[...]]" do
-  around{ |test| Timeout.timeout(15){ test.call } }
-  it "spaces" do
-    cmd_and_assert "[[bitwise cyclic tag]]", "https://esolangs.org/wiki/Bitwise_Cyclic_Tag"
+  describe "[[...]]" do
+    around{ |test| Timeout.timeout(15){ test.call } }
+    it "spaces" do
+      cmd_and_assert "[[bitwise cyclic tag]]", "https://esolangs.org/wiki/Bitwise_Cyclic_Tag"
+    end
+    it "'???'" do
+      cmd_and_assert "[[???]]", "https://esolangs.org/wiki/%3F%3F%3F"
+    end
+    it ":, dup" do
+      cmd_and_assert "[[user:nakilon]] [[user:nakilon]]", "https://esolangs.org/wiki/User:Nakilon"
+    end
+    it "no full text search" do
+      cmd_and_assert "[[nakilon]] [[brainfuck]]", "https://esolangs.org/wiki/Brainfuck"
+    end
+    it "brackets" do
+      cmd_and_assert "[[brainfuck]] [[ $n = +([0-9]) ]]", "https://esolangs.org/wiki/Brainfuck"
+    end
   end
-  it "'???'" do
-    cmd_and_assert "[[???]]", "https://esolangs.org/wiki/%3F%3F%3F"
+  describe "\\wiki" do
+    around{ |test| Timeout.timeout(3){ test.call } }
+    it ":" do
+      cmd_and_assert "\\wiki user:nakilon", /\A Hello, I made the RASEL language/
+    end
+    it "full text search" do
+      cmd_and_assert "\\wiki nakilon", /\A velik is an IRC bot maintained by User:Nakilon/
+    end
+    it "'???' article as a result" do
+      cmd_and_assert "\\wiki created by Stack Exchange users", /\A \?\?\? is an esoteric programming language/
+    end
+    it "tries exact match first" do   # note that it can't recognize the first text to be a template because it's not like on Wikipedia
+      cmd_and_assert "\\wiki brainfuck", /\A Note that /
+    end
+    it "brackets" do
+      cmd_and_assert "\\wiki $n = +([0-9])", /\A Symball is a procedural programming language/
+    end
   end
-  it ":, dup" do
-    cmd_and_assert "[[user:nakilon]] [[user:nakilon]]", "https://esolangs.org/wiki/User:Nakilon"
-  end
-  it "no full text search" do
-    cmd_and_assert "[[nakilon]] [[brainfuck]]", "https://esolangs.org/wiki/Brainfuck"
-  end
-  it "brackets" do
-    cmd_and_assert "[[brainfuck]] [[ $n = +([0-9]) ]]", "https://esolangs.org/wiki/Brainfuck"
-  end
-end
-describe "\\wiki" do
-  around{ |test| Timeout.timeout(3){ test.call } }
-  it ":" do
-    cmd_and_assert "\\wiki user:nakilon", /\A Hello, I made the RASEL language/
-  end
-  it "full text search" do
-    cmd_and_assert "\\wiki nakilon", /\A velik is an IRC bot maintained by User:Nakilon/
-  end
-  it "'???' article as a result" do
-    cmd_and_assert "\\wiki created by Stack Exchange users", /\A \?\?\? is an esoteric programming language/
-  end
-  it "tries exact match first" do   # note that it can't recognize the first text to be a template because it's not like on Wikipedia
-    cmd_and_assert "\\wiki brainfuck", /\A Note that /
-  end
-  it "brackets" do
-    cmd_and_assert "\\wiki $n = +([0-9])", /\A Symball is a procedural programming language/
-  end
-end
 end
 
 describe "\\wp" do
