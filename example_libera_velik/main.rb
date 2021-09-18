@@ -209,10 +209,13 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       end) if cmd == remote_cmd
     end
   else
-    wikis = what.scan(/\[\[(.*?)\]\]/i)
+    wikis = what.scan(/\[\[([^\]\[]+)\]\]/i)
     threaded.call do
       results = wikis.map do |query,|
-        get_rescue_nil.call(esolangs, query) || esolangs.search(query, limit: 1).first
+        get_rescue_nil.call(esolangs, query) || begin
+          esolangs.search(query, limit: 1).last
+        rescue MediaWiktory::Wikipedia::Response::Error
+        end
       end.compact
       add_to_queue.call dest, results.map(&:url).uniq.join(" ") unless results.empty?
     end unless wikis.empty?   # just to not create Thread for no reason

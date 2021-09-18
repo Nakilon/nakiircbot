@@ -39,6 +39,12 @@ describe "[[...]] and \\wiki" do
   end
   describe "[[...]]" do
     around{ |test| Timeout.timeout(15){ test.call } }
+    it "empty" do
+      cmd_and_assert "[[]] [[brainfuck]]", "https://esolangs.org/wiki/Brainfuck"
+    end
+    it "space" do
+      cmd_and_assert "[[ ]] [[brainfuck]]", "https://esolangs.org/wiki/Brainfuck"
+    end
     it "spaces" do
       cmd_and_assert "[[bitwise cyclic tag]]", "https://esolangs.org/wiki/Bitwise_Cyclic_Tag"
     end
