@@ -23,10 +23,15 @@ get_rescue_nil = lambda do |wiki, query, &block|  # Infoboxer raises RuntimeErro
 rescue RuntimeError
 end
 
+
 # we prepend space to reply only if reply can be arbitrary (forged by invoking IRC user, like \rasel or \wiki)
 
 require "nakiircbot"
 nickname = ENV["VELIK_NICKNAME"] || "velik"
+
+require "net/http"
+require "json/pure"
+
 NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "nakilon", "Libera.Chat Internet Relay Chat Network",
     *(ENV["VELIK_CHANNEL"] || %w{ #esolangs ##nakilon #ruby-ru #ruby-offtopic #programming-ru }),
     password: (File.read("password") if nickname == "velik"), masterword: File.read("masterword") do |str, add_to_queue|
@@ -199,14 +204,22 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
     remote.each do |remote_cmd, function, encoding, |
       break( threaded.call do
         args, kwargs = (ENV["LOCALHOST"] ? [["localhost", 8080], {}] : [["us-central1-nakilonpro.cloudfunctions.net", 443], use_ssl: true])
-        require "net/http"
         Net::HTTP.start(*args, **kwargs) do |http|
-          require "json/pure"
           response = http.request_post "/#{function}", JSON.dump(input), {Authorization: "bearer #{`gcloud auth print-identity-token #{ENV["SERVICE_ACCOUNT"]}`}"}
           fail response.inspect unless response.is_a? Net::HTTPOK
           add_to_queue.call dest, " " + response.body.force_encoding(encoding)
         end
       end) if cmd == remote_cmd
+    end
+  when /\A#{nickname}[^a-zA-Z0-9_-] *(\S.*)/
+    input = $1
+    threaded.call do
+      args, kwargs = (ENV["LOCALHOST"] ? [["localhost", 8080], {}] : [["us-central1-nakilonpro.cloudfunctions.net", 443], use_ssl: true])
+      Net::HTTP.start(*args, **kwargs) do |http|
+        response = http.request_post "/chat-english", JSON.dump(input), {Authorization: "bearer #{`gcloud auth print-identity-token #{ENV["SERVICE_ACCOUNT"]}`}"}
+        fail response.inspect unless response.is_a? Net::HTTPOK
+        add_to_queue.call dest, " " + response.body.force_encoding("utf-8") unless response.body.empty?
+      end
     end
   else
     wikis = what.scan(/\[\[([^\]\[]+)\]\]/i)

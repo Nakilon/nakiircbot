@@ -21,3 +21,4 @@ to add webmocked \wa tests
   change 'nil' to any string
   $ bundle exec ruby -I../lib test.rb -n '/.../'
   $ git add wa/...
+to test connecting to real network from local machine: $ VELIK_NICKNAME=velik2 VELIK_CHANNEL='##nakilon' bundle exec ruby -I../lib main.rb

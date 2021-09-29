@@ -1,0 +1,5 @@
+$ bundle exec functions-framework-ruby
+$ printf '_Oo what is this lol ..D ahah :D ok' | json_xs -f string | curl -X POST -d@- http://localhost:8080
+$ gcloud functions deploy ... --entry-point function --runtime ruby27 --trigger-http --memory 256MB --timeout 20s --max-instances 5
+# then make it callable by libera service account
+$ printf '_Oo what is this lol ..D ahah :D ok' | json_xs -f string | curl -X POST -d@- https://...cloudfunctions.net/... -H "Authorization: bearer $(gcloud auth print-identity-token)"
