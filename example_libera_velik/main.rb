@@ -136,10 +136,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
         exact: {
           "queryresult" => [[ {
             attr_req: {"success": %w{ true false }, "error": "false", "inputstring": query.chomp(??)},
-            assertions: [
-              ->n,_{ n.at_xpath("pod").nil? || n.at_xpath("pod")["id"] == "Input" },
-              # ->n,_{ n.xpath(".//pod").all?{ |_| _["title"].gsub(/ (.)/){ $1.upcase }.start_with? _["id"] } },  # Property != Properties
-            ],
+            assertions: [->n,_{ n.at_xpath("pod").nil? || n.at_xpath("pod")["id"] == "Input" }],
             children: {
               ".//*[@error='true']" => [[]],
               "pod[@primary='true']" => {size: 0..3, each: {children: {"subpod" => {size: 1..9, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, children: {"plaintext" => [[{}]]}}}}}},
@@ -158,13 +155,10 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       }
       pods = xml.xpath("*/pod").drop(1).map do |pod|
         [
-          ## scanner:id
-          #    do print:     prim good:else
-          # don't print: bad      good:bad
-          # print unsup:                    else
           pod["primary"] == "true" ? 0 : 1,
           if [
             *%w{ Plot },   # Mathematics
+            # *%w{ UnitInformation },
           ].include? pod["scanner"]  # bad
           elsif [
                   *%w{ Numeric NumberLine MathematicalFunctionData ContinuedFraction Simplification Integer Rational Factor Integral Series FunctionProperties Plotter NumberLine Reduce ODE },  # Mathematics
@@ -174,7 +168,6 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
                   *%w{ Arithmetic UnitInformation StringEncodings WordPuzzle RandomLookup NumberComparison },
                 ].include?(pod["scanner"])
             if pod["primary"] == "true" || ![
-              # *%w{ NumberLine RootsInTheComplexPlane }, # Reduce  # empty
               *%w{ PlotsOfSampleIndividualSolutions SampleSolutionFamily }, # ODE
               *%w{ ReactionStructures:ChemicalReactionData }, # Data (Chemistry)
               *%w{ Illustration }, # Arithmetic
