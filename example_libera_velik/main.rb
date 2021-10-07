@@ -190,7 +190,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           "not clear what you mean" :
           pods.empty? ?
             "results are not printable" :
-            " #{pods.sort_by{ |primary, text| [primary, text.size] }.reject.with_index{ |(primary, _), i| short && primary > 0 && i > 0 }.map(&:last).join " | "}"
+            " #{pods.sort_by{ |primary, text| [primary, primary * text.size] }.reject.with_index{ |(primary, _), i| short && primary > 0 && i > 0 }.map(&:last).join " | "}"
     end
   when /\A\\(\S+) (.+)/
     cmd, input = $1, $2
