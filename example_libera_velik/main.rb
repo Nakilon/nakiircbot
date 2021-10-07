@@ -142,7 +142,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             ],
             children: {
               ".//*[@error='true']" => [[]],
-              "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..7, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, children: {"plaintext" => [[{}]]}}}}}},
+              "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..9, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, children: {"plaintext" => [[{}]]}}}}}},
               ".//pod" => {each: {
                 attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+((:([A-Z]+[a-z]+)+)+|=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/},
                 children: {
