@@ -142,7 +142,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             ],
             children: {
               ".//*[@error='true']" => [[]],
-              "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..9, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, children: {"plaintext" => [[{}]]}}}}}},
+              "pod[@primary='true']" => {size: 0..3, each: {children: {"subpod" => {size: 1..9, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, children: {"plaintext" => [[{}]]}}}}}},
               ".//pod" => {each: {
                 attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+((:([A-Z]+[a-z]+)+)+|=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/},
                 children: {
@@ -171,7 +171,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
                   *%w{ Data },  # Chemistry
                   *%w{ Identity Date },  # Society & Culture
                   *%w{ Age Unit },  # Everyday Life
-                  *%w{ Arithmetic UnitInformation StringEncodings WordPuzzle RandomLookup },
+                  *%w{ Arithmetic UnitInformation StringEncodings WordPuzzle RandomLookup NumberComparison },
                 ].include?(pod["scanner"])
             if pod["primary"] == "true" || ![
               # *%w{ NumberLine RootsInTheComplexPlane }, # Reduce  # empty

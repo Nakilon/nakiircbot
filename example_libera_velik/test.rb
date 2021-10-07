@@ -180,14 +180,17 @@ describe "\\wa" do
   it "finnish" do   # doesn't really give what you want but xml is important for tests
     stub_and_assert "average finnish word length", "finnish"
   end
-  it "bitch" do   # excessive expressiontypes
+  it "'bitch'" do   # excessive expressiontypes
     stub_and_assert "bitch", "bitch"
   end
   it "somphi" do
     stub_and_assert "anagrams somphi", "somphi"
   end
-  it "random prime number" do   # scanner = RandomLookup
+  it "rpn" do                     # scanner = RandomLookup
     stub_and_assert "random prime number", "rpn"
+  end
+  it "rpn from 1 mln to 1 bln" do # scanner = NumberComparison
+    stub_and_assert "random prime number from 1 mln to 1 bln", "rpnmlnbln"
   end
 
   # https://www.wolframalpha.com/examples/
