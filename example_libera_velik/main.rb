@@ -1,8 +1,8 @@
 STDOUT.sync = true  # kludge for docker logs
 
+require "open-uri"
 remote = []
 reload = lambda do
-  require "open-uri"
   require "yaml"
   remote.replace YAML.load open "https://gist.githubusercontent.com/nakilon/92d5b22935f21b5e248b713057e851a6/raw/remote.yaml", &:read
 end
@@ -122,9 +122,8 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
         add_to_queue.call dest, " #{page_summary_450.call page} #{page.url}"
       end
     end
-  when /\A\\wa (.+)/  # https://products.wolframalpha.com/docs/WolframAlpha-API-Reference.pdf
-    query = $1
-    require "open-uri"
+  when /\A\\wa(s)? (.+)/  # https://products.wolframalpha.com/docs/WolframAlpha-API-Reference.pdf
+    short, query = $1, $2
     link = URI("http://api.wolframalpha.com/v2/query").tap do |uri|
       uri.query = URI.encode_www_form({input: query, format: :plaintext, appid: File.read("wa.key.txt")})
     end
@@ -190,7 +189,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           "not clear what you mean" :
           pods.empty? ?
             "results are not printable" :
-            " #{pods.sort_by{ |primary, text| [primary, text.size] }.map(&:last).join " | "}"
+            " #{pods.sort_by{ |primary, text| [primary, text.size] }.reject.with_index{ |(primary, _), i| short && primary > 0 && i > 0 }.map(&:last).join " | "}"
     end
   when /\A\\(\S+) (.+)/
     cmd, input = $1, $2

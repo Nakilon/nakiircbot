@@ -129,21 +129,27 @@ describe "\\wa" do
     WebMock.reset!
     @client = client
   end
-  def cmd cmd
-    @client.puts ":user!user PRIVMSG #channel :\\wa #{cmd}"
+  def cmd cmd, short
+    @client.puts ":user!user PRIVMSG #channel :\\wa#{short} #{cmd}"
     assert /\APRIVMSG #channel :(.+)\n\z/ =~ @client.gets.force_encoding("utf-8")
     $1
   end
-  def stub_and_assert query, file = nil, expectation = nil
+  def stub_and_assert query, file = nil, expectation = nil, short = nil
     # https://github.com/bblimke/webmock/issues/693#issuecomment-285485320
     stub_request(:get, "http://api.wolframalpha.com/v2/query").with(query: hash_including({})).to_return body: File.read("wa/#{file}.xml") if file  # pass nil file to prepare webmock
-    cmd(query).tap do |reply|
+    cmd(query, short).tap do |reply|
       refute_match "unsupported scanner", reply
       refute_match "[LF]", reply
       assert_equal expectation, reply if expectation
     end
   end
 
+  it "\\was" do
+    stub_and_assert "2+2", "arithmetic", " Result: 4", "s"
+  end
+  it "arithmetic" do  # [LF]
+    stub_and_assert "2+2", "arithmetic", " Result: 4 | Number name: four"
+  end
   it "'pig'" do   # entered by user as greek
     stub_and_assert "π", "pig"
   end
@@ -155,9 +161,6 @@ describe "\\wa" do
   end
   it "seconds since" do   # many (4) subpods
     stub_and_assert "seconds since 1 Jan 1970", "since"
-  end
-  it "arithmetic" do  # [LF]
-    stub_and_assert "2+2", "arithmetic", " Result: 4 | Number name: four"
   end
   it "'mass of earth'" do   # microsources, datasources
     stub_and_assert "mass of earth", "earth"
