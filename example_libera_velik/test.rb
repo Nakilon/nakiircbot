@@ -144,6 +144,9 @@ describe "\\wa" do
     end
   end
 
+  it "strips" do
+    stub_and_assert "  2+2  ", "arithmetic", " Result: 4", "s"
+  end
   it "\\was" do
     stub_and_assert "2+2", "arithmetic", " Result: 4", "s"
   end

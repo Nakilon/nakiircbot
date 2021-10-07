@@ -123,7 +123,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       end
     end
   when /\A\\wa(s)? (.+)/  # https://products.wolframalpha.com/docs/WolframAlpha-API-Reference.pdf
-    short, query = $1, $2
+    short, query = $1, $2.strip
     link = URI("http://api.wolframalpha.com/v2/query").tap do |uri|
       uri.query = URI.encode_www_form({input: query, format: :plaintext, appid: File.read("wa.key.txt")})
     end
