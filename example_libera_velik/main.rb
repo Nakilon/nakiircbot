@@ -138,11 +138,11 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             attr_req: {"success": %w{ true false }, "error": "false", "inputstring": query.chomp(??)},
             assertions: [
               ->n,_{ n.at_xpath("pod").nil? || n.at_xpath("pod")["id"] == "Input" },
-              ->n,_{ n.xpath(".//pod").each{ |_| _["id"] == _["title"].delete(" ") } },
+              # ->n,_{ n.xpath(".//pod").all?{ |_| _["title"].gsub(/ (.)/){ $1.upcase }.start_with? _["id"] } },  # Property != Properties
             ],
             children: {
               ".//*[@error='true']" => [[]],
-              "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..4, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, children: {"plaintext" => [[{}]]}}}}}},
+              "pod[@primary='true']" => {size: 0..2, each: {children: {"subpod" => {size: 1..7, each: {attr_req: {"title" => /\A([A-Z][a-z]+)?\z/}, children: {"plaintext" => [[{}]]}}}}}},
               ".//pod" => {each: {
                 attr_req: {"id": /\A[A-Z]*(A|[A-Z][a-z]+)+((:([A-Z]+[a-z]+)+)+|=0\.)?\z/, "scanner": /\A([A-Z][a-z]*)+\z/},
                 children: {
@@ -171,7 +171,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
                   *%w{ Data },  # Chemistry
                   *%w{ Identity Date },  # Society & Culture
                   *%w{ Age Unit },  # Everyday Life
-                  *%w{ Arithmetic UnitInformation StringEncodings WordPuzzle },
+                  *%w{ Arithmetic UnitInformation StringEncodings WordPuzzle RandomLookup },
                 ].include?(pod["scanner"])
             if pod["primary"] == "true" || ![
               # *%w{ NumberLine RootsInTheComplexPlane }, # Reduce  # empty

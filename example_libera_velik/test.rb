@@ -134,7 +134,7 @@ describe "\\wa" do
     assert /\APRIVMSG #channel :(.+)\n\z/ =~ @client.gets.force_encoding("utf-8")
     $1
   end
-  def stub_and_assert query, file, expectation = nil
+  def stub_and_assert query, file = nil, expectation = nil
     # https://github.com/bblimke/webmock/issues/693#issuecomment-285485320
     stub_request(:get, "http://api.wolframalpha.com/v2/query").with(query: hash_including({})).to_return body: File.read("wa/#{file}.xml") if file  # pass nil file to prepare webmock
     cmd(query).tap do |reply|
@@ -185,6 +185,9 @@ describe "\\wa" do
   end
   it "somphi" do
     stub_and_assert "anagrams somphi", "somphi"
+  end
+  it "random prime number" do   # scanner = RandomLookup
+    stub_and_assert "random prime number", "rpn"
   end
 
   # https://www.wolframalpha.com/examples/
