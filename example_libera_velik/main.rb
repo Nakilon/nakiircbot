@@ -164,12 +164,13 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
                   *%w{ Data },  # Chemistry
                   *%w{ Identity Date },  # Society & Culture
                   *%w{ Age Unit },  # Everyday Life
-                  *%w{ Arithmetic UnitInformation StringEncodings WordPuzzle RandomLookup NumberComparison },
+                  *%w{ Arithmetic UnitInformation StringEncodings WordPuzzle RandomLookup NumberComparison Character ComputerKeyboard },
                 ].include?(pod["scanner"])
             if pod["primary"] == "true" || ![
               *%w{ PlotsOfSampleIndividualSolutions SampleSolutionFamily }, # ODE
               *%w{ ReactionStructures:ChemicalReactionData }, # Data (Chemistry)
               *%w{ Illustration }, # Arithmetic
+              *%w{ ComputerKeyboardsContainingLetter },
             ].include?(pod["id"])
               subpods = pod.xpath("subpod").
                 map{ |_| [("#{_["title"]}: " unless _["title"].empty?), _.at_xpath("plaintext").text] }.

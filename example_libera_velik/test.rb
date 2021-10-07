@@ -150,11 +150,20 @@ describe "\\wa" do
   it "arithmetic" do  # [LF]
     stub_and_assert "2+2", "arithmetic", " Result: 4 | Number name: four"
   end
-  it "'pig'" do   # entered by user as greek
-    stub_and_assert "π", "pig"
+  it "'e'" do
+    stub_and_assert "e", "e", " Upper case: E (U+0045)", "s"
   end
-  it "'pil'" do   # interpreted by server as greek
-    stub_and_assert "pi", "pil"
+  it "e constant" do
+    stub_and_assert "e constant", "econstant", " Decimal approximation: 2.7182818284590452353602874713526624977572470936999595749669676277...", "s"
+  end
+  it "multiocular" do
+    stub_and_assert "ꙮ", "multiocular", " Name: Cyrillic letter multiocular O", "s"
+  end
+  it "pig" do   # entered by user as greek
+    stub_and_assert "π", "pig", " Decimal approximation: 3.1415926535897932384626433832795028841971693993751058209749445923...", "s"
+  end
+  it "pil" do   # interpreted by server as greek
+    stub_and_assert "pi", "pil", " Decimal approximation: 3.1415926535897932384626433832795028841971693993751058209749445923...", "s"
   end
   it "'equation'" do  # "not clear what you mean"
     stub_and_assert "equation", "equation", "not clear what you mean"
