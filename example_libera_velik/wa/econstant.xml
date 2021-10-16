@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='7'
+    datatypes=''
+    timedout=''
+    timedoutpods=''
+    timing='1.547'
+    parsetiming='0.28200000000000003'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP44817326hbh072ghb5a00000i38h5a65c952fi8'
+    host='https://www4b.wolframalpha.com'
+    server='16'
+    related='https://www4b.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa44917326hbh072ghb5a00004f5a56b52ag27a8f5709744286650274400'
+    version='2.6'
+    inputstring='e constant'>
+ <pod title='Input'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>e</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Decimal approximation'
+     scanner='Numeric'
+     id='DecimalApproximation'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>2.7182818284590452353602874713526624977572470936999595749669676277...</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More digits'
+       input='DecimalApproximation__More digits' />
+  </states>
+ </pod>
+ <pod title='Property'
+     scanner='Numeric'
+     id='Property'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>e is a transcendental number</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Number line'
+     scanner='NumberLine'
+     id='NumberLine'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='1DMathPlot' />
+  </expressiontypes>
+ </pod>
+ <pod title='Continued fraction'
+     scanner='ContinuedFraction'
+     id='ContinuedFraction'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>[2; 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8, 1, 1, 10, 1, 1, 12, 1, 1, 14, 1, 1, 16, 1, 1, 18, 1, 1, ...]</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='2'>
+   <state name='More terms'
+       input='ContinuedFraction__More terms' />
+   <state name='Fraction form'
+       input='ContinuedFraction__Fraction form' />
+  </states>
+ </pod>
+ <pod title='Alternative representation'
+     scanner='MathematicalFunctionData'
+     id='AlternativeRepresentations:MathematicalFunctionIdentityData'
+     position='600'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>e = e^z for z = 1</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <infos count='1'>
+   <info>
+    <link url='http://functions.wolfram.com/Constants/E/27/ShowAll.html'
+        text='More information' />
+   </info>
+  </infos>
+ </pod>
+ <pod title='Series representations'
+     scanner='MathematicalFunctionData'
+     id='SeriesRepresentations:MathematicalFunctionIdentityData'
+     position='700'
+     error='false'
+     numsubpods='3'>
+  <subpod title=''>
+   <plaintext>e = sum_(k=0)^∞ 1/(k!)</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>e = sum_(k=0)^∞ (k - 1)^2/(k!)</plaintext>
+  </subpod>
+  <subpod title=''>
+   <plaintext>e = sum_(k=0)^∞ (2 k + 1)/((2 k)!)</plaintext>
+  </subpod>
+  <expressiontypes count='3'>
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More'
+       input='SeriesRepresentations:MathematicalFunctionIdentityData__More' />
+  </states>
+  <infos count='2'>
+   <info text='n! is the factorial function'>
+    <link url='http://reference.wolfram.com/language/ref/Factorial.html'
+        text='Documentation'
+        title='Mathematica' />
+    <link url='http://functions.wolfram.com/GammaBetaErf/Factorial'
+        text='Properties'
+        title='Wolfram Functions Site' />
+    <link url='http://mathworld.wolfram.com/Factorial.html'
+        text='Definition'
+        title='MathWorld' />
+   </info>
+   <info>
+    <link url='http://functions.wolfram.com/Constants/E/06/ShowAll.html'
+        text='More information' />
+   </info>
+  </infos>
+ </pod>
+ <assumptions count='1'>
+  <assumption type='Clash'
+      word='e constant'
+      template='Assuming &quot;${word}&quot; is ${desc1}. Use as ${desc2} instead'
+      count='2'>
+   <value name='NamedConstant'
+       desc='a mathematical constant'
+       input='*C.e+constant-_*NamedConstant-' />
+   <value name='Person'
+       desc='a person'
+       input='*C.e+constant-_*Person-' />
+  </assumption>
+ </assumptions>
+</queryresult>

@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='6'
+    datatypes='Character'
+    timedout=''
+    timedoutpods=''
+    timing='0.9'
+    parsetiming='0.073'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP369112b7424if2h751300001i7b7a1eg02hh579'
+    host='https://www4f.wolframalpha.com'
+    server='39'
+    related='https://www4f.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa370112b7424if2h7513000038fd5b0h5gb1gd7g5469078360193170248'
+    version='2.6'
+    inputstring='ꙮ'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>ꙮ (character)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Visual form'
+     scanner='Character'
+     id='VisualForm'
+     position='200'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Name'
+     scanner='Character'
+     id='Names'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Cyrillic letter multiocular O</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Encodings'
+     scanner='Character'
+     id='CharacterEncodingsToggler:CharacterData'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CharacterData</microsource>
+   </microsources>
+   <plaintext>Unicode | U+A66E (decimal: 42606)
+HTML | &amp;#xA66E; | &amp;#42606;
+Wolfram Language | \:a66e</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More'
+       input='CharacterEncodingsToggler:CharacterData__More' />
+  </states>
+ </pod>
+ <pod title='Unicode block'
+     scanner='Character'
+     id='UnicodeBlock:CharacterData'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CharacterData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>Unicode</datasource>
+   </datasources>
+   <plaintext>Cyrillic Extended-B (42560 through 42655) (96 characters)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Unicode classification'
+     scanner='Character'
+     id='UnicodeClassification:CharacterData'
+     position='600'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CharacterData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>Unicode</datasource>
+   </datasources>
+   <plaintext>letter 〉 historic</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <sources count='1'>
+  <source url='https://www4f.wolframalpha.com/sources/CharacterDataSourceInformationNotes.html'
+      text='Character data' />
+ </sources>
+</queryresult>

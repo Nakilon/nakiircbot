@@ -1,0 +1,318 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='15'
+    datatypes='Character'
+    timedout=''
+    timedoutpods=''
+    timing='2.908'
+    parsetiming='0.266'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP442163i719gbf45c4g30000220747ch8016252h'
+    host='https://www4b.wolframalpha.com'
+    server='14'
+    related='https://www4b.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa443163i719gbf45c4g3000058bb4h4if2ffg0i85794385109236241385'
+    version='2.6'
+    inputstring='e'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>e (character)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Visual form'
+     scanner='Character'
+     id='VisualForm'
+     position='200'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Name'
+     scanner='Character'
+     id='Names'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Latin small letter E</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Upper case'
+     scanner='Character'
+     id='UppercaseMapping:CharacterData'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CharacterData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>Unicode</datasource>
+   </datasources>
+   <plaintext>E (U+0045)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Similar characters'
+     scanner='Character'
+     id='RelatedCharacters:CharacterData'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CharacterData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>Unicode</datasource>
+   </datasources>
+   <plaintext>℮ (estimated symbol) | ℯ (script small E)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Positions in alphabets'
+     scanner='Character'
+     id='Alphabets:CharacterData'
+     position='600'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CharacterData</microsource>
+   </microsources>
+   <plaintext>English | 5th letter (22nd letter from the end)
+Spanish | 5th letter (23rd letter from the end)
+French | 5th letter (22nd letter from the end)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More'
+       input='Alphabets:CharacterData__More' />
+  </states>
+ </pod>
+ <pod title='Encodings'
+     scanner='Character'
+     id='CharacterEncodingsToggler:CharacterData'
+     position='700'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CharacterData</microsource>
+   </microsources>
+   <plaintext>ASCII | 101 (hex: 41 | octal: 101 | binary: 01000001)
+Unicode | U+0065 (decimal: 101)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More'
+       input='CharacterEncodingsToggler:CharacterData__More' />
+  </states>
+ </pod>
+ <pod title='Typical letter frequencies in English'
+     scanner='Character'
+     id='LetterFrequencyGrid:CharacterData'
+     position='800'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CharacterData</microsource>
+   </microsources>
+   <plaintext>texts | anywhere in words | 13% (ranking among letters: 1st)
+dictionaries | anywhere in words | 11% (ranking among letters: 1st)
+ | beginning of words | 3.9% (ranking among letters: 12th)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Language occurrence'
+     scanner='Character'
+     id='CharFrequencyTable:CharacterData'
+     position='900'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CharacterData</microsource>
+   </microsources>
+   <plaintext>English | Spanish | Portuguese | Indonesian | Malay | French | German | Javanese | Turkish | Italian | ...</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='2'>
+   <state name='More'
+       input='CharFrequencyTable:CharacterData__More' />
+   <state name='Show frequencies'
+       input='CharFrequencyTable:CharacterData__Show frequencies' />
+  </states>
+ </pod>
+ <pod title='Standard blocks'
+     scanner='Character'
+     id='StandardBlocks:CharacterData'
+     position='1000'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CharacterData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>Unicode</datasource>
+   </datasources>
+   <plaintext>Unicode | Basic Latin (0 through 127) (128 characters)
+ISO 8859 | ISO 8859-1 (Latin-1) (character 101)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Phonetic alphabet'
+     scanner='Character'
+     id='PhoneticAlphabet:CharacterData'
+     position='1100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CharacterData</microsource>
+   </microsources>
+   <plaintext>Echo (ECK·OH)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Unicode classification'
+     scanner='Character'
+     id='UnicodeClassification:CharacterData'
+     position='1200'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>CharacterData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>Unicode</datasource>
+   </datasources>
+   <plaintext>letter 〉 lowercase</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Transliterations'
+     scanner='Character'
+     id='Transliterations'
+     position='1300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Greek | ϵ (epsilon)
+Russian | е</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Computer keyboards containing &quot;e&quot;'
+     scanner='ComputerKeyboard'
+     id='ComputerKeyboardsContainingLetter'
+     position='1400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>US English keyboard | United Kingdom keyboard | Chinese ChaJei keyboard | Japanese keyboard | Spanish keyboard | German keyboard</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='3'>
+   <state name='More'
+       input='ComputerKeyboardsContainingLetter__More' />
+   <state name='Less'
+       input='ComputerKeyboardsContainingLetter__Less' />
+   <state name='Show key location'
+       input='ComputerKeyboardsContainingLetter__Show key location' />
+  </states>
+ </pod>
+ <pod title='Wikipedia page hits history'
+     scanner='Data'
+     id='PopularityPod:WikipediaStatsData'
+     position='1500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='TimeSeriesPlot' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Log scale'
+       input='PopularityPod:WikipediaStatsData__Log scale' />
+  </states>
+ </pod>
+ <assumptions count='1'>
+  <assumption type='Clash'
+      word='e'
+      template='Assuming &quot;${word}&quot; is ${desc1}. Use as ${desc2} instead'
+      count='7'>
+   <value name='Character'
+       desc='a character'
+       input='*C.e-_*Character-' />
+   <value name='MusicNote'
+       desc='a musical note'
+       input='*C.e-_*MusicNote-' />
+   <value name='Particle'
+       desc='a particle'
+       input='*C.e-_*Particle-' />
+   <value name='NamedConstant'
+       desc='a mathematical constant'
+       input='*C.e-_*NamedConstant-' />
+   <value name='Unit'
+       desc='a unit'
+       input='*C.e-_*Unit-' />
+   <value name='MathWorld'
+       desc=' referring to a mathematical definition'
+       input='*C.e-_*MathWorld-' />
+   <value name='Gene'
+       desc='a gene'
+       input='*C.e-_*Gene-' />
+  </assumption>
+ </assumptions>
+ <sources count='1'>
+  <source url='https://www4b.wolframalpha.com/sources/CharacterDataSourceInformationNotes.html'
+      text='Character data' />
+ </sources>
+</queryresult>
