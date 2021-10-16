@@ -5,9 +5,11 @@ gem "json_pure"
 gem "infoboxer"
 gem "oga"
 gem "nakischema"
+gem "video_info"
+gem "metainspector", "=5.11.2"
 
 if "darwin" == Gem::Platform.local.os
-  gem "minitest", github: "Nakilon/minitest", branch: "patch"
+  gem "minitest", github: "Nakilon/minitest", branch: "patch"   # why patch?
   gem "minitest-around"
   gem "webmock", "=3.12.1"
 

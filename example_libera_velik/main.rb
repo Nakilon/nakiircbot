@@ -225,5 +225,19 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       end.compact
       add_to_queue.call dest, results.map(&:url).uniq.join(" ") unless results.empty?
     end unless wikis.empty?   # just to not create Thread for no reason
+    dup = what.dup
+    links = dup.enum_for(:scan, URI.regexp(%w{ http https })).map{ [$`.size, $&] }.map{ |a, b| dup[a, b.size] = " " * b.size; b }
+    threaded.call do
+      add_to_queue.call dest, ((
+        links.map do |link|
+          require "video_info"
+          t = VideoInfo.new link
+          "#{t.author}: \"#{t.title}\""
+        rescue VideoInfo::UrlError
+          require "metainspector"
+          "\"#{MetaInspector.new(link).best_title}\""
+        end.join ", "
+      ))
+    end unless links.empty? || dup[/a-z/i]
   end
 end

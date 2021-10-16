@@ -29,6 +29,18 @@ describe "fast" do
     assert_equal "PRIVMSG #channel :\\wp <Wikipedia article or search query>; \\wp-<lang> <query> (for <lang>.wikipedia.org)\n", client.gets
   end
 end
+describe "link titles" do
+  around{ |test| Timeout.timeout(3){ test.call } }
+  it "youtube links" do
+    client.puts ":user!user PRIVMSG #channel :https://www.youtube.com/watch?v=NoMiKSiwrvU https://youtu.be/NoMiKSiwrvU"
+    assert_equal "PRIVMSG #channel :Nakilon: \"from SuperCrastan\", Nakilon: \"from SuperCrastan\"\n", client.gets
+  end
+  it "other links" do
+    client.puts ":user!user PRIVMSG #channel :http://www.nakilon.pro"
+    assert_equal "PRIVMSG #channel :\"Nakilon's personal web page\"\n", client.gets
+  end
+  # TODO: test about not matching
+end
 
 describe "[[...]] and \\wiki" do
   before{ @client = client }
