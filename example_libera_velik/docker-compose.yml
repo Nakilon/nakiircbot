@@ -1,6 +1,6 @@
 version: "3.2"
 services:
-  main:
+  libera-velik:
     container_name: libera-velik
     image: google/cloud-sdk:alpine
     working_dir: /usr/src/app
@@ -38,4 +38,8 @@ services:
       - type: bind
         source: ./wa.key.txt
         target: /usr/src/app/wa.key.txt
+        read_only: true
+      - type: bind
+        source: ./reddit.yaml
+        target: /usr/src/app/reddit.yaml
         read_only: true
