@@ -31,6 +31,10 @@ describe "fast" do
 end
 describe "link titles" do
   around{ |test| Timeout.timeout(4){ test.call } }
+  it "reddit" do
+    client.puts ":user!user PRIVMSG #channel :https://www.reddit.com/hikch3"
+    assert_equal "PRIVMSG #channel :r/CatsSittingLikeThis: \"Congratulations! Since yesterday there is now 500 cats here sitting like this.\"\n", client.gets
+  end
   it "youtube" do
     client.puts ":user!user PRIVMSG #channel :https://www.youtube.com/watch?v=NoMiKSiwrvU https://youtu.be/NoMiKSiwrvU"
     assert_equal "PRIVMSG #channel :Nakilon: \"from SuperCrastan\", Nakilon: \"from SuperCrastan\"\n", client.gets

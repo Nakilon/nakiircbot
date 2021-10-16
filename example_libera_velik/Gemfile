@@ -6,7 +6,8 @@ gem "infoboxer"
 gem "oga"
 gem "nakischema"
 gem "video_info"
-gem "metainspector", "=5.11.2"
+gem "metainspector"
+gem "reddit_bot"
 
 if "darwin" == Gem::Platform.local.os
   gem "minitest", github: "Nakilon/minitest", branch: "patch"   # why patch?

@@ -65,6 +65,8 @@ GEM
     naught (1.1.0)
     nesty (1.0.2)
     net_http_timeout_errors (0.3.5)
+    nethttputils (0.4.2.0)
+      addressable
     nokogiri (1.12.5)
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
@@ -73,6 +75,9 @@ GEM
       ruby-ll (~> 2.1)
     public_suffix (4.0.6)
     racc (1.5.2)
+    reddit_bot (1.10.0)
+      json_pure
+      nethttputils (~> 0.4.2.0)
     ruby-ll (2.1.2)
       ansi
       ast
@@ -94,10 +99,11 @@ PLATFORMS
 DEPENDENCIES
   infoboxer
   json_pure
-  metainspector (= 5.11.2)
+  metainspector
   nakiircbot (~> 0.1.3)
   nakischema
   oga
+  reddit_bot
   video_info
 
 BUNDLED WITH

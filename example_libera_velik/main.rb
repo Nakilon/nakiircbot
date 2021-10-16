@@ -230,12 +230,38 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
     threaded.call do
       add_to_queue.call dest, ((
         links.map do |link|
-          require "video_info"
-          t = VideoInfo.new link
-          "#{t.author}: \"#{t.title}\""
-        rescue VideoInfo::UrlError
-          require "metainspector"
-          "\"#{MetaInspector.new(link).best_title}\""
+          if %w{ reddit com } == URI(link).host.split(?.).last(2)
+
+            # took from directlink gem, TODO: define it as a method there?
+            id = link[/\Ahttps:\/\/www\.reddit\.com\/gallery\/([0-9a-z]{5,6})\z/, 1] ||
+                 URI(link).path[/\A(?:\/r\/[0-9a-zA-Z_]+)?(?:\/comments|\/duplicates)?\/([0-9a-z]{5,6})(?:\/|\z)/, 1] ||
+                 fail("bad Reddit URL")
+            retry_on_json_parseerror = lambda do |&b|
+              t = 1
+              begin
+                b.call
+              rescue JSON::ParserError => e
+                fail "stupid Reddit can't return JSON" if 60 < t *= 2
+                sleep t
+                retry
+              end
+            end
+            require "reddit_bot"
+            RedditBot.logger.level = Logger::ERROR
+            json = retry_on_json_parseerror.call{ RedditBot::Bot.new(YAML.load_file "reddit.yaml").json :get, "/by_id/t3_#{id}" }
+            "#{json["data"]["children"][0]["data"]["subreddit_name_prefixed"]}: \""\
+            "#{json["data"]["children"][0]["data"]["title"]}\""
+
+          else
+            begin
+              require "video_info"
+              t = VideoInfo.new link
+              "#{t.author}: \"#{t.title}\""
+            rescue VideoInfo::UrlError
+              require "metainspector"
+              "\"#{MetaInspector.new(link).best_title}\""
+            end
+          end
         end.join ", "
       ))
     end unless dest == "#esolangs" || links.empty? || dup[/[a-z]/i]
