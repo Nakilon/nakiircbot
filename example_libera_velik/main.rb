@@ -238,6 +238,6 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
           "\"#{MetaInspector.new(link).best_title}\""
         end.join ", "
       ))
-    end unless links.empty? || dup[/a-z/i]
+    end unless dest == "#esolangs" || links.empty? || dup[/[a-z]/i]
   end
 end

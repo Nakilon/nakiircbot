@@ -30,16 +30,34 @@ describe "fast" do
   end
 end
 describe "link titles" do
-  around{ |test| Timeout.timeout(3){ test.call } }
-  it "youtube links" do
+  around{ |test| Timeout.timeout(4){ test.call } }
+  it "youtube" do
     client.puts ":user!user PRIVMSG #channel :https://www.youtube.com/watch?v=NoMiKSiwrvU https://youtu.be/NoMiKSiwrvU"
     assert_equal "PRIVMSG #channel :Nakilon: \"from SuperCrastan\", Nakilon: \"from SuperCrastan\"\n", client.gets
   end
-  it "other links" do
+  it "other" do
     client.puts ":user!user PRIVMSG #channel :http://www.nakilon.pro"
     assert_equal "PRIVMSG #channel :\"Nakilon's personal web page\"\n", client.gets
   end
-  # TODO: test about not matching
+
+  # TODO: use minitest to check if methods are called instead of waiting
+  before{ @client = client }
+  def gets
+    Timeout.timeout(3){ @client.gets }
+  rescue Timeout::Error
+  end
+  it "ignore before" do
+    client.puts ":user!user PRIVMSG #channel :a http://www.nakilon.pro"
+    refute gets
+  end
+  it "ignore after" do
+    client.puts ":user!user PRIVMSG #channel :http://www.nakilon.pro a"
+    refute gets
+  end
+  it "ignore #esolangs" do
+    client.puts ":user!user PRIVMSG #esolangs :http://www.nakilon.pro"
+    refute gets
+  end
 end
 
 describe "[[...]] and \\wiki" do
