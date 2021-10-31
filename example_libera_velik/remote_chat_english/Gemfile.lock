@@ -7,6 +7,7 @@ GEM
       cloud_events (>= 0.5.1, < 2.a)
       puma (>= 4.3.0, < 6.a)
       rack (~> 2.1)
+    json_pure (2.6.1)
     nio4r (2.5.7)
     puma (5.3.2)
       nio4r (~> 2.0)
@@ -18,6 +19,7 @@ PLATFORMS
 DEPENDENCIES
   damerau-levenshtein
   functions_framework
+  json_pure
 
 BUNDLED WITH
    2.1.4

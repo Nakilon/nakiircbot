@@ -1,5 +1,7 @@
 require "functions_framework"
 
+require_relative "common"
+
 FunctionsFramework.http do |request|
   s = JSON.load request.body.read
   fail unless s.encoding.to_s == "UTF-8"
@@ -34,17 +36,14 @@ FunctionsFramework.http do |request|
     gsub(/(?<=[^\s<])>(?=\z|\s)/, ' >').
     gsub(/(?<=\A|\s)<(?=[^\s>])/, '< ')
 
-  require_relative "common"
   line = Common.insert_spaces line
 
   next "" unless line[" "]
 
 
-  Common::Sep2021.learn
-
   emit = Enumerator.new do |e|
     loop do
-      t = Common::Sep2021.pick.each{ |_| _.upcase! if _ == "i" }.join(" ").
+      t = Common::Oct2021.pick_for_chat.each{ |_| _.upcase! if _ == "i" }.join(" ").
         gsub(/((?:\.\.\.|[.?!]) )(.)/){ "#{$1}#{$2.upcase}"}.
         gsub(/\b(a) ([eyuioa])/i, '\1n \2').
         gsub(/\b(a)n ([^eyuioa])/i, '\1 \2').

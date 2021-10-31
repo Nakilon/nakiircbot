@@ -50,6 +50,50 @@ module Common
       end.compact
     end
 
+  end unless false
+
+  module Oct2021
+    class << self
+      private
+      def get_key context, i
+        _, word, _, parent, label, tag, morph = context[i]
+        [
+          label, tag,
+          (word if tag == "PUNCT"),
+          ([label, tag] == ["AUX", "VERB"] && context[parent][4,2] == ["ROOT", "VERB"] && context[parent][-1]["tense"] == "PRESENT"),
+          ([label, tag] == ["AUX", "VERB"] && morph["mood"] == "INDICATIVE" && context[parent][4,2] == ["ROOT", "VERB"]),
+          ([label, tag] == ["ROOT", "VERB"] && parent == i && morph["person"] == "THIRD"),
+          ([label, tag] == ["ROOT", "VERB"] && parent == i && context.any?{ |_, word, _, parent,| word == "there" && parent == i }),
+          ([label, tag] == ["MARK", "ADP"] && context[parent][4,2] == ["ADVCL", "VERB"]),
+          ([label, tag] == ["NSUBJ", "PRON"] && morph["person"] == "THIRD"),
+          ([label, tag] == ["NSUBJ", "NOUN"] && context[parent][4,2] == ["ROOT", "VERB"] && context[parent][-1]["person"] == "THIRD"),
+          ([label, tag] == ["DOBJ", "PRON"] && morph["case"] == "ACCUSATIVE" && context[parent][4,2] == ["ROOT", "VERB"]),
+          ([label, tag] == ["ADV", "ADVMOD"] && context[parent][4,2] == ["ROOT", "VERB"]),
+          ([label, tag] == ["NSUBJ", "PRON"] && context[parent][4,2] == ["RCMOD", "VERB"] && context[parent][-1]["person"] == "THIRD"),
+        ]
+      end
+      public
+      def pick_for_chat
+        words = @@all.sample.drop(1)
+        words.size.times.map{ |i| @@knowledge.fetch(get_key words, i).sample }
+      end
+      def pick_and_print
+        words = @@all.sample.tap{ |_| _.each &method(:p) }.drop(1)
+        puts words.size.times.map{ |i| @@knowledge.fetch(get_key words, i).sample }.join " "
+      end
+    end
+
+    require "json/pure"
+    @@all = File.read("2020-12.jsonl").split("\n").map(&JSON.method(:load)).reject{ |_, *words| words.any?{ |_, word,| %w{ 's dont }.include? word } }
+    puts "loaded #{@@all.size}"
+    @@knowledge = {}
+    @@all.each do |_, *words|
+      words.size.times do |i|
+        key = get_key words, i
+        @@knowledge[key] ||= []
+        @@knowledge[key].push words[i][1]
+      end
+    end
   end
 
   def self.insert_spaces s
