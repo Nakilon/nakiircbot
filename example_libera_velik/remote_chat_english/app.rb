@@ -39,6 +39,7 @@ FunctionsFramework.http do |request|
 
   next "" unless line[" "]
 
+
   %w{ train.2021-01.txt train.2021-02.txt }.each &Common.method(:learn_sentences_and_words)
 
   learn_words = lambda do |slices|
@@ -55,15 +56,13 @@ FunctionsFramework.http do |request|
 
   emit = Enumerator.new do |e|
     loop do
-      mmul = Common.class_variable_get(:@@sentences).sample.reject do |type|
+      t = Common.class_variable_get(:@@sentences).sample.reject do |type|
         rand(2).zero? if %w{ not oh }.include? type
-      end
-      t = mmul.
-        map.with_index do |type, i|
-      next if i.zero? && %w{ ! : , }.include?(type)
-      Common.class_variable_get(:@@words).fetch(type).
-        sample[0].tap{ |_| _.upcase! if _ == "i" }
-      end.compact.join(" ").
+      end.map.with_index do |type, i|
+        next if i.zero? && %w{ ! : , }.include?(type)
+        Common.class_variable_get(:@@words).fetch(type).
+        sample[0]
+      end.compact.each{ |_| _.upcase! if _ == "i" }.join(" ").
         gsub(/((?:\.\.\.|[.?!]) )(.)/){ "#{$1}#{$2.upcase}"}.
         gsub(/\b(a) ([eyuioa])/i, '\1n \2').
         gsub(/\b(a)n ([^eyuioa])/i, '\1 \2').
@@ -76,15 +75,15 @@ FunctionsFramework.http do |request|
         gsub(/(?<=\A|\s)it is(?=\z|\s)/, "it's").
         gsub(/ (\.\.\.|[:,.?!])/, '\1').
         gsub("☺", ":#{?- if rand(2).zero?}#{%w{ ( ) | \\ / P D }.sample}")
-      e << [t, mmul] if t.count(" ") > 1 && t.size <= 150
+      e << t if t.count(" ") > 1 && t.size <= 150
     end
   end
 
+
   require "damerau-levenshtein"
-  variant, mmul = emit.take(10000).min_by do |variant, mmul|
+  variant = emit.take(10000).min_by do |variant|
     DamerauLevenshtein.distance line.downcase.split.sort.join, variant.downcase.split.sort.join
   end
-
 
   variant
 end
