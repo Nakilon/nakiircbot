@@ -40,32 +40,11 @@ FunctionsFramework.http do |request|
   next "" unless line[" "]
 
 
-  %w{ train.2021-01.txt train.2021-02.txt }.each &Common.method(:learn_sentences_and_words)
+  Common::Sep2021.learn
 
-  learn_words = lambda do |slices|
-    Common.read_mmul(slices).each do |line|
-      line.each do |word, type, i|
-        Common.class_variable_get(:@@words)[type] ||= []
-        Common.class_variable_get(:@@words)[type].push [word, i]
-        type
-      end
-    end
-  end
-  learn_words.call %w{ 2020-12.tree-tagger.txt 2021-01.tree-tagger.txt 2021-02.tree-tagger.txt }.
-    flat_map{ |filename| File.read(filename).split("\n") }.each_slice(2)
-
-  pick = lambda do
-    Common.class_variable_get(:@@sentences).sample.reject do |type|
-        rand(2).zero? if %w{ not oh }.include? type
-      end.map.with_index do |type, i|
-        next if i.zero? && %w{ ! : , }.include?(type)
-        Common.class_variable_get(:@@words).fetch(type).
-        sample[0]
-      end.compact
-  end
   emit = Enumerator.new do |e|
     loop do
-      t = pick.call.each{ |_| _.upcase! if _ == "i" }.join(" ").
+      t = Common::Sep2021.pick.each{ |_| _.upcase! if _ == "i" }.join(" ").
         gsub(/((?:\.\.\.|[.?!]) )(.)/){ "#{$1}#{$2.upcase}"}.
         gsub(/\b(a) ([eyuioa])/i, '\1n \2').
         gsub(/\b(a)n ([^eyuioa])/i, '\1 \2').
