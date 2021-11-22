@@ -43,7 +43,7 @@ FunctionsFramework.http do |request|
 
   emit = Enumerator.new do |e|
     loop do
-      t = Common::Oct2021.pick_for_chat.each{ |_| _.upcase! if _ == "i" }.join(" ").
+      t = Common::Nov2021.pick(line).
         gsub(/((?:\.\.\.|[.?!]) )(.)/){ "#{$1}#{$2.upcase}"}.
         gsub(/\b(a) ([eyuioa])/i, '\1n \2').
         gsub(/\b(a)n ([^eyuioa])/i, '\1 \2').
@@ -62,7 +62,7 @@ FunctionsFramework.http do |request|
 
 
   require "damerau-levenshtein"
-  variant = emit.take(10000).min_by do |variant|
+  variant = emit.take(10).min_by do |variant|
     DamerauLevenshtein.distance line.downcase.split.sort.join, variant.downcase.split.sort.join
   end
 

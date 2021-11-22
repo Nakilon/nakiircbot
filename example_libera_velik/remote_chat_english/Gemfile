@@ -2,3 +2,8 @@ source "https://rubygems.org"
 gem "json_pure"
 gem "functions_framework"
 gem "damerau-levenshtein"
+
+if "darwin" == Gem::Platform.local.os
+  gem "byebug"
+  gem "lineprofiler"
+end
