@@ -159,18 +159,18 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             *%w{ Plot },   # Mathematics
             # *%w{ UnitInformation },
           ].include? pod["scanner"]  # bad
-          elsif [
+          elsif [ # include
                   *%w{ Numeric NumberLine MathematicalFunctionData ContinuedFraction Simplification Integer Rational Factor Integral Series FunctionProperties Plotter NumberLine Reduce ODE },  # Mathematics
                   *%w{ Data },  # Chemistry
                   *%w{ Identity Date },  # Society & Culture
                   *%w{ Age Unit },  # Everyday Life
-                  *%w{ Arithmetic UnitInformation StringEncodings WordPuzzle RandomLookup NumberComparison Character ComputerKeyboard },
+                  *%w{ Arithmetic UnitInformation StringEncodings WordPuzzle RandomLookup NumberComparison Character ComputerKeyboard Geometry },
                 ].include?(pod["scanner"])
-            if pod["primary"] == "true" || ![
+            if pod["primary"] == "true" || ![   # exclude
               *%w{ PlotsOfSampleIndividualSolutions SampleSolutionFamily }, # ODE
               *%w{ ReactionStructures:ChemicalReactionData }, # Data (Chemistry)
               *%w{ Illustration }, # Arithmetic
-              *%w{ ComputerKeyboardsContainingLetter },
+              *%w{ ComputerKeyboardsContainingLetter VisualRepresentation },
             ].include?(pod["id"])
               subpods = pod.xpath("subpod").
                 map{ |_| [("#{_["title"]}: " unless _["title"].empty?), _.at_xpath("plaintext").text] }.

@@ -34,7 +34,7 @@ module NakiIRCBot
         socket.send str + "\n", 0
       end
       # socket.send "PASS #{password.strip}\n", 0 if twitch
-      socket_send.call "CAP REQ :sasl"
+      socket_send.call "CAP REQ :sasl" if password
       socket_send.call "NICK #{bot_name}"
       socket_send.call "USER #{bot_name} #{bot_name} #{bot_name} #{bot_name}" #unless twitch
 

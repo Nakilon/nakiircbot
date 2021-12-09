@@ -7,7 +7,7 @@ ENV["VELIK_NICKNAME"] = "velik2"
 ENV["VELIK_SERVER"] = "localhost"
 # ENV["VELIK_CHANNEL"] = "##nakilon"
 Thread.new{ require_relative "main" }.abort_on_exception = true
-client = server.accept.tap(&:gets).tap(&:gets).tap(&:gets)
+client = server.accept.tap(&:gets).tap(&:gets)
 
 require "timeout"
 
@@ -23,7 +23,7 @@ describe "fast" do
   it "\\help" do
     client.puts ":user!user PRIVMSG #channel :\\help"
     assert_equal "PRIVMSG #channel :available commands: [\"wiki\", \"wp\", \"wa\", \"rasel\", \"morse\", \"demorse\"]; usage help: \\help <cmd>\n", client.gets
-  end
+  end # TODO: \demorse 𐄁𐄁𐄁𐄁 𐄁 𐄁𑁋𐄁𐄁 𐄁𑁋𐄁𐄁 𑁋𑁋𑁋
   it "\\help wp" do
     client.puts ":user!user PRIVMSG #channel :\\help wp"
     assert_equal "PRIVMSG #channel :\\wp <Wikipedia article or search query>; \\wp-<lang> <query> (for <lang>.wikipedia.org)\n", client.gets
@@ -32,16 +32,16 @@ end
 describe "link titles" do
   around{ |test| Timeout.timeout(4){ test.call } }
   it "reddit" do
-    client.puts ":user!user PRIVMSG #channel :https://www.reddit.com/hikch3"
-    assert_equal "PRIVMSG #channel :r/CatsSittingLikeThis: \"Congratulations! Since yesterday there is now 500 cats here sitting like this.\"\n", client.gets
+    client.puts ":user!user PRIVMSG ##nakilon :https://www.reddit.com/hikch3"
+    assert_equal "PRIVMSG ##nakilon :r/CatsSittingLikeThis: \"Congratulations! Since yesterday there is now 500 cats here sitting like this.\"\n", client.gets
   end
   it "youtube" do
-    client.puts ":user!user PRIVMSG #channel :https://www.youtube.com/watch?v=NoMiKSiwrvU https://youtu.be/NoMiKSiwrvU"
-    assert_equal "PRIVMSG #channel :Nakilon: \"from SuperCrastan\", Nakilon: \"from SuperCrastan\"\n", client.gets
+    client.puts ":user!user PRIVMSG ##nakilon :https://www.youtube.com/watch?v=NoMiKSiwrvU https://youtu.be/NoMiKSiwrvU"
+    assert_equal "PRIVMSG ##nakilon :Nakilon: \"from SuperCrastan\", Nakilon: \"from SuperCrastan\"\n", client.gets
   end
   it "other" do
-    client.puts ":user!user PRIVMSG #channel :http://www.nakilon.pro"
-    assert_equal "PRIVMSG #channel :\"Nakilon's personal web page\"\n", client.gets
+    client.puts ":user!user PRIVMSG ##nakilon :http://www.nakilon.pro"
+    assert_equal "PRIVMSG ##nakilon :\"Nakilon's personal web page\"\n", client.gets
   end
 
   # TODO: use minitest to check if methods are called instead of waiting
@@ -51,15 +51,15 @@ describe "link titles" do
   rescue Timeout::Error
   end
   it "ignore before" do
-    client.puts ":user!user PRIVMSG #channel :a http://www.nakilon.pro"
+    client.puts ":user!user PRIVMSG ##nakilon :a http://www.nakilon.pro"
     refute gets
   end
   it "ignore after" do
-    client.puts ":user!user PRIVMSG #channel :http://www.nakilon.pro a"
+    client.puts ":user!user PRIVMSG ##nakilon :http://www.nakilon.pro a"
     refute gets
   end
-  it "ignore #esolangs" do
-    client.puts ":user!user PRIVMSG #esolangs :http://www.nakilon.pro"
+  it "ignore other channels" do
+    client.puts ":user!user PRIVMSG #channel :http://www.nakilon.pro"
     refute gets
   end
 end
@@ -156,7 +156,7 @@ require_relative "webmock_patch"
 describe "\\wa" do
   around do |test|
     WebMock.enable!
-    Timeout.timeout(6){ test.call }
+    Timeout.timeout(7){ test.call }
     WebMock.disable!
   end
   before do
@@ -240,6 +240,9 @@ describe "\\wa" do
   end
   it "rpn from 1 mln to 1 bln" do # scanner = NumberComparison
     stub_and_assert "random prime number from 1 mln to 1 bln", "rpnmlnbln"
+  end
+  it "triangle" do
+    stub_and_assert "area of triangle with sides 68, 85, 87", "triangle", " Result: 60 sqrt(2002)≈2684.62 | Triangle shape: acute triangle"
   end
 
   # https://www.wolframalpha.com/examples/
