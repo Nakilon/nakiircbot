@@ -63,6 +63,29 @@ describe "link titles" do
     refute gets
   end
 end
+describe "chat" do
+  around{ |test| Timeout.timeout(5){ test.call } }
+  before{ @client = client }
+  def gets
+    Timeout.timeout(4){ @client.gets.force_encoding("utf-8") }
+  rescue Timeout::Error
+  end
+  def cmd_and_refute cmd, expectation
+    @client.puts ":user!user PRIVMSG #channel :#{ENV["VELIK_NICKNAME"]} #{cmd}"
+    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ gets
+    refute_match expectation, reply
+  end
+  it "chat english" do
+    cmd_and_refute "hello world", /[а-яё]/i
+  end
+  it "chat russian" do
+    cmd_and_refute "привет мир", /[a-z]/i
+  end
+  it "ignores if nickname wasn't mentioned" do
+    client.puts ":user!user PRIVMSG #channel :hello world"
+    refute gets
+  end
+end
 
 describe "[[...]] and \\wiki" do
   before{ @client = client }

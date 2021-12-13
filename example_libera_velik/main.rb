@@ -33,7 +33,7 @@ require "net/http"
 require "json/pure"
 
 NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "nakilon", "Libera.Chat Internet Relay Chat Network",
-    *(ENV["VELIK_CHANNEL"] || %w{ ##nakilon #ruby-ru #ruby-offtopic #programming-ru }),
+    *(ENV["VELIK_CHANNEL"] || %w{ ##nakilon #ruby-ru #ruby-offtopic #programming-ru #botters-test }),
     password: (File.read("password") if nickname == "velik"), masterword: File.read("masterword") do |str, add_to_queue|
 
   next unless /\A:(?<who>[^\s!]+)!\S+ PRIVMSG (?<dest>\S+) :(?<what>.+)/ =~ str
@@ -209,7 +209,7 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
     threaded.call do
       args, kwargs = (ENV["LOCALHOST"] ? [["localhost", 8080], {}] : [["us-central1-nakilonpro.cloudfunctions.net", 443], use_ssl: true])
       Net::HTTP.start(*args, **kwargs) do |http|
-        response = http.request_post "/chat-english", JSON.dump(input), {Authorization: "bearer #{`gcloud auth print-identity-token #{ENV["SERVICE_ACCOUNT"]}`}"}
+        response = http.request_post "/chat-#{input[/[а-яё]/i] ? "russian" : "english"}", JSON.dump(input), {Authorization: "bearer #{`gcloud auth print-identity-token #{ENV["SERVICE_ACCOUNT"]}`}"}
         fail response.inspect unless response.is_a? Net::HTTPOK
         add_to_queue.call dest, " " + response.body.force_encoding("utf-8") unless response.body.empty?
       end
@@ -251,7 +251,6 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
             json = retry_on_json_parseerror.call{ RedditBot::Bot.new(YAML.load_file "reddit.yaml").json :get, "/by_id/t3_#{id}" }
             "#{json["data"]["children"][0]["data"]["subreddit_name_prefixed"]}: \""\
             "#{json["data"]["children"][0]["data"]["title"]}\""
-
           else
             begin
               require "video_info"

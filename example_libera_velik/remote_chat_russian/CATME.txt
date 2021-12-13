@@ -1,0 +1,20 @@
+scrape
+  $ wget -r -np -k -A *.txt -e robots=off -q --show-progress http://irc.linsovet.org.ua/logs/linux_raw/
+  $ wget -r -np -k -A linux.log.* -e robots=off -q --show-progress http://irc.linsovet.org.ua/logs/linux_raw.old/
+  $ rm irc.linsovet.org.ua/logs/linux_raw.old/2006/linux.log.22Feb2006?n=a
+  $ cpulimit -i -l 20 ruby sanitize.rb
+  $ ruby parse.rb
+markup
+  $ pr -td parsed/Aug2005-1.txt > temp.txt
+  $ gcloud ml language analyze-syntax --content-file=temp.txt > syntax.Aug2005-1.json
+  $ cpulimit -i -l 20 ruby google.rb < syntax.Aug2005-1.json > Aug2005-1.jsonl
+test lib
+  $ bundle exec irb -r./common
+  > puts Common::Dec2021.pick "привет", true
+test local function
+  $ bundle exec functions-framework-ruby
+  $ printf 'ты хуй' | json_xs -f string | curl -X POST -d@- http://localhost:8080
+test remote function
+  $ gcloud functions deploy ... --entry-point function --runtime ruby27 --trigger-http --memory 256MB --timeout 10s --max-instances 5
+  $ printf 'ты хуй' | json_xs -f string | curl -X POST -d@- https://...cloudfunctions.net/... -H "Authorization: bearer $(gcloud auth print-identity-token)"
+then just make it callable by velik's service account
