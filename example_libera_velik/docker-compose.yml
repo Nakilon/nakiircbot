@@ -43,3 +43,7 @@ services:
         source: ./reddit.yaml
         target: /usr/src/app/reddit.yaml
         read_only: true
+      - type: bind
+        source: ./tg.token
+        target: /usr/src/app/tg.token
+        read_only: true

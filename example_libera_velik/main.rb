@@ -29,22 +29,15 @@ end
 require "nakiircbot"
 nickname = ENV["VELIK_NICKNAME"] || "velik"
 
-require "net/http"
+require "nethttputils"
 require "json/pure"
 
 NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "nakilon", "Libera.Chat Internet Relay Chat Network",
     *(ENV["VELIK_CHANNEL"] || %w{ ##nakilon #ruby-ru #ruby-offtopic #programming-ru #botters-test }),
-    password: (File.read("password") if nickname == "velik"), masterword: File.read("masterword") do |str, add_to_queue|
+    password: (File.read("password") if nickname == "velik" || nickname == "velik2"), identity: "velik", masterword: File.read("masterword") do |str, add_to_queue|
 
   next unless /\A:(?<who>[^\s!]+)!\S+ PRIVMSG (?<dest>\S+) :(?<what>.+)/ =~ str
   add_to_queue.call "nakilon", str if dest == nickname && who != "nakilon"
-  dest = who if dest == nickname
-  next if [
-    %w{ #esolangs esolangs },
-  ].include? [dest, who]
-
-  next add_to_queue.call dest, what.tr("iI", "oO") if what.downcase == "ping"
-  next add_to_queue.call dest, what.tr("иИ", "оO") if what.downcase == "пинг"
 
   # for remote and slow replies
   threaded = lambda do |&block|
@@ -57,6 +50,18 @@ NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "
       add_to_queue.call dest, "thread error" unless dest == "nakilon"
     end
   end
+
+  threaded.call do
+    NetHTTPUtils.request_data "https://api.telegram.org/bot#{File.read "tg.token"}/sendMessage", :post, form: {chat_id: "@ruby_not_rails", text: "<#{who}> #{what}", disable_notification: true}
+  end if dest == "#ruby-ru"
+
+  dest = who if dest == nickname
+  next if [
+    %w{ #esolangs esolangs },
+  ].include? [dest, who]
+
+  next add_to_queue.call dest, what.tr("iI", "oO") if what.downcase == "ping"
+  next add_to_queue.call dest, what.tr("иИ", "оO") if what.downcase == "пинг"
 
   case what
   when /\A\\help\s*\z/

@@ -1,3 +1,4 @@
 /pkg/
 temp*
 .byebug_history
+.DS_Store
