@@ -3,7 +3,7 @@ module NakiIRCBot
   # class << self
   #   attr_accessor :channels
   # end
-  def self.start server, port, bot_name, master_name, welcome001, *channels, password: nil, masterword: nil, processors: [], tags: false
+  def self.start server, port, bot_name, master_name, welcome001, *channels, identity: nil, password: nil, masterword: nil, processors: [], tags: false
     # @@channels.replace channels.dup
 
     abort "matching bot_name and master_name may cause infinite recursion" if bot_name == master_name
@@ -98,7 +98,7 @@ module NakiIRCBot
             next socket_send.call "AUTHENTICATE PLAIN"
           when /\AAUTHENTICATE \+\z/
             logger.info "password"
-            next socket.send "AUTHENTICATE #{Base64.strict_encode64 "#{bot_name}\0#{bot_name}\0#{password}"}\n", 0
+            next socket.send "AUTHENTICATE #{Base64.strict_encode64 "\0#{identity || bot_name}\0#{password}"}\n", 0
           when /\A:[a-z]+\.libera\.chat 903 #{bot_name} :SASL authentication successful\z/
             next socket_send.call "CAP END"
 
