@@ -60,7 +60,7 @@ GEM
       nokogiri (~> 1.11)
     mini_portile2 (2.6.1)
     multipart-post (2.1.1)
-    nakiircbot (0.1.3)
+    nakiircbot (0.1.4)
     nakischema (0.1.4)
     naught (1.1.0)
     nesty (1.0.2)
