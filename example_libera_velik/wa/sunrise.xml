@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='5'
+    datatypes='CalendarEvent,City'
+    timedout=''
+    timedoutpods=''
+    timing='0.84'
+    parsetiming='0.343'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP11371423h8d8dccii770000019ib73bb24f6ae34'
+    host='https://www6b3.wolframalpha.com'
+    server='11'
+    related='https://www6b3.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa11381423h8d8dccii770000059dc2ha33i6e700d5481992349747128482'
+    version='2.6'
+    inputstring='sunrise in moscow'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext> sunrise | Moscow, Moscow | today</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Result for Moscow (December 13)'
+     scanner='Date'
+     id='Result'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <plaintext>8:51 am MSK
+(not accounting for local atmospheric conditions, which can have a several-minute effect)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Time difference from now (8:39:49 am)'
+     scanner='Date'
+     id='TimeDifferenceFromNow (time)'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>11 minutes 10 seconds in the future</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Clock image'
+     scanner='Date'
+     id='ClockImage'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Daylight information for December 13 in Moscow'
+     scanner='Date'
+     id='DaylightInformation'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>sunrise | 8:51 am MSK (11 minutes 24 seconds from now)
+sunset | 3:56 pm MSK (7 hours 16 minutes from now)
+duration of daylight | 7 hours 5 minutes</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More'
+       input='DaylightInformation__More' />
+  </states>
+ </pod>
+ <assumptions count='1'>
+  <assumption type='SubCategory'
+      word='moscow'
+      template='Assuming ${desc1}. Use ${desc2} instead'
+      count='9'>
+   <value name='{Moscow, Moscow, Russia}'
+       desc='Moscow (Russia)'
+       input='*DPClash.CityE.moscow-_**Moscow.Moscow.Russia--' />
+   <value name='{Moscow, Idaho, UnitedStates}'
+       desc='Moscow (Idaho, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Idaho.UnitedStates--' />
+   <value name='{Moscow, Pennsylvania, UnitedStates}'
+       desc='Moscow (Pennsylvania, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Pennsylvania.UnitedStates--' />
+   <value name='{Moscow, Wisconsin, UnitedStates}'
+       desc='Moscow (Wisconsin, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Wisconsin.UnitedStates--' />
+   <value name='{Moscow, Maine, UnitedStates}'
+       desc='Moscow (Maine, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Maine.UnitedStates--' />
+   <value name='{Moscow, Tennessee, UnitedStates}'
+       desc='Moscow (Tennessee, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Tennessee.UnitedStates--' />
+   <value name='{Moscow, Kansas, UnitedStates}'
+       desc='Moscow (Kansas, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Kansas.UnitedStates--' />
+   <value name='{Moscow, Maryland, UnitedStates}'
+       desc='Moscow (Maryland, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Maryland.UnitedStates--' />
+   <value name='{Moscow, Ohio, UnitedStates}'
+       desc='Moscow (Ohio, USA)'
+       input='*DPClash.CityE.moscow-_**Moscow.Ohio.UnitedStates--' />
+  </assumption>
+ </assumptions>
+ <userinfoused count='2'>
+  <userinfo name='Country' />
+  <userinfo name='TimeZone' />
+ </userinfoused>
+ <sources count='1'>
+  <source url='https://www6b3.wolframalpha.com/sources/CityDataSourceInformationNotes.html'
+      text='City data' />
+ </sources>
+</queryresult>

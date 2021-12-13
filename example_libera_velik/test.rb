@@ -267,6 +267,9 @@ describe "\\wa" do
   it "triangle" do
     stub_and_assert "area of triangle with sides 68, 85, 87", "triangle", " Result: 60 sqrt(2002)≈2684.62 | Triangle shape: acute triangle"
   end
+  it "sunrise" do
+    stub_and_assert "sunrise in moscow", "sunrise"
+  end
 
   # https://www.wolframalpha.com/examples/
   describe "by topic" do
