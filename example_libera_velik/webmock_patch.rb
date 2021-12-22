@@ -27,4 +27,3 @@ WebMock::HttpLibAdapters::NetHttpAdapter.instance_variable_get(:@webMockNetHTTP)
     end
   end
 end
-
