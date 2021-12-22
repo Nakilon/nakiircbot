@@ -1,8 +1,8 @@
 module NakiIRCBot
-  # @@channels = []
-  # class << self
-  #   attr_accessor :channels
-  # end
+  class << self
+    attr_accessor :queue
+  end
+  self.queue = []
   def self.start server, port, bot_name, master_name, welcome001, *channels, identity: nil, password: nil, masterword: nil, processors: [], tags: false
     # @@channels.replace channels.dup
 
@@ -38,11 +38,11 @@ module NakiIRCBot
       socket_send.call "NICK #{bot_name}"
       socket_send.call "USER #{bot_name} #{bot_name} #{bot_name} #{bot_name}" #unless twitch
 
-      queue = []
+      self.queue = []
       prev_socket_time = prev_privmsg_time = Time.now
       loop do
         begin
-          addr, msg = queue.shift
+          addr, msg = self.queue.shift
           next unless addr && msg   # TODO: how is it possible to have only one of them?
           addr = addr.codepoints.pack("U*").tr("\x00\x0A\x0D", "")
           fail "I should not PRIVMSG myself" if addr == bot_name
@@ -52,7 +52,7 @@ module NakiIRCBot
           prev_socket_time = prev_privmsg_time = Time.now
           socket_send.call privmsg
           break
-        end until queue.empty? if prev_privmsg_time + 5 < Time.now || server == "localhost"
+        end until self.queue.empty? if prev_privmsg_time + 5 < Time.now || server == "localhost"
 
         unless _ = Kernel::select([socket], nil, nil, 1)
           break if Time.now - prev_socket_time > 300
@@ -112,20 +112,20 @@ module NakiIRCBot
           #   socket_send.call "NOTICE",$1,"\001TIME 6:06:06, 6 Jun 06\001"
           when /\A#{'\S+ ' if tags}:(?<who>[^!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/
             next( if processors.empty?
-              queue.push [master_name, "nothing to reload"]
+              self.queue.push [master_name, "nothing to reload"]
             else
               processors.each do |processor|
-                queue.push [master_name, "reloading #{processor}"]
+                self.queue.push [master_name, "reloading #{processor}"]
                 load File.absolute_path processor
               end
             end ) if $~.named_captures == {"who"=>master_name, "where"=>bot_name, "what"=>"#{masterword.strip} reload"}
         end
 
         begin
-          yield str, ->(where, what){ queue.push [where, what] }
+          yield str, ->(where, what){ self.queue.push [where, what] }
         rescue => e
           puts e.full_message
-          queue.push [master_name, "yield error: #{e}"]
+          self.queue.push [master_name, "yield error: #{e}"]
         end
 
       rescue => e
@@ -135,7 +135,7 @@ module NakiIRCBot
           sleep 5
           break
         else
-          queue.push [master_name, "unhandled error: #{e}"]
+          self.queue.push [master_name, "unhandled error: #{e}"]
           sleep 5
         end
       end

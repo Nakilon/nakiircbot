@@ -29,11 +29,23 @@ end
 require "nakiircbot"
 nickname = ENV["VELIK_NICKNAME"] || "velik"
 
+
+require "google/cloud/pubsub"
+Google::Cloud::Pubsub.new.subscription("velik-sub").listen do |received_message|
+  NakiIRCBot.queue.push JSON.load(received_message.data).values_at("addr", "msg")
+  received_message.acknowledge!
+rescue
+  puts e.full_message
+  NakiIRCBot.queue.push "nakilon", e
+  raise
+end.start
+
+
 require "nethttputils"
 require "json/pure"
 
 NakiIRCBot.start (ENV["VELIK_SERVER"] || "irc.libera.chat"), "6666", nickname, "nakilon", "Libera.Chat Internet Relay Chat Network",
-    *(ENV["VELIK_CHANNEL"] || %w{ ##nakilon #ruby-ru #ruby-offtopic #programming-ru #botters-test }),
+    *(ENV["VELIK_CHANNEL"] || %w{ ##nakilon #ruby-ru #ruby-offtopic #programming-ru #botters-test #bots }),
     password: (File.read("password") if nickname == "velik" || nickname == "velik2"), identity: "velik", masterword: File.read("masterword") do |str, add_to_queue|
 
   next unless /\A:(?<who>[^\s!]+)!\S+ PRIVMSG (?<dest>\S+) :(?<what>.+)/ =~ str
