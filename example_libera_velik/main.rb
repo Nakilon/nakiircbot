@@ -34,7 +34,7 @@ require "google/cloud/pubsub"
 Google::Cloud::Pubsub.new.subscription("velik-sub").listen do |received_message|
   NakiIRCBot.queue.push JSON.load(received_message.data).values_at("addr", "msg")
   received_message.acknowledge!
-rescue
+rescue => e
   puts e.full_message
   NakiIRCBot.queue.push "nakilon", e
   raise
