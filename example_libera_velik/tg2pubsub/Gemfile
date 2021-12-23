@@ -1,0 +1,5 @@
+source "https://rubygems.org"
+# gem "json_pure"
+gem "functions_framework"
+gem "grpc", "<1.42"
+gem "google-cloud-pubsub"

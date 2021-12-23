@@ -1,0 +1,1 @@
+$ gcloud functions deploy ... --service-account ... --entry-point function --runtime ruby27 --trigger-http --memory 128MB --timeout 5s --max-instances 1 --allow-unauthenticated

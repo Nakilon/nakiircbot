@@ -2,11 +2,12 @@ version: "3.2"
 services:
   libera-velik:
     container_name: libera-velik
-    image: google/cloud-sdk:alpine
+    image: nakilonishe/gcloud-with-grpc-gem
     working_dir: /usr/src/app
-    command: sh -c "apk add ruby-dev curl-dev build-base ruby-etc && gem install bundler && apk add libxml2-dev libxslt-dev && NOKOGIRI_USE_SYSTEM_LIBRARIES= bundle install && gcloud auth activate-service-account --key-file=key.json && bundle exec ruby main.rb"
+    command: sh -c "apk add libxml2-dev libxslt-dev && NOKOGIRI_USE_SYSTEM_LIBRARIES= bundle install && bundle exec ruby main.rb"
     environment:
       - SERVICE_ACCOUNT=${SECRET_SERVICE_ACCOUNT}
+      - PUBSUB_KEYFILE=key.json
     volumes:
       - type: bind
         source: ./main.rb
