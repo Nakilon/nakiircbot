@@ -5,7 +5,10 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     ansi (1.5.0)
     ast (2.4.2)
+    byebug (11.1.3)
     concurrent-ruby (1.1.9)
+    crack (0.4.5)
+      rexml
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     faraday (1.8.0)
@@ -78,6 +81,7 @@ GEM
       google-protobuf (~> 3.14)
       googleapis-common-protos (>= 1.3.12, < 2.0)
       grpc (~> 1.27)
+    hashdiff (1.0.1)
     hashie (4.1.0)
     htmlentities (4.3.4)
     http-cookie (1.0.4)
@@ -109,6 +113,9 @@ GEM
       nesty (~> 1.0)
       nokogiri (~> 1.11)
     mini_portile2 (2.6.1)
+    minitest (5.15.0)
+    minitest-around (0.5.0)
+      minitest (~> 5.0)
     multi_json (1.15.0)
     multipart-post (2.1.1)
     nakiircbot (0.1.5)
@@ -130,6 +137,7 @@ GEM
     reddit_bot (1.10.0)
       json_pure
       nethttputils (~> 0.4.2.0)
+    rexml (3.2.5)
     ruby-ll (2.1.2)
       ansi
       ast
@@ -149,11 +157,16 @@ GEM
       iso8601 (~> 0.9.1)
       net_http_timeout_errors (~> 0.3.0)
       oga (~> 3.0)
+    webmock (3.12.1)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  byebug
   gapic-common (< 0.4)
   google-cloud-pubsub
   google-cloud-pubsub-v1 (< 0.6.1)
@@ -161,11 +174,13 @@ DEPENDENCIES
   infoboxer
   json_pure
   metainspector
+  minitest-around
   nakiircbot (~> 0.1.5)
   nakischema
   oga
   reddit_bot
   video_info
+  webmock (= 3.12.1)
 
 BUNDLED WITH
    2.1.4

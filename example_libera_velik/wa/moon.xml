@@ -1,0 +1,372 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='13'
+    datatypes='PlanetaryMoon'
+    timedout=''
+    timedoutpods=''
+    timing='2.648'
+    parsetiming='0.132'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP40823a40g3ab8ff7e3b000058bb3e0b2g2hadcf'
+    host='https://www6b3.wolframalpha.com'
+    server='14'
+    related='https://www6b3.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa40923a40g3ab8ff7e3b00004g48f19c9f6bddc64307842769377011871'
+    version='2.6'
+    inputstring='moon'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Moon</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Orbital properties'
+     scanner='Data'
+     id='BasicMoonOrbitalProperties:PlanetaryMoonData'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''>
+   <microsources>
+    <microsource>PlanetaryMoonData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>AllensAstrophysicalQuantities</datasource>
+    <datasource>NationalSpaceScienceDataCenter</datasource>
+    <datasource>SolarSystemDynamics</datasource>
+    <datasource>AstronomicalAlgorithms</datasource>
+    <datasource>PlanetaryTheoriesInRectangularAndSphericalVariables</datasource>
+   </datasources>
+   <plaintext>current distance from Earth | 379176 km
+59.45 a
+average distance from Earth | 385000 km
+60.36 a
+orbital period | 27.322 days</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='3'>
+   <state name='Show non-metric'
+       input='BasicMoonOrbitalProperties:PlanetaryMoonData__Show non-metric' />
+   <state name='More'
+       input='BasicMoonOrbitalProperties:PlanetaryMoonData__More' />
+   <state name='Show history'
+       input='BasicMoonOrbitalProperties:PlanetaryMoonData__Show history' />
+  </states>
+  <infos count='1'>
+   <info>
+    <units count='2'>
+     <unit short='a'
+         long='Earth equatorial radii' />
+     <unit short='km'
+         long='kilometers' />
+    </units>
+   </info>
+  </infos>
+ </pod>
+ <pod title='Physical properties'
+     scanner='Data'
+     id='BasicMoonPhysicalProperties:PlanetaryMoonData'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>PlanetaryMoonData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>AllensAstrophysicalQuantities</datasource>
+    <datasource>NationalSpaceScienceDataCenter</datasource>
+    <datasource>SolarSystemDynamics</datasource>
+   </datasources>
+   <plaintext>mass | 7.3459×10^22 kg
+0.0123 M_ earth
+average radius | 1737.4 km
+rotation period | 27.321661 days
+age | 4.53 billion yr</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='2'>
+   <state name='Show non-metric'
+       input='BasicMoonPhysicalProperties:PlanetaryMoonData__Show non-metric' />
+   <state name='More'
+       input='BasicMoonPhysicalProperties:PlanetaryMoonData__More' />
+  </states>
+  <infos count='1'>
+   <info>
+    <units count='4'>
+     <unit short='kg'
+         long='kilograms' />
+     <unit short='km'
+         long='kilometers' />
+     <unit short='M_'
+         long='Earth masses' />
+     <unit short='yr'
+         long='years' />
+    </units>
+   </info>
+  </infos>
+ </pod>
+ <pod title='Current phase from Earth'
+     scanner='Data'
+     id='PlanetPhase:PlanetaryMoonData'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>PlanetaryMoonData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>AllensAstrophysicalQuantities</datasource>
+    <datasource>AstronomicalAlgorithms</datasource>
+    <datasource>PlanetaryTheoriesInRectangularAndSphericalVariables</datasource>
+    <datasource>SolarSystemDynamics</datasource>
+   </datasources>
+   <plaintext> | waning gibbous moon
+83.98% illuminated</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='2'>
+   <state name='Show unoriented'
+       input='PlanetPhase:PlanetaryMoonData__Show unoriented' />
+   <state name='Larger image'
+       input='PlanetPhase:PlanetaryMoonData__Larger image' />
+  </states>
+ </pod>
+ <pod title='Moon rise and set'
+     scanner='PlanetaryAstronomy'
+     id='MoonRiseAndSet'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>(not currently visible)
+moon rise | 9:05 pm MSK | Saturday, February 19, 2022
+moon set | 9:11 am MSK | Sunday, February 20, 2022
+moon rise | 10:29 pm MSK | Sunday, February 20, 2022
+moon set | 9:20 am MSK | Monday, February 21, 2022</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <pod title='Moon path from Moscow'
+     scanner='PlanetaryAstronomy'
+     id='MoonPathFromLocation'
+     position='600'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Current Earth-Sun-Moon configuration'
+     scanner='Data'
+     id='EarthSunMoonConfiguration:PlanetaryMoonData'
+     position='700'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>PlanetaryMoonData</microsource>
+   </microsources>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Equatorial location'
+     scanner='Data'
+     id='Location:PlanetaryMoonData'
+     position='800'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>PlanetaryMoonData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>AllensAstrophysicalQuantities</datasource>
+    <datasource>AstronomicalAlgorithms</datasource>
+    <datasource>PlanetaryTheoriesInRectangularAndSphericalVariables</datasource>
+    <datasource>SolarSystemDynamics</datasource>
+   </datasources>
+   <plaintext>right ascension | 13^h 16^m 1^s
+declination | -5° 25&apos; 20&quot;</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Show decimal'
+       input='Location:PlanetaryMoonData__Show decimal' />
+  </states>
+  <infos count='1'>
+   <info>
+    <units count='3'>
+     <unit short='^h'
+         long='hours of right ascension' />
+     <unit short='^m'
+         long='minutes of right ascension' />
+     <unit short='^s'
+         long='seconds of right ascension' />
+    </units>
+   </info>
+  </infos>
+ </pod>
+ <pod title='Probes'
+     scanner='Data'
+     id='Probes:PlanetaryMoonData'
+     position='900'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>PlanetaryMoonData</microsource>
+   </microsources>
+   <plaintext>Ranger 3 | Ranger 5 | Luna 4 | Luna 6 | Zond 3 | ...</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More'
+       input='Probes:PlanetaryMoonData__More' />
+  </states>
+ </pod>
+ <pod title='Current sky position from Moscow'
+     scanner='Data'
+     id='SunLocation:PlanetaryMoonData'
+     position='1000'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>PlanetaryMoonData</microsource>
+   </microsources>
+   <datasources>
+    <datasource>AllensAstrophysicalQuantities</datasource>
+    <datasource>AstronomicalAlgorithms</datasource>
+    <datasource>PlanetaryTheoriesInRectangularAndSphericalVariables</datasource>
+    <datasource>SolarSystemDynamics</datasource>
+   </datasources>
+   <plaintext>altitude | -36° 57&apos; 57&quot; (below horizon)
+azimuth | 26° 27&apos; 43.8&quot; (NNE)
+constellation | Virgo
+angular diameter | 31.504&apos;</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Show decimal'
+       input='SunLocation:PlanetaryMoonData__Show decimal' />
+  </states>
+ </pod>
+ <pod title='Current Earth phase from the Moon'
+     scanner='Data'
+     id='EarthPhaseFromMoon:PlanetaryMoonData'
+     position='1100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <microsources>
+    <microsource>PlanetaryMoonData</microsource>
+   </microsources>
+   <plaintext> waxing crescent phase</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Larger image'
+       input='EarthPhaseFromMoon:PlanetaryMoonData__Larger image' />
+  </states>
+ </pod>
+ <pod title='Wikipedia summary'
+     scanner='Data'
+     id='WikipediaSummary:PlanetaryMoonData'
+     position='1200'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>The Moon is Earth&apos;s only natural satellite. At about one-quarter the diameter of Earth (comparable to the width of Australia), it is the largest natural satellite in the Solar System relative to the size of its planet, the fifth largest satellite in the Solar System overall, and is larger than any known dwarf planet. The Moon is a planetary-mass object ...</plaintext>
+   <infos count='1'>
+    <info>
+     <link url='http://en.wikipedia.org/wiki?curid=19331'
+         text='Full entry' />
+    </info>
+   </infos>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='More'
+       input='WikipediaSummary:PlanetaryMoonData__More' />
+  </states>
+ </pod>
+ <pod title='Wikipedia page hits history'
+     scanner='Data'
+     id='PopularityPod:WikipediaStatsData'
+     position='1300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext></plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+  <states count='1'>
+   <state name='Log scale'
+       input='PopularityPod:WikipediaStatsData__Log scale' />
+  </states>
+ </pod>
+ <assumptions count='1'>
+  <assumption type='Clash'
+      word='moon'
+      template='Assuming &quot;${word}&quot; is ${desc1}. Use as ${desc2} instead'
+      count='5'>
+   <value name='PlanetaryMoon'
+       desc=' referring to planetary moons'
+       input='*C.moon-_*PlanetaryMoon-' />
+   <value name='ExamplePage'
+       desc='a general topic'
+       input='*C.moon-_*ExamplePage-' />
+   <value name='Unit'
+       desc='a unit'
+       input='*C.moon-_*Unit-' />
+   <value name='Word'
+       desc='a word'
+       input='*C.moon-_*Word-' />
+   <value name='Surname'
+       desc='a surname'
+       input='*C.moon-_*Surname-' />
+  </assumption>
+ </assumptions>
+ <sources count='1'>
+  <source url='https://www6b3.wolframalpha.com/sources/PlanetaryMoonDataSourceInformationNotes.html'
+      text='Planetary moon data' />
+ </sources>
+</queryresult>

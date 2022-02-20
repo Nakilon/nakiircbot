@@ -12,12 +12,12 @@ gem "reddit_bot"
 gem "google-cloud-pubsub-v1", "<0.6.1"
 gem "gapic-common", "<0.4"
 gem "grpc", "=1.35.0"   # Alpine docker image nakilonishe/gcloud-with-grpc-gem
+                        # also https://github.com/grpc/grpc/issues/28271#issuecomment-1006599267
 gem "google-cloud-pubsub"
 
-if "darwin" == Gem::Platform.local.os
-  gem "minitest", github: "Nakilon/minitest", branch: "patch"   # why patch?
+group :test, optional: true do
+  # gem "minitest", github: "Nakilon/minitest", branch: "patch"   # why patch?
   gem "minitest-around"
   gem "webmock", "=3.12.1"
-
   gem "byebug"
 end

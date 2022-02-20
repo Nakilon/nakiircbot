@@ -7,7 +7,7 @@ ENV["VELIK_NICKNAME"] = "velik2"
 ENV["VELIK_SERVER"] = "localhost"
 # ENV["VELIK_CHANNEL"] = "##nakilon"
 Thread.new{ require_relative "main" }.abort_on_exception = true
-client = server.accept.tap(&:gets).tap(&:gets)
+client = server.accept.tap(&:gets).tap(&:gets).tap(&:gets)
 
 require "timeout"
 
@@ -188,8 +188,9 @@ describe "\\wa" do
   end
   def cmd cmd, short
     @client.puts ":user!user PRIVMSG #channel :\\wa#{short} #{cmd}"
-    assert /\APRIVMSG #channel :(.+)\n\z/ =~ @client.gets.force_encoding("utf-8")
-    $1
+    str = @client.gets.force_encoding "utf-8"
+    assert_match /\APRIVMSG #channel :(.+)\n\z/, str
+    str[/\APRIVMSG #channel :(.+)\n\z/, 1]
   end
   def stub_and_assert query, file = nil, expectation = nil, short = nil
     # https://github.com/bblimke/webmock/issues/693#issuecomment-285485320
@@ -269,6 +270,9 @@ describe "\\wa" do
   end
   it "sunrise" do
     stub_and_assert "sunrise in moscow", "sunrise"
+  end
+  it "moon" do
+    stub_and_assert "moon", "moon"
   end
 
   # https://www.wolframalpha.com/examples/
