@@ -72,8 +72,9 @@ describe "chat" do
   end
   def cmd_and_refute cmd, expectation
     @client.puts ":user!user PRIVMSG #channel :#{ENV["VELIK_NICKNAME"]} #{cmd}"
-    assert /\APRIVMSG #channel :(?<reply>.+)\n\z/ =~ gets
-    refute_match expectation, reply
+    r, s = /\APRIVMSG #channel :(?<reply>.+)\n\z/, gets
+    assert_match r, s
+    refute_match expectation, s[r,1]
   end
   it "chat english" do
     cmd_and_refute "hello world", /[а-яё]/i

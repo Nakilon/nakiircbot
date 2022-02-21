@@ -10,6 +10,9 @@ testing remote
   # env var TEST=_ to use nickname velik2
   env var LOCALHOST=_ to use localhost google cloud function
   env var SERVICE_ACCOUNT=... to use service account
+    $ SERVICE_ACCOUNT=... bundle exec ruby test.rb -n '/russia/'
+to test connecting to real network from local machine
+  $ SERVICE_ACCOUNT=... VELIK_NICKNAME=velik2 VELIK_CHANNEL='##nakilon' bundle exec ruby main.rb
 to update
   $ cd ~/_/libera-velik
   $ git pull
@@ -21,7 +24,5 @@ to add webmocked \wa tests
   change 'nil' to any string
   $ bundle exec ruby -I../lib test.rb -n '/.../'
   $ git add wa/...
-to test connecting to real network from local machine
-  $ VELIK_NICKNAME=velik2 VELIK_CHANNEL='##nakilon' bundle exec ruby -I../lib main.rb
 to deploy don't forget to copy the keys
 currently the same key is used for remotes and for bridge
