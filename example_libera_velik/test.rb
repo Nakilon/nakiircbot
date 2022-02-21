@@ -275,6 +275,9 @@ describe "\\wa" do
   it "moon" do
     stub_and_assert "moon", "moon"
   end
+  it "unix time" do
+    stub_and_assert "unix time", "unix"
+  end
 
   # https://www.wolframalpha.com/examples/
   describe "by topic" do

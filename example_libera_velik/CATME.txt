@@ -26,3 +26,6 @@ to add webmocked \wa tests
   $ git add wa/...
 to deploy don't forget to copy the keys
 currently the same key is used for remotes and for bridge
+if the service account key file stops working
+  $ gcloud auth activate-service-account ... --key-file=key.json
+  $ gcloud config set account <default account>

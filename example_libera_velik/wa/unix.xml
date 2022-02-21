@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult success='true'
+    error='false'
+    xml:space='preserve'
+    numpods='5'
+    datatypes=''
+    timedout=''
+    timedoutpods=''
+    timing='0.605'
+    parsetiming='0.20500000000000002'
+    parsetimedout='false'
+    recalculate=''
+    id='MSP9263125gg41a0h0bddc400005a775a2e01cc73if'
+    host='https://www6b3.wolframalpha.com'
+    server='1'
+    related='https://www6b3.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa9264125gg41a0h0bddc4000045c9a593g93d87ce7794153569472399936'
+    version='2.6'
+    inputstring='unix time'>
+ <pod title='Input interpretation'
+     scanner='Identity'
+     id='Input'
+     position='100'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>convert current time to Unix time</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Result'
+     scanner='Identity'
+     id='Result'
+     position='200'
+     error='false'
+     numsubpods='1'
+     primary='true'>
+  <subpod title=''
+      primary='true'>
+   <plaintext>1645436725 (Unix time)</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Time offset from MSK'
+     scanner='Date'
+     id='TimeOffsets'
+     position='300'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>-3 hours</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Clocks'
+     scanner='Date'
+     id='ClockImages'
+     position='400'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>Coordinated Universal Time
+
+9:45:25 am UTC
+Monday, February 21 Moscow
+
+12:45:25 pm MSK
+Monday, February 21</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Default' />
+  </expressiontypes>
+ </pod>
+ <pod title='Current Greenwich mean time'
+     scanner='Date'
+     id='CurrentGMTTime'
+     position='500'
+     error='false'
+     numsubpods='1'>
+  <subpod title=''>
+   <plaintext>9:45:25 am GMT | Monday, February 21, 2022</plaintext>
+  </subpod>
+  <expressiontypes count='1'>
+   <expressiontype name='Grid' />
+  </expressiontypes>
+ </pod>
+ <userinfoused count='1'>
+  <userinfo name='TimeZone' />
+ </userinfoused>
+</queryresult>
