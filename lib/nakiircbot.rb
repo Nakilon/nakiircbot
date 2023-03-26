@@ -1,8 +1,5 @@
 module NakiIRCBot
-  class << self
-    attr_accessor :queue
-  end
-  self.queue = []
+  @queue = Queue.new
   def self.start server, port, bot_name, master_name, welcome001, *channels, identity: nil, password: nil, masterword: nil, processors: [], tags: false
     # @@channels.replace channels.dup
 
@@ -11,6 +8,7 @@ module NakiIRCBot
     require "fileutils"
     FileUtils.mkdir_p "logs"
     require "logger"
+    # TODO: check how I've implemented the logger in trovobot
     original_formatter = Logger::Formatter.new
     logger = Logger.new "logs/txt", "daily",
                         progname: bot_name, datetime_format: "%y%m%d %H%M%S",
@@ -22,17 +20,32 @@ module NakiIRCBot
     logger.level = ENV["LOGLEVEL_#{name}"].to_sym if ENV.include? "LOGLEVEL_#{name}"
     puts "#{name} logger.level = #{logger.level}"
 
+    socket = nil
+    # https://stackoverflow.com/a/49476047/322020
+    socket_send = lambda do |str|
+      logger.info "> #{str}"
+      socket.send str + "\n", 0
+    end
+    prev_privmsg_time = Time.now
+    Thread.new do
+      loop do
+        sleep [prev_privmsg_time + 5 - Time.now, 0].max
+        addr, msg = @queue.pop
+        addr = addr.codepoints.pack("U*").tr("\x00\x0A\x0D", "")
+        fail "I should not PRIVMSG myself" if addr == bot_name
+        msg = msg.to_s.codepoints.pack("U*").chomp[/^(\x01*)(.*)/m,2].gsub("\x00", "[NUL]").gsub("\x0A", "[LF]").gsub("\x0D", "[CR]")
+        privmsg = "PRIVMSG #{addr} :#{msg}"
+        privmsg[-4..-1] = "..." until privmsg.bytesize <= 475
+        prev_privmsg_time = Time.now
+        socket_send.call privmsg
+      end
+    end.abort_on_exception = true
     # https://en.wikipedia.org/wiki/List_of_Internet_Relay_Chat_commands
     loop do
       logger.info "reconnect"
       require "socket"
       socket = TCPSocket.new server, port
 
-      # https://stackoverflow.com/a/49476047/322020
-      socket_send = lambda do |str|
-        logger.info "> #{str}"
-        socket.send str + "\n", 0
-      end
       # socket_send.call "CAP LS"
       # https://ircv3.net/specs/extensions/sasl-3.1.html
       socket_send.call "CAP REQ :sasl" if password
@@ -40,23 +53,10 @@ module NakiIRCBot
       socket_send.call "NICK #{bot_name}"
       socket_send.call "USER #{bot_name} #{bot_name} #{bot_name} #{bot_name}" #unless twitch
 
-      self.queue = []
+      @queue.clear
       prev_socket_time = prev_privmsg_time = Time.now
       loop do
-        begin
-          addr, msg = self.queue.shift
-          next unless addr && msg   # TODO: how is it possible to have only one of them?
-          addr = addr.codepoints.pack("U*").tr("\x00\x0A\x0D", "")
-          fail "I should not PRIVMSG myself" if addr == bot_name
-          msg = msg.to_s.codepoints.pack("U*").chomp[/^(\x01*)(.*)/m,2].gsub("\x00", "[NUL]").gsub("\x0A", "[LF]").gsub("\x0D", "[CR]")
-          privmsg = "PRIVMSG #{addr} :#{msg}"
-          privmsg[-4..-1] = "..." until privmsg.bytesize <= 475
-          prev_socket_time = prev_privmsg_time = Time.now
-          socket_send.call privmsg
-          break
-        end until self.queue.empty? if prev_privmsg_time + 5 < Time.now || server == "localhost"
-
-        unless _ = Kernel::select([socket], nil, nil, 1)
+        unless _ = Kernel::select([socket], nil, nil, 1)  # TODO: use IO#wait_readable?
           break if Time.now - prev_socket_time > 300
           next
         end
@@ -88,6 +88,7 @@ module NakiIRCBot
           when /\A:tmi.twitch.tv 001 #{Regexp.escape bot_name} :Welcome, GLHF!\z/
             socket_send.call "JOIN #{channels.join ","}"
             socket_send.call "CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands"
+            tags = true
             next
           when /\A:NickServ!NickServ@services\. NOTICE #{Regexp.escape bot_name} :This nickname is registered. Please choose a different nickname, or identify via \x02\/msg NickServ identify <password>\x02\.\z/,
                /\A:NickServ!NickServ@services\.libera\.chat NOTICE #{Regexp.escape bot_name} :This nickname is registered. Please choose a different nickname, or identify via \x02\/msg NickServ IDENTIFY #{Regexp.escape bot_name} <password>\x02\z/
@@ -112,22 +113,13 @@ module NakiIRCBot
           #   socket_send.call "NOTICE",$1,"\001PING #{rand 10000000000}\001"
           # when /^:([^!]+)!\S+ PRIVMSG #{Regexp.escape bot_name} :\001TIME\001$/
           #   socket_send.call "NOTICE",$1,"\001TIME 6:06:06, 6 Jun 06\001"
-          when /\A#{'\S+ ' if tags}:(?<who>[^!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/
-            next( if processors.empty?
-              self.queue.push [master_name, "nothing to reload"]
-            else
-              processors.each do |processor|
-                self.queue.push [master_name, "reloading #{processor}"]
-                load File.absolute_path processor
-              end
-            end ) if $~.named_captures == {"who"=>master_name, "where"=>bot_name, "what"=>"#{masterword.strip} reload"}
         end
 
         begin
-          yield str, ->(where, what){ self.queue.push [where, what] }
-        rescue => e
-          puts e.full_message
-          self.queue.push [master_name, "yield error: #{e}"]
+          yield str, ->(where, what){ @queue.push [where, what] }, */\A#{'\S+ ' if tags}:(?<who>[^!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/.match(str).to_a
+        rescue
+          puts $!.full_message
+          @queue.push ["##{bot_name}", "error: #{$!}, #{$!.backtrace.first}"]
         end
 
       rescue => e
@@ -137,12 +129,19 @@ module NakiIRCBot
           sleep 5
           break
         else
-          self.queue.push [master_name, "unhandled error: #{e}"]
+          @queue.push ["##{bot_name}", "unhandled error: #{e}"]
           sleep 5
         end
       end
 
     end
 
+  end
+
+  module Common
+    def self.ping add_to_queue, where, what
+      return add_to_queue[where, what.tr("iI", "oO")] if "ping" == what.downcase
+      return add_to_queue[where, what.tr("иИ", "оO")] if "пинг" == what.downcase
+    end
   end
 end
