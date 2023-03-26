@@ -1,10 +1,11 @@
 module NakiIRCBot
+  require "base64"
+
   @queue = Queue.new
   def self.start server, port, bot_name, master_name, welcome001, *channels, identity: nil, password: nil, masterword: nil, processors: [], tags: false
     # @@channels.replace channels.dup
 
     abort "matching bot_name and master_name may cause infinite recursion" if bot_name == master_name
-    require "base64"
     require "fileutils"
     FileUtils.mkdir_p "logs"
     require "logger"
@@ -143,5 +144,111 @@ module NakiIRCBot
       return add_to_queue[where, what.tr("iI", "oO")] if "ping" == what.downcase
       return add_to_queue[where, what.tr("иИ", "оO")] if "пинг" == what.downcase
     end
+  end
+
+  def self.parse_log path, bot_name
+    get_tags = lambda do |str|
+      str[1..-1].split(?;).map do |pair|
+        (a, b) = pair.split ?=
+        fail if a.empty?
+        [a, b]
+      end.to_h
+    end
+    File.new(path).each(chomp: true).drop(1).map do |line|
+      case line
+      when /\AD, /
+      when /\AI, \[(\S+) #\d+\]  INFO -- #{bot_name}: (.+)\z/
+        _ = Base64.decode64($2).force_encoding "utf-8"
+        [
+          DateTime.parse($1).to_time,
+          *case _
+          when /\A> /,
+               "reconnect",
+               "< :tmi.twitch.tv 001 #{bot_name} :Welcome, GLHF!",
+               "< :tmi.twitch.tv 002 #{bot_name} :Your host is tmi.twitch.tv",
+               "< :tmi.twitch.tv 003 #{bot_name} :This server is rather new",
+               "< :tmi.twitch.tv 004 #{bot_name} :-",
+               "< :tmi.twitch.tv 375 #{bot_name} :-",
+               "< :tmi.twitch.tv 376 #{bot_name} :>",
+               /\A< :#{bot_name}!#{bot_name}@#{bot_name}\.tmi\.twitch\.tv JOIN #[a-z\d_]+\z/,
+               /\A< :#{bot_name}\.tmi\.twitch\.tv 353 #{bot_name} /,
+               /\A< :#{bot_name}\.tmi\.twitch\.tv 366 #{bot_name} /,
+               "< :tmi.twitch.tv CAP * ACK :twitch.tv/membership twitch.tv/tags twitch.tv/commands",
+               "< :tmi.twitch.tv CAP * NAK :sasl",
+               "< :tmi.twitch.tv NOTICE * :Improperly formatted auth",
+               "< :tmi.twitch.tv RECONNECT"
+          when /\A< (\S+) :tmi\.twitch\.tv USERSTATE ##{bot_name}\z/ # wtf?
+          when /\A< :([^\s!]+)!\1@\1\.tmi\.twitch\.tv (JOIN|PART) #([a-z\d_]+)\z/
+            [$3, $2, $1]
+          when /\A< (?:\S+ )?:([^\s!]+)!\1@\1\.tmi\.twitch\.tv PRIVMSG #([a-z\d_]+) :((?:\S.*)?\S)\z/
+            [$2, "PRIVMSG", $1, $3]
+          when /\A< (\S+) :tmi\.twitch\.tv CLEARMSG #([a-z\d_]+) :((?:\S.*)?\S)\z/
+            [$2, "CLEARMSG", get_tags[$1].fetch("login"), $3]
+          when /\A< (\S+) :tmi\.twitch\.tv CLEARCHAT #([a-z\d_]+) :([^\s!]+)\z/
+            [$2, "CLEARCHAT", $3, get_tags[$1].fetch("ban-duration")]
+          when /\A< @emote-only=0;room-id=\d+ :tmi\.twitch\.tv ROOMSTATE #([a-z\d_]+)\z/
+            [$1, "ROOMSTATE EMOTEONLY 0"]
+          when /\A< @emote-only=1;room-id=\d+ :tmi\.twitch\.tv ROOMSTATE #([a-z\d_]+)\z/
+            [$1, "ROOMSTATE EMOTEONLY 1"]
+          when /\A< @msg-id=emote_only_off :tmi\.twitch\.tv NOTICE #([a-z\d_]+) :This room is no longer in emote-only mode\.\z/
+            [$1, "EMOTE_ONLY_OFF"]
+          when /\A< @msg-id=emote_only_on :tmi\.twitch\.tv NOTICE #([a-z\d_]+) :This room is now in emote-only mode\.\z/
+            [$1, "EMOTE_ONLY_ON"]
+          when /\A< @followers-only=-1;room-id=\d+ :tmi\.twitch\.tv ROOMSTATE #([a-z\d_]+)\z/
+            [$1, "ROOMSTATE FOLLOWERSONLY 0"]
+          when /\A< @msg-id=followers_off :tmi\.twitch\.tv NOTICE #([a-z\d_]+) :This room is no longer in followers-only mode\.\z/
+            [$1, "FOLLOWERS_ONLY_OFF"]
+          when /\A< :tmi\.twitch\.tv HOSTTARGET #([a-z\d_]+) :(\S+) (\d+)\z/
+            next if "-" == $2 # wtf?
+            fail unless $2 == $2.downcase
+            [$1, "HOST", $2, $3.to_i]
+          when /\A< @msg-id=host_target_went_offline :tmi\.twitch\.tv NOTICE #([a-z\d_]+) :(\S+) has gone offline\. Exiting host mode\.\z/
+            fail unless $2 == $2.downcase
+            [$1, "HOST_TARGET_WENT_OFFLINE", $2]
+          when /\A< @msg-id=host_on :tmi\.twitch\.tv NOTICE #([a-z\d_]+) :Now hosting (\S+)\.\z/
+            [$1, "NOTICE HOST", $2]
+          when /\A< (\S+) :tmi\.twitch\.tv USERNOTICE #([a-z\d_]+)(?: :((?:\S.*)?\S))?\z/
+            tags = get_tags[$1]
+            fail unless tags.fetch("display-name").downcase == tags.fetch("login")
+            [
+              $2,
+              tags["msg-id"].upcase,
+              *case tags.fetch "msg-id"
+              when "raid"
+                fail if $3
+                [tags.fetch("display-name"), tags.fetch("msg-param-viewerCount").to_i.tap{ |_| fail unless _ > 0 }]
+              when "resub"
+                [tags.fetch("display-name"), *$3]
+              when "sub"
+                fail if $3
+                [tags.fetch("display-name")]
+              when "submysterygift"
+                # fail unless tags["msg-param-mass-gift-count"] == "1"
+                # fail unless tags["msg-param-sender-count"] == "1"
+                fail if $3
+                [tags.fetch("display-name"), tags.fetch("msg-param-mass-gift-count")]
+              when "subgift"
+                fail unless "1" == tags.fetch("msg-param-gift-months")
+                # fail unless tags["msg-param-months"] == "1"
+                fail if $3
+                [tags.fetch("display-name")]
+              when "bitsbadgetier"
+                fail unless $3
+                [tags.fetch("display-name")]
+              when "primepaidupgrade"
+                fail if $3
+                [tags.fetch("display-name")]
+              else
+                fail [tags["msg-id"], _, $3].inspect
+              end
+            ]
+          else
+            fail "bad I:base64 #{_.inspect}"
+          end
+        ]
+      else
+        fail line.inspect
+      end
+    end.compact.select{ |__, _| _ }.tap{ |_| fail unless 1 == _.map(&:first).map(&:day).uniq.size }
   end
 end
