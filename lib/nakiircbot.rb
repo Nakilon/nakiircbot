@@ -150,13 +150,14 @@ module NakiIRCBot
   end
 
   module Common
-    def self.ping add_to_queue, where, what
-      return add_to_queue[where, what.tr("iI", "oO")] if "ping" == what.downcase
-      return add_to_queue[where, what.tr("иИ", "оO")] if "пинг" == what.downcase
+    def self.ping add_to_queue, what
+      return add_to_queue.call what[1..-1].tr "iI", "oO" if "\\ping" == what.downcase
+      return add_to_queue.call what[1..-1].tr "иИ", "оO" if "\\пинг" == what.downcase
     end
   end
 
   def self.parse_log path, bot_name
+    require "time"
     get_tags = lambda do |str|
       str[1..-1].split(?;).map do |pair|
         (a, b) = pair.split ?=
@@ -167,14 +168,12 @@ module NakiIRCBot
     File.new(path).each(chomp: true).drop(1).map do |line|
       case line
       when /\AD, /
-      when /\AI, \[(\S+) #\d+\]  INFO -- #{bot_name}: (.+)\z/
+      when /\A[IW], \[(\S+) #\d+\]  (?:INFO|WARN) -- #{bot_name}: (.+)\z/
         _ = Base64.decode64($2).force_encoding "utf-8"
         [
           DateTime.parse($1).to_time,
           *case _
           when /\A> /,
-               "reconnect",
-               "< :tmi.twitch.tv 001 #{bot_name} :Welcome, GLHF!",
                "< :tmi.twitch.tv 002 #{bot_name} :Your host is tmi.twitch.tv",
                "< :tmi.twitch.tv 003 #{bot_name} :This server is rather new",
                "< :tmi.twitch.tv 004 #{bot_name} :-",
@@ -188,6 +187,9 @@ module NakiIRCBot
                "< :tmi.twitch.tv NOTICE * :Improperly formatted auth",
                "< :tmi.twitch.tv RECONNECT"
           when /\A< (\S+) :tmi\.twitch\.tv USERSTATE ##{bot_name}\z/ # wtf?
+          when "reconnect",
+               "< :tmi.twitch.tv 001 #{bot_name} :Welcome, GLHF!"
+            [nil, "RECONNECT"]
           when /\A< :([^\s!]+)!\1@\1\.tmi\.twitch\.tv (JOIN|PART) #([a-z\d_]+)\z/
             [$3, $2, $1]
           when /\A< (?:\S+ )?:([^\s!]+)!\1@\1\.tmi\.twitch\.tv PRIVMSG #([a-z\d_]+) :((?:\S.*)?\S)\z/
@@ -195,7 +197,7 @@ module NakiIRCBot
           when /\A< (\S+) :tmi\.twitch\.tv CLEARMSG #([a-z\d_]+) :((?:\S.*)?\S)\z/
             [$2, "CLEARMSG", get_tags[$1].fetch("login"), $3]
           when /\A< (\S+) :tmi\.twitch\.tv CLEARCHAT #([a-z\d_]+) :([^\s!]+)\z/
-            [$2, "CLEARCHAT", $3, get_tags[$1].fetch("ban-duration")]
+            [$2, "CLEARCHAT", $3, get_tags[$1].fetch("target-user-id")]
           when /\A< @emote-only=0;room-id=\d+ :tmi\.twitch\.tv ROOMSTATE #([a-z\d_]+)\z/
             [$1, "ROOMSTATE EMOTEONLY 0"]
           when /\A< @emote-only=1;room-id=\d+ :tmi\.twitch\.tv ROOMSTATE #([a-z\d_]+)\z/
@@ -248,17 +250,20 @@ module NakiIRCBot
               when "primepaidupgrade"
                 fail if $3
                 [tags.fetch("display-name")]
+              when "viewermilestone"
+                fail if $3
+                [tags.fetch("display-name")]
               else
-                fail [tags["msg-id"], _, $3].inspect
+                fail "unknown USERNOTICE: #{[tags["msg-id"], _, $3].inspect}"
               end
             ]
           else
-            fail "bad I:base64 #{_.inspect}"
+            fail "bad log line: #{_.inspect}"
           end
         ]
       else
         fail line.inspect
       end
-    end.compact.select{ |__, _| _ }.tap{ |_| fail unless 1 == _.map(&:first).map(&:day).uniq.size }
+    end.compact.tap{ |_| fail unless 1 == _.map(&:first).map(&:day).uniq.size }
   end
 end
