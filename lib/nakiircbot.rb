@@ -24,28 +24,33 @@ module NakiIRCBot
     socket = nil
     # https://stackoverflow.com/a/49476047/322020
     socket_send = lambda do |str|
-      logger.info "> #{str}"
+      logger.warn "> #{str}"
       socket.send str + "\n", 0
     end
     prev_privmsg_time = Time.now
-    Thread.new do
+    queue_thread = Thread.new do
+      Thread.current.abort_on_exception = true
       loop do
         sleep [prev_privmsg_time + 5 - Time.now, 0].max
         addr, msg = @queue.pop
-        addr = addr.codepoints.pack("U*").tr("\x00\x0A\x0D", "")
-        fail "I should not PRIVMSG myself" if addr == bot_name
-        msg = msg.to_s.codepoints.pack("U*").chomp[/^(\x01*)(.*)/m,2].gsub("\x00", "[NUL]").gsub("\x0A", "[LF]").gsub("\x0D", "[CR]")
-        privmsg = "PRIVMSG #{addr} :#{msg}"
+        fail "I should not PRIVMSG myself" if bot_name == addr = addr.codepoints.pack("U*").tr("\x00\x0A\x0D", "")
+        privmsg = "PRIVMSG #{addr} :#{msg.to_s.codepoints.pack("U*").chomp[/^(\x01*)(.*)/m,2].gsub("\x00", "[NUL]").gsub("\x0A", "[LF]").gsub("\x0D", "[CR]")}"
         privmsg[-4..-1] = "..." until privmsg.bytesize <= 475
         prev_privmsg_time = Time.now
         socket_send.call privmsg
       end
-    end.abort_on_exception = true
+    end
     # https://en.wikipedia.org/wiki/List_of_Internet_Relay_Chat_commands
+    require "socket"
     loop do
-      logger.info "reconnect"
-      require "socket"
-      socket = TCPSocket.new server, port
+      socket = begin
+        logger.warn "reconnect"
+        TCPSocket.new server, port
+      rescue Errno::ENETDOWN, SocketError, Errno::ENETUNREACH
+        sleep 5
+        retry
+      end
+      queue_thread.run
 
       # socket_send.call "CAP LS"
       # https://ircv3.net/specs/extensions/sasl-3.1.html
@@ -62,7 +67,7 @@ module NakiIRCBot
           next
         end
         prev_socket_time = Time.now
-        socket_str = _[0][0].gets chomp: true
+        socket_str = _[0][0].gets chomp: true   # зависло после закрытия крышки
         break unless socket_str
         str = socket_str.force_encoding("utf-8").scrub
         if /\A:\S+ 372 /.match? str   # MOTD
@@ -94,14 +99,14 @@ module NakiIRCBot
           when /\A:NickServ!NickServ@services\. NOTICE #{Regexp.escape bot_name} :This nickname is registered. Please choose a different nickname, or identify via \x02\/msg NickServ identify <password>\x02\.\z/,
                /\A:NickServ!NickServ@services\.libera\.chat NOTICE #{Regexp.escape bot_name} :This nickname is registered. Please choose a different nickname, or identify via \x02\/msg NickServ IDENTIFY #{Regexp.escape bot_name} <password>\x02\z/
             abort "no password" unless password
-            logger.info "password"
+            logger.warn "password"
             next socket.send "PRIVMSG NickServ :identify #{bot_name} #{password.strip}\n", 0
           # when /\A:[a-z]+\.libera\.chat CAP \* LS :/
           #   next socket_send "CAP REQ :sasl" if $'.split.include? "sasl"
           when /\A:[a-z]+\.libera\.chat CAP \* ACK :sasl\z/
             next socket_send.call "AUTHENTICATE PLAIN"
           when /\AAUTHENTICATE \+\z/
-            logger.info "password"
+            logger.warn "password"
             next socket.send "AUTHENTICATE #{Base64.strict_encode64 "\0#{identity || bot_name}\0#{password}"}\n", 0
           when /\A:[a-z]+\.libera\.chat 903 #{bot_name} :SASL authentication successful\z/
             next socket_send.call "CAP END"
@@ -117,7 +122,12 @@ module NakiIRCBot
         end
 
         begin
-          yield str, ->(where, what){ @queue.push [where, what] }, */\A#{'\S+ ' if tags}:(?<who>[^!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/.match(str).to_a
+          yield str,
+            ->(where, what){ @queue.push [where, what] },
+            */\A#{'\S+ ' if tags}:(?<who>[^!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/.match(str).to_a.tap{ |_, who, where, what|
+              # p [_, who, where, what]
+              logger.warn "#{where} <#{who}> #{what}" if what
+            }
         rescue
           puts $!.full_message
           @queue.push ["##{bot_name}", "error: #{$!}, #{$!.backtrace.first}"]
@@ -127,7 +137,7 @@ module NakiIRCBot
         puts e.full_message
         case e
         when Errno::ECONNRESET, Errno::ECONNABORTED, Errno::ETIMEDOUT, Errno::EPIPE
-          sleep 5
+          sleep 1
           break
         else
           @queue.push ["##{bot_name}", "unhandled error: #{e}"]
