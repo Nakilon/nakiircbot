@@ -1,0 +1,23 @@
+PATH
+  remote: ../..
+  specs:
+    nakiircbot (1.0.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.8.4)
+      public_suffix (>= 2.0.2, < 6.0)
+    nethttputils (0.4.4.0)
+      addressable
+    public_suffix (5.0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  nakiircbot!
+  nethttputils
+
+BUNDLED WITH
+   2.1.4

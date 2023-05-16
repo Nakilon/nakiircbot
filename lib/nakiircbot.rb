@@ -18,6 +18,7 @@ module NakiIRCBot
       original_formatter.call severity, datetime, progname, Base64.strict_encode64(msg)
       # TODO: maybe encode the whole string for a case of invalid progname?
     }
+    logger.level = Logger::WARN
     logger.level = ENV["LOGLEVEL_#{name}"].to_sym if ENV.include? "LOGLEVEL_#{name}"
     puts "#{name} logger.level = #{logger.level}"
 
@@ -52,7 +53,7 @@ module NakiIRCBot
         until i = @buffer.index(?\n)
           @buffer.concat( rescue_socket do
             return unless select [socket], nil, nil, 1
-            @socket.read(@socket.nread).tap{ |_| raise SocketError if _.empty? }
+            @socket.read(@socket.nread).tap{ |_| raise SocketError, "empty read" if _.empty? }
           end )
         end
         @buffer.slice!(0..i).chomp
