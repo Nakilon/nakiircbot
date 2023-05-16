@@ -1,9 +1,8 @@
 Features:
 
-* hot-reloadable modules ('processors')
-* logger (base64 for encoding compatibility)
-* some flood protection
-* async message queue
 * errors handling
+* flood protection
+* logger (base64 for encoding compatibility)
+* async message queue
 
-TODO: get rid of temporary twitch hardcode
+TODO: get rid of some twitch hardcode
