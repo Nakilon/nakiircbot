@@ -1,5 +1,6 @@
 require_relative "common"
 
+
 clips = <<~HEREDOC.split("\n")
   #zaebis четко
   #живиживиживи
@@ -282,4 +283,9 @@ fail unless "Алло, Буянов?" == smart_match("буянов", clips, &:it
 fail unless "это тильт" == smart_match("тильт", clips, &:itself)
 fail unless "МАШИНА ЛЕРА" == smart_match("лера машина", clips, &:itself)
 
-p clip "#ta_samaya_lera", "лера машина"
+
+# fail unless "Ключ-карта TerraGroup Labs (Красная)" == Common.method(:get_item_name).call("красная")
+
+fail unless p(Common.price("кот"))[/\AТерапевт купит "Статуэтка кота" за \d+ ₽, цена в барахолке: \d+ ₽\z/]
+fail unless p(Common.price("slick"))[/\AБарахольщик купит "Бронежилет \\"LBT-6094A Slick Plate Carrier\\" \(Олива\)" за \d+ ₽\z/]
+fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"\"" == Common.price("тарковская")

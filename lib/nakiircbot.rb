@@ -30,6 +30,8 @@ module NakiIRCBot
       @logger = logger
       @server = server
       @port = port
+      @password = password
+      @bot_name = bot_name
 
       @socket = nil
       def self.rescue_socket
@@ -41,11 +43,29 @@ module NakiIRCBot
         retry
       end
       private_class_method :rescue_socket
+      # @mutex = Mutex.new
+      def self.write str
+        socket.send str + "\n", 0
+      end
+      def self.log str
+        @logger.warn "> #{str}"
+        write str
+      end
       def self.socket
-        @socket ||= rescue_socket do
-          @logger.warn "reconnect"
-          TCPSocket.new(@server, @port)#.tap{ queue_thread.run }
-        end
+        return @socket if @socket
+        # @mutex.synchronize do   # otherwise, I suppose, the second thread is racing the socket nilling
+          rescue_socket do
+            @logger.warn "reconnect"
+            @socket = TCPSocket.new @server, @port
+            # socket_log.call "CAP LS"
+            # https://ircv3.net/specs/extensions/sasl-3.1.html
+            log "CAP REQ :sasl" if @password
+            write "PASS #{@password.strip}"   # https://dev.twitch.tv/docs/irc/authenticate-bot/
+            log "NICK #{@bot_name}"
+            log "USER #{@bot_name} #{@bot_name} #{@bot_name} #{@bot_name}"
+            @socket
+          end
+        # end
       end
       private_class_method :socket
       @buffer = ""
@@ -57,13 +77,6 @@ module NakiIRCBot
           end )
         end
         @buffer.slice!(0..i).chomp
-      end
-      def self.write str
-        socket.send str + "\n", 0
-      end
-      def self.log str
-        @logger.warn "> #{str}"
-        write str
       end
     end
     prev_privmsg_time = Time.now
@@ -83,13 +96,6 @@ module NakiIRCBot
 
     # https://en.wikipedia.org/wiki/List_of_Internet_Relay_Chat_commands
     loop do
-      # socket_log.call "CAP LS"
-      # https://ircv3.net/specs/extensions/sasl-3.1.html
-      socket.log "CAP REQ :sasl" if password
-      socket.write "PASS #{password.strip}"   # https://dev.twitch.tv/docs/irc/authenticate-bot/
-      socket.log "NICK #{bot_name}"
-      socket.log "USER #{bot_name} #{bot_name} #{bot_name} #{bot_name}" #unless twitch
-
       @queue.clear
       prev_socket_time = prev_privmsg_time = Time.now
       loop do

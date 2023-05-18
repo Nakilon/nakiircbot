@@ -2,3 +2,4 @@ source "https://rubygems.org"
 
 gem "nakiircbot", path: "../.."
 gem "nethttputils"
+gem "oga"

@@ -36,6 +36,12 @@ NakiIRCBot.start(
     end
   end
 
+  if /\A\\(цена|price) (?<input>.+)/ =~ what
+    threaded.call do
+      add_to_queue.call where, "@#{who}, #{Common.price input}"
+    end
+  end
+
   if %w{ #ta_samaya_lera }.include? where
     old = File.exist?("goons.txt") ? File.read("goons.txt") : "?"
     next add_to_queue.call where, "@#{who}, Goons were last seen at #{old}" if "\\goons" == what
