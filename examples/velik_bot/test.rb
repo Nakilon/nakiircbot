@@ -288,4 +288,5 @@ fail unless "МАШИНА ЛЕРА" == smart_match("лера машина", clip
 
 fail unless p(Common.price("кот"))[/\AТерапевт купит "Статуэтка кота" за \d+ ₽, цена в барахолке: \d+ ₽\z/]
 fail unless p(Common.price("slick"))[/\AБарахольщик купит "Бронежилет \\"LBT-6094A Slick Plate Carrier\\" \(Олива\)" за \d+ ₽\z/]
-fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"\"" == Common.price("тарковская")
+fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"\"" == p(Common.price("тарковская"))
+fail unless "Механик купит \"Ручной пулемет РПК-16 5.45x39\" за 12522 ₽, цена в барахолке: 44672 ₽" == p(Common.price("буянов"))   # apply min_by -- do not select some 'Бврвбан' variation of this gun

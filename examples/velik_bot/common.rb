@@ -75,13 +75,17 @@ module Common
   require "oga"
   def self.price query
     name = get_item_name query
-    html = Oga.parse_html NetHTTPUtils.request_data( ( JSON.load( NetHTTPUtils.request_data "https://tarkov.team/_drts/entity/directory__listing/query/items_dir_ltg/", form: {
-      _type_: :json,
-      no_url: 0,
-      num: 1,
-      query: name,
-      v: "1.3.105-2023-20-0",
-    } ).first or return "can't find #{name.inspect}" ).fetch("url") ).tap{ |_| File.write "temp.htm", _ }.force_encoding "utf-8"
+    html = Oga.parse_html NetHTTPUtils.request_data( (
+      JSON.load( NetHTTPUtils.request_data "https://tarkov.team/_drts/entity/directory__listing/query/items_dir_ltg/", form: {
+        _type_: :json,
+        no_url: 0,
+        num: 15,
+        query: name,
+        v: "1.3.105-2023-20-0",
+      } ).min_by do |_|
+        DidYouMean::Levenshtein.distance name, _["title"]
+      end or return "can't find #{name.inspect}"
+    ).fetch("url") ).tap{ |_| File.write "temp.htm", _ }.force_encoding "utf-8"
     "#{
       html.at_css("[data-name='entity_field_field_prodat_torgovcu']").text
     } купит #{name.inspect} за #{
