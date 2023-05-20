@@ -1,7 +1,7 @@
 # TODO: add mutex
-threaded = lambda do |&block|
-  Thread.new do
-    block.call
+threaded = lambda do |*args, &block|
+  Thread.new *args do |*args|
+    block.call *args
   rescue StandardError, WebMock::NetConnectNotAllowedError
     puts $!.full_message
   end
@@ -31,13 +31,13 @@ NakiIRCBot.start(
   next add_to_queue.call where, "спокойной ночи, @lezhebok" if "#ta_samaya_lera" == where && "lezhebok" == who && (what.downcase["я спать"] || what.downcase["спокойной"])
 
   if /\A\\(клип|clip) (?<input>.+)/ =~ what
-    threaded.call do
-      add_to_queue.call where, clip(where, input)
+    threaded.call where.dup, input.dup do |where, input|
+      add_to_queue.call where, Common.clip(where, input)
     end
   end
 
   if /\A\\(цена|price) (?<input>.+)/ =~ what
-    threaded.call do
+    threaded.call where.dup, input.dup, who.dup do |where, input, who|
       add_to_queue.call where, "@#{who}, #{Common.price input}"
     end
   end

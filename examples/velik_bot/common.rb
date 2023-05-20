@@ -25,7 +25,8 @@ def refresh
   } )
 end
 
-def clip where, query
+module Common
+  def self.clip where, query
   request = lambda do |mtd, **form|
     JSON.load begin
       NetHTTPUtils.request_data \
@@ -48,9 +49,7 @@ def clip where, query
     t["data"] + t["pagination"]["cursor"].then{ |_| _ ? f[_] : [] }
   end
   smart_match(query, f.call.sort_by{ |_| -_["view_count"] }){ |_| _["title"] }.values_at("title", "url").join " "
-end
-
-module Common
+  end
   def self.get_item_name query
     locale = JSON.load File.read "Server/project/assets/database/locales/global/ru.json"
     all = JSON.load(File.read "Server/project/assets/database/templates/items.json").each_with_object({}) do |(id, item), h|
@@ -73,9 +72,24 @@ module Common
   end
   private_class_method :get_item_name
   require "oga"
+  def self.parse_response txt
+    html = Oga.parse_html txt.force_encoding "utf-8"
+    "#{
+      html.at_css("[data-name='entity_field_field_prodat_torgovcu']").text
+    } купит %s за #{
+      html.at_css("[data-name='entity_field_field_cena_prodazi_torgovca'] > .drts-entity-field-value").text.gsub(/(\d) (\d)/, '\1\2')
+    }" + if html.at_xpath("//*[@data-display-name='detailed' and .//*[.='Кол-во слотов']]//*[@data-name='entity_field_field_price']")
+      return "can't parse price for %s (error: 1)" if html.at_css(".minus")
+      ", цена в барахолке: #{html.at_css("[data-name='entity_field_field_avg7daysprice'] > .drts-entity-field-value").text.gsub(/(\d) (\d)/, '\1\2')}"
+    else
+      return "can't parse price for %s (error: 2)" unless html.at_css(".minus")
+      ""
+    end
+  end
+  private_class_method :parse_response
   def self.price query
     name = get_item_name query
-    html = Oga.parse_html NetHTTPUtils.request_data( (
+    parse_response( NetHTTPUtils.request_data( (
       JSON.load( NetHTTPUtils.request_data "https://tarkov.team/_drts/entity/directory__listing/query/items_dir_ltg/", form: {
         _type_: :json,
         no_url: 0,
@@ -85,18 +99,6 @@ module Common
       } ).min_by do |_|
         DidYouMean::Levenshtein.distance name, _["title"]
       end or return "can't find #{name.inspect}"
-    ).fetch("url") ).tap{ |_| File.write "temp.htm", _ }.force_encoding "utf-8"
-    "#{
-      html.at_css("[data-name='entity_field_field_prodat_torgovcu']").text
-    } купит #{name.inspect} за #{
-      html.at_css("[data-name='entity_field_field_cena_prodazi_torgovca'] > .drts-entity-field-value").text.gsub(/(\d) (\d)/, '\1\2')
-    }" + if html.at_css(".e-con-full [data-name='entity_field_field_price'] > .drts-entity-field-value")
-      return "can't parse price for #{name.inspect}" if html.at_css(".minus")
-      # html.at_css("[data-name='entity_field_field_slots'] > .drts-entity-field-value").text
-      ", цена в барахолке: #{html.at_css("[data-name='entity_field_field_avg7daysprice'] > .drts-entity-field-value").text.gsub(/(\d) (\d)/, '\1\2')}"
-    else
-      return "can't parse price for #{name.inspect}" unless html.at_css(".minus")
-      ""
-    end
+    ).fetch "url" ).tap{ |_| File.write "temp.htm", _ } ) % name.inspect
   end
 end
