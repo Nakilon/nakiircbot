@@ -24,6 +24,8 @@ NakiIRCBot.start(
 
   next unless who   # not PRIVMSG
 
+  next if %w{ ynh56 }.include? who.downcase
+
   next if NakiIRCBot::Common.ping add_to_queue.curry[where], what #if where == "#velik_bot"
 
   where.downcase!
