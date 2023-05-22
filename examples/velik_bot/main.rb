@@ -40,13 +40,17 @@ NakiIRCBot.start(
 
   if /\A\\(цена|price) (?<input>.+)/ =~ what
     threaded.call where.dup, input.dup, who.dup do |where, input, who|
-      add_to_queue.call where, "@#{who}, #{Common.price input}"
+      add_to_queue.call where, "@#{who}, #{ if "ушки" == input
+        "Прапор купит \"Ушки ta_samaya_lera\" за #{rand 20000..30000} ₽"
+      else
+        Common.price input
+      end }"
     end
   end
 
   if %w{ #ta_samaya_lera }.include? where
     old = File.exist?("goons.txt") ? File.read("goons.txt") : "?"
-    next add_to_queue.call where, "@#{who}, Goons were last seen at #{old}" if "\\goons" == what
+    next add_to_queue.call where, "Goons were last seen at #{old}" if "\\goons" == what
     if 60 < Time.now - prev_goons_time
       threaded.call do
         location = JSON.load(NetHTTPUtils.request_data("https://congested-valleygirl-9254455.herokuapp.com/goonDetectors")).first["location"]

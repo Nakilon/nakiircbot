@@ -74,17 +74,21 @@ module Common
   require "oga"
   def self.parse_response txt
     html = Oga.parse_html txt.force_encoding "utf-8"
-    "#{
-      html.at_css("[data-name='entity_field_field_prodat_torgovcu']").text
-    } купит %s за #{
-      html.at_css("[data-name='entity_field_field_cena_prodazi_torgovca'] > .drts-entity-field-value").text.gsub(/(\d) (\d)/, '\1\2')
-    }" + if html.at_xpath("//*[@data-display-name='detailed' and .//*[.='Кол-во слотов']]//*[@data-name='entity_field_field_price']")
-      return "can't parse price for %s (error: 1)" if html.at_css(".minus")
-      ", цена в барахолке: #{html.at_css("[data-name='entity_field_field_avg7daysprice'] > .drts-entity-field-value").text.gsub(/(\d) (\d)/, '\1\2')}"
-    else
-      return "can't parse price for %s (error: 2)" unless html.at_css(".minus")
-      ""
-    end
+    prices = html.xpath("//*[@data-element_type='container' and .//*[@data-widget_type='heading.default' and starts-with(normalize-space(.),'Продать ')]]/following-sibling::*[1]//figcaption").map do |_|
+      [
+        _.at_xpath("./text()").text,
+        case t = _.at_css("*[data-display-name='detailed']").text
+        when /\A\s*(\d+(?: \d+)*)\s+₽\z/ ; [$1.scan(/\d+/).join, "₽"]
+        when /\A\s+\$(\d+(?: \d+)*)\s+\z/ ; [$1.scan(/\d+/).join, "$"]
+        when "—\n", "Забанен\n" ; nil
+        else ; fail "error: bad price value: #{t.inspect}"
+        end
+      ]
+    end.select(&:last).to_h
+    "Куда продать %s: " + [
+      *(t = prices.delete("Барахолка") and "барахолка - #{t.join " "}"),
+      prices.group_by{ |_, (_, _)| _ }.map{ |c, g| g.max_by{ |t, (p, c)| p.to_i }.then{ |t, (p, c)| "#{t} - #{p} #{c}" } }
+    ].join(", ")
   end
   private_class_method :parse_response
   def self.price query

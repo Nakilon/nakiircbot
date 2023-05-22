@@ -284,10 +284,12 @@ fail unless "это тильт" == smart_match("тильт", clips, &:itself)
 fail unless "МАШИНА ЛЕРА" == smart_match("лера машина", clips, &:itself)
 
 
-# fail unless "Ключ-карта TerraGroup Labs (Красная)" == Common.method(:get_item_name).call("красная")
+fail unless "Статуэтка кота" == p(Common.method(:get_item_name).("кот"))
+fail unless "Бутылка пива \"Певко светлое\"" == p(Common.method(:get_item_name).("пивко"))
+fail unless "Набор медикаментов" == p(Common.method(:get_item_name).("мед."))
+fail unless "12/70 флешетта" == p(Common.method(:get_item_name).("флешетты"))  # TwixFix
+fail unless p(Common.method(:parse_response).(File.read "pevko.htm"))[/\AКуда продать %s: барахолка - \d+ ₽, Терапевт - \d+ ₽\z/]       # +барахолка -$
+fail unless p(Common.method(:parse_response).(File.read "slick.htm"))[/\AКуда продать %s: Барахольщик - \d+ ₽, Миротворец - \d+ \$\z/]  # -барахолка +$spaces
 
-fail unless p(Common.method(:parse_response).(File.read "ledx.htm"))[/\AТерапевт купит %s за \d+ ₽, цена в барахолке: \d+ ₽\z/]
-fail unless p(Common.price("кот"))[/\AТерапевт купит "Статуэтка кота" за \d+ ₽, цена в барахолке: \d+ ₽\z/]
-fail unless p(Common.price("slick"))[/\AБарахольщик купит "Бронежилет \\"LBT-6094A Slick Plate Carrier\\" \(Олива\)" за \d+ ₽\z/]
-fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"\"" == p(Common.price("тарковская"))
-fail unless p(Common.price("буянов"))[/\AМеханик купит \"Ручной пулемет РПК-16 5.45x39\" за \d+ ₽, цена в барахолке: \d+ ₽\z/]   # apply min_by -- do not select some 'Бврвбан' variation of this gun
+fail unless p(Common.price("кот"))[/\AКуда продать \"Статуэтка кота\": барахолка - \d+ ₽, Терапевт - \d+ ₽, Миротворец - \d+ \$\z/]
+fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"\"" == p(Common.price("тарковская"))  # the website is stupid about quotes
