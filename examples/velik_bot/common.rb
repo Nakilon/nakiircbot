@@ -86,7 +86,7 @@ module Common
       ]
     end.select(&:last).to_h
     "Куда продать %s: " + [
-      *(t = prices.delete("Барахолка") and "барахолка - #{t.join " "}"),
+      *("барахолка (среднее за неделю) - #{html.at_css("[data-name='entity_field_field_avg7daysprice'] > .drts-entity-field-value").text.gsub(/(\d) (\d)/, '\1\2')}" if prices.delete "Барахолка"),
       prices.group_by{ |_, (_, _)| _ }.map{ |c, g| g.max_by{ |t, (p, c)| p.to_i }.then{ |t, (p, c)| "#{t} - #{p} #{c}" } }
     ].join(", ")
   end
