@@ -21,7 +21,7 @@ GEM
       ast
 
 PLATFORMS
-  ruby
+  x86_64-darwin-18
 
 DEPENDENCIES
   nakiircbot!
@@ -29,4 +29,4 @@ DEPENDENCIES
   oga
 
 BUNDLED WITH
-   2.1.4
+   2.4.13

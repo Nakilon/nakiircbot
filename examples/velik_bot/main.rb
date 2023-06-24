@@ -1,3 +1,5 @@
+STDOUT.sync = true
+
 # TODO: add mutex
 threaded = lambda do |*args, &block|
   Thread.new *args do |*args|
@@ -48,18 +50,20 @@ NakiIRCBot.start(
     end
   end
 
+  old = File.exist?("goons.txt") ? File.read("goons.txt") : "?"
+  next add_to_queue.call where, "Goons were last seen at #{old}" if "\\goons" == what
   if %w{ #ta_samaya_lera }.include? where
-    old = File.exist?("goons.txt") ? File.read("goons.txt") : "?"
-    next add_to_queue.call where, "Goons were last seen at #{old}" if "\\goons" == what
     if 60 < Time.now - prev_goons_time
       threaded.call do
         location = JSON.load(NetHTTPUtils.request_data("https://congested-valleygirl-9254455.herokuapp.com/goonDetectors")).first["location"]
         if old != location
           add_to_queue.call "#ta_samaya_lera", "Goons have moved from #{old} to #{location}"
+          add_to_queue.call "#korolikarasi", "Goons have moved from #{old} to #{location}"
           File.write "goons.txt", location
         end
       end
       prev_goons_time = Time.now
     end
   end
+
 end

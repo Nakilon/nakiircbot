@@ -79,16 +79,18 @@ module Common
         _.at_xpath("./text()").text,
         case t = _.at_css("*[data-display-name='detailed']").text
         when /\A\s*(\d+(?: \d+)*)\s+₽\z/ ; [$1.scan(/\d+/).join, "₽"]
-        when /\A\s+\$(\d+(?: \d+)*)\s+\z/ ; [$1.scan(/\d+/).join, "$"]
+        when /\A\s*\$(\d+(?: \d+)*)\s*\z/ ; [$1.scan(/\d+/).join, "$"]
         when "—\n", "Забанен\n" ; nil
         else ; fail "error: bad price value: #{t.inspect}"
         end
       ]
     end.select(&:last).to_h
-    "Куда продать %s: " + [
-      *("барахолка (среднее за неделю) - #{html.at_css("[data-name='entity_field_field_avg7daysprice'] > .drts-entity-field-value").text.gsub(/(\d) (\d)/, '\1\2')}" if prices.delete "Барахолка"),
-      prices.group_by{ |_, (_, _)| _ }.map{ |c, g| g.max_by{ |t, (p, c)| p.to_i }.then{ |t, (p, c)| "#{t} - #{p} #{c}" } }
-    ].join(", ")
+    [
+      *("барахолка - #{html.at_xpath("//figcaption[text()='Барахолка']//*[@data-name='entity_field_field_price']").text.gsub(/(\d) (\d)/, '\1\2')}" if prices.delete "Барахолка"),
+      *prices.group_by{ |_, (_, currency)| currency }.map{ |c, g| g.max_by{ |t, (price, c)| price.to_i }.then{ |t, (p, c)| "#{t} - #{p} #{c}" } }
+    ].then do |ways|
+      ways.empty? ? "%s не продать" : "Куда продать %s: #{ways.join ", "}"
+    end
   end
   private_class_method :parse_response
   def self.price query
