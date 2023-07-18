@@ -17,6 +17,7 @@ require "nethttputils"
 require "json"
 
 def refresh
+  puts "refreshing token"
   File.write "tokens.secret", NetHTTPUtils.request_data("https://id.twitch.tv/oauth2/token", :POST, form: {
     client_id: File.read("clientid.secret"),
     client_secret: File.read("secret.secret"),
@@ -26,6 +27,7 @@ def refresh
 end
 
 module Common
+
   def self.clip where, query
   request = lambda do |mtd, **form|
     JSON.load begin
@@ -50,6 +52,7 @@ module Common
   end
   smart_match(query, f.call.sort_by{ |_| -_["view_count"] }){ |_| _["title"] }.values_at("title", "url").join " "
   end
+
   def self.get_item_name query
     locale = JSON.load File.read "Server/project/assets/database/locales/global/ru.json"
     all = JSON.load(File.read "Server/project/assets/database/templates/items.json").each_with_object({}) do |(id, item), h|
@@ -71,6 +74,7 @@ module Common
     all.fetch smart_match query, all.keys, &:itself
   end
   private_class_method :get_item_name
+
   require "oga"
   def self.parse_response txt
     html = Oga.parse_html txt.force_encoding "utf-8"
@@ -93,6 +97,7 @@ module Common
     end
   end
   private_class_method :parse_response
+
   def self.price query
     name = get_item_name query
     parse_response( NetHTTPUtils.request_data( (
@@ -107,4 +112,21 @@ module Common
       end or return "can't find #{name.inspect}"
     ).fetch "url" ).tap{ |_| File.write "temp.htm", _ } ) % name.inspect
   end
+
+  def self.is_asking_track line
+    return if [
+      /\bч(е|ё|то) (это )?за (\S+ )?трек был\b/
+    ].any? do |r|
+      r === line
+    end
+    [
+      /\bч(о|е|ё|то) (это )?за (\S+ )?(трек|музыка)\b/,
+      /\b(дайте|можно) трек\b/,
+      /\bможно название трека\b/,
+      /\bкак трек называется\b/,
+    ].any? do |r|
+      r === line
+    end
+  end
+
 end

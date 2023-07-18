@@ -1,6 +1,9 @@
+require "maxitest/autorun"
+
 require_relative "common"
+describe "" do
 
-
+  it "smart_match" do
 clips = <<~HEREDOC.split("\n")
   #zaebis четко
   #живиживиживи
@@ -282,15 +285,60 @@ HEREDOC
 fail unless "Алло, Буянов?" == smart_match("буянов", clips, &:itself)
 fail unless "это тильт" == smart_match("тильт", clips, &:itself)
 fail unless "МАШИНА ЛЕРА" == smart_match("лера машина", clips, &:itself)
+  end
 
-
+  it "#get_item_name #parse_response" do
 fail unless "Статуэтка кота" == p(Common.method(:get_item_name).("кот"))
 fail unless "Бутылка пива \"Певко светлое\"" == p(Common.method(:get_item_name).("пивко"))
 fail unless "Набор медикаментов" == p(Common.method(:get_item_name).("мед."))
 fail unless "12/70 флешетта" == p(Common.method(:get_item_name).("флешетты"))  # TwixFix
 fail unless "Куда продать %s: барахолка - 29900 ₽, Терапевт - 8343 ₽" == p(Common.method(:parse_response).(File.read "pevko.htm"))  # +барахолка -$
 fail unless "Куда продать %s: Барахольщик - 232190 ₽, Миротворец - 1416 $" == p(Common.method(:parse_response).(File.read "slick.htm"))  # -барахолка +$spaces
+  end
 
+  it "integration" do
 fail unless p(Common.price("кот"))[/\AКуда продать \"Статуэтка кота\": барахолка - \d+ ₽, Терапевт - \d+ ₽, Миротворец - \d+ \$\z/]
 fail unless "\"Защищенный контейнер \\\"Каппа\\\"\" не продать" == p(Common.price("каппа"))
 fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"\"" == p(Common.price("тарковская"))  # the website is stupid about quotes
+  end
+
+  require "nakiircbot"
+  it "track" do
+    negative = <<~HEREDOC.split(?\n).each do |line|
+      что за трек был?
+    HEREDOC
+      refute Common.is_asking_track(line), line
+    end
+    positive = <<~HEREDOC.split(?\n).each do |line|
+      @VELLREIN а что это за чудесная музыка играет?
+      @ta_samaya_lera привет че за трек ? качает)
+      Музыка заставляет вслушиваться в слова)) что за трек))
+      Дайте трек пожалуйста
+      А можно трек мне пожалуйста?
+      а можно название трека?))
+      а можно название трека?)
+      Можно трек?
+      можно трек
+      как трек называется?
+      Что это за музыка NotLikeThis
+      Что за трек сейчас играет?
+      что за трек? скинь название
+      а чё за трек?
+      Что за трек ?
+      Что за трек?
+      что за трек
+      чё за трек?
+    HEREDOC
+      assert Common.is_asking_track(line), line
+    end
+    Dir.glob("logs/txt.*").each do |_|
+      puts _
+      ( NakiIRCBot.parse_log(_, "velik_bot").map do |line|
+        line[4] if "PRIVMSG" == line[2]
+      end - positive ).each do |line|
+        refute Common.is_asking_track(line), line
+      end
+    end
+  end
+
+end

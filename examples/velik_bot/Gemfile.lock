@@ -10,6 +10,9 @@ GEM
       public_suffix (>= 2.0.2, < 6.0)
     ansi (1.5.0)
     ast (2.4.2)
+    maxitest (4.5.0)
+      minitest (>= 5.0.0, < 5.19.0)
+    minitest (5.18.1)
     nethttputils (0.4.4.0)
       addressable
     oga (3.4)
@@ -24,6 +27,7 @@ PLATFORMS
   x86_64-darwin-18
 
 DEPENDENCIES
+  maxitest
   nakiircbot!
   nethttputils
   oga
