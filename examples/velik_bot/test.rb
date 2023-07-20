@@ -317,9 +317,11 @@ fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"
       А можно трек мне пожалуйста?
       а можно название трека?))
       а можно название трека?)
+      можно трэк пожалйста?
       Можно трек?
       можно трек
       как трек называется?
+      чо за музыка
       Что это за музыка NotLikeThis
       Что за трек сейчас играет?
       что за трек? скинь название
@@ -328,6 +330,8 @@ fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"
       Что за трек?
       что за трек
       чё за трек?
+      чо за трек
+      ух чо затрэк
     HEREDOC
       assert Common.is_asking_track(line), line
     end
@@ -335,7 +339,7 @@ fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"
       puts _
       ( NakiIRCBot.parse_log(_, "velik_bot").map do |line|
         line[4] if "PRIVMSG" == line[2]
-      end - positive ).each do |line|
+      end.compact - positive ).each do |line|
         refute Common.is_asking_track(line), line
       end
     end

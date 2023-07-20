@@ -49,7 +49,7 @@ NakiIRCBot.start(
   end
 
   next add_to_queue.call where, "спокойной ночи, @lezhebok" if "#ta_samaya_lera" == where && "lezhebok" == who && (what.downcase["я спать"] || what.downcase["спокойной"])
-  if "#vellrein" == where && Common.is_asking_track(what.downcase)
+  if "#vellrein" == where && Common.is_asking_track(what)
     next add_to_queue.call where, [
       "@#{who}, название трека внизу отображается",
       "@#{who}, внизу отображается текущий трек",
