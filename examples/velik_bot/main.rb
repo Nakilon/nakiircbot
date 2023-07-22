@@ -12,6 +12,7 @@ end
 prev_goons_time = Time.now - 120
 
 require_relative "common"
+Common.init_repdb "prod"
 
 require "nakiircbot"
 NakiIRCBot.start(
@@ -33,13 +34,17 @@ NakiIRCBot.start(
   where.downcase!
 
   if /\A\\(клип|clip) (?<input>.+)/ =~ what
-    threaded.call where.dup, input.dup do |where, input|
+    next threaded.call where.dup, input.dup do |where, input|
       add_to_queue.call where, Common.clip(where, input)
     end
   end
 
+  next add_to_queue.call where, Common.rep_read(  where, who                                   ) if "?rep" == what.split[0].downcase
+  next add_to_queue.call where, Common.rep_plus(  where, who, what.split[1].delete_prefix("@") ) if "+rep" == what.split[0].downcase && what.split[1]
+  next add_to_queue.call where, Common.rep_minus( where, who, what.split[1].delete_prefix("@") ) if "-rep" == what.split[0].downcase && what.split[1]
+
   if /\A\\(цена|price) (?<input>.+)/ =~ what
-    threaded.call where.dup, input.dup, who.dup do |where, input, who|
+    next threaded.call where.dup, input.dup, who.dup do |where, input, who|
       add_to_queue.call where, "@#{who}, #{ if "ушки" == input
         "Прапор купит \"Ушки ta_samaya_lera\" за #{rand 20000..30000} ₽"
       else
@@ -49,8 +54,10 @@ NakiIRCBot.start(
   end
 
   next add_to_queue.call where, "спокойной ночи, @lezhebok" if "#ta_samaya_lera" == where && "lezhebok" == who && (what.downcase["я спать"] || what.downcase["спокойной"])
+
   if "#vellrein" == where && Common.is_asking_track(what)
     next add_to_queue.call where, [
+      "@#{who}, название трека отображается внизу",
       "@#{who}, название трека внизу отображается",
       "@#{who}, внизу отображается текущий трек",
       "@#{who}, трек внизу отображается",

@@ -125,9 +125,51 @@ module Common
       /\b(дайте|можно) тр[еэ]к\b/,
       /\bможно название тр[еэ]ка\b/,
       /\bкак тр[еэ]к называется\b/,
+      /\bкинь\b(.+\b)ссылку на тр[еэ]к\b/,
     ].any? do |r|
       r === line
     end
+  end
+
+  require "yaml/store"
+  def self.init_repdb prefix
+    @repdb = YAML::Store.new "#{prefix}.repdb.yaml"
+  end
+  def self._rep_read _where, _what
+    where, what = _where.downcase, _what.downcase
+    @repdb.transaction do |db|
+      db.roots.map do |root|
+        _where, _, _what = root
+        db[root][0] if [_where, _what] == [where, what]
+      end.compact.sum
+    end
+  end
+  private_class_method :_rep_read
+  def self.rep_read where, who
+    "@#{who} your current rep is #{_rep_read where, who}"
+  end
+  def self._rep_change where, _who, _what
+    who, what = _who.downcase, _what.downcase
+    is_admin = ("##{who}" == where.downcase)  # TODO: move out to the chat protocol description
+    return "@#{_who} " + <<~HEREDOC.split(?\n).sample if who == what
+      if only this was that easy
+      do you think you are the smartest one?
+      try harder
+    HEREDOC
+    @repdb.transaction do |db|
+      db[[where, who, what]].then do |rep, timestamp|
+        return "@#{_who} wait another 24h to change @#{_what}'s rep" if timestamp && timestamp + 86400 > Time.now.to_i && !is_admin
+        db[[where, who, what]] = [yield(rep||0), Time.now.to_i]
+      end
+    end
+    "@#{_what}'s rep is now #{_rep_read where, _what}"
+  end
+  private_class_method :_rep_change
+  def self.rep_plus where, who, what
+    _rep_change(where, who, what){ |_| _ + 1 }
+  end
+  def self.rep_minus where, who, what
+    _rep_change(where, who, what){ |_| _ - 1 }
   end
 
 end

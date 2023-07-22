@@ -1,6 +1,8 @@
 require "maxitest/autorun"
 
 require_relative "common"
+Common.init_repdb "test"
+
 describe "" do
 
   it "smart_match" do
@@ -310,6 +312,7 @@ fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"
       refute Common.is_asking_track(line), line
     end
     positive = <<~HEREDOC.split(?\n).each do |line|
+      @VELLREIN Кинь плз в чат ссылку на трэк
       @VELLREIN а что это за чудесная музыка играет?
       @ta_samaya_lera привет че за трек ? качает)
       Музыка заставляет вслушиваться в слова)) что за трек))
@@ -343,6 +346,19 @@ fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"
         refute Common.is_asking_track(line), line
       end
     end
+  end
+
+  it "rep" do
+    Common.instance_variable_get(:@repdb).transaction{ |db| db.roots.each &db.method(:delete) }
+    Common.rep_plus "#channel", "user1", "user1"
+    Common.rep_plus "#channel", "user1", "user2"
+    Common.rep_minus "#channel", "user1", "user2"
+    Time.stub(:now, Time.now + 90000){ Common.rep_plus "#channel", "user1", "user2" }
+    assert_equal "@user1 your current rep is 0", Common.rep_read("#channel", "user1")
+    assert_equal "@user2 your current rep is 2", Common.rep_read("#channel", "user2")
+    Common.rep_minus "#channel", "channel", "user2"
+    Common.rep_minus "#channel", "channel", "user2"
+    assert_equal "@user2 your current rep is 0", Common.rep_read("#channel", "user2")
   end
 
 end
