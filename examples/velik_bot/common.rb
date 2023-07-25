@@ -140,7 +140,8 @@ module Common
     h = {}
     @repdb.transaction do |db|  # TODO: (true)?
       db.roots.each do |root|
-        _where, _, _what = root
+        _where, who, _what = root
+        next if %w{ sha512_ecdsa qomg joyk73 dreame8 }.include? who
         next unless _where == where
         h[_what] ||= 0
         h[_what] += db[root][0]
