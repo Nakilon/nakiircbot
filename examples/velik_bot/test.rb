@@ -355,11 +355,11 @@ fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"
     Common.rep_plus "#channel", "user1", "user2"
     Common.rep_minus "#channel", "user1", "user2"
     Time.stub(:now, Time.now + 90000){ Common.rep_plus "#channel", "user1", "user2" }
-    assert_equal "@user1 your current rep is 0", Common.rep_read("#channel", "user1")
-    assert_equal "@user2 your current rep is 2", Common.rep_read("#channel", "user2")
+    assert_equal "@user1 your current rep is 0 (top-2)", Common.rep_read("#channel", "user1")
+    assert_equal "@user2 your current rep is 2 (top-1)", Common.rep_read("#channel", "user2")
     Common.rep_minus "#channel", "channel", "user2"
     Common.rep_minus "#channel", "channel", "user2"
-    assert_equal "@user2 your current rep is 0", Common.rep_read("#channel", "user2")
+    assert_equal "@user2 your current rep is 0 (top-1)", Common.rep_read("#channel", "user2")
   end
 
 end

@@ -137,12 +137,18 @@ module Common
   end
   def self._rep_read _where, _what
     where, what = _where.downcase, _what.downcase
+    h = {}
     @repdb.transaction do |db|  # TODO: (true)?
-      db.roots.map do |root|
+      db.roots.each do |root|
         _where, _, _what = root
-        db[root][0] if [_where, _what] == [where, what]
-      end.compact.sum
+        next unless _where == where
+        h[_what] ||= 0
+        h[_what] += db[root][0]
+      end
     end
+    v = h.fetch what, 0
+    i = 1 + [0, *h.values].uniq.sort.reverse.index(v)
+    "#{v} (top-#{i})"
   end
   private_class_method :_rep_read
   def self.rep_read where, who
