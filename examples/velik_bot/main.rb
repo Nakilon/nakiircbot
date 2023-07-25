@@ -39,6 +39,7 @@ NakiIRCBot.start(
     end
   end
 
+  next add_to_queue.call where, Common.rep_read(  where, what.split[1]                         ) if "?rep" == what.split[0].downcase && what.split[1]
   next add_to_queue.call where, Common.rep_read(  where, who                                   ) if "?rep" == what.split[0].downcase
   next add_to_queue.call where, Common.rep_plus(  where, who, what.split[1].delete_prefix("@") ) if "+rep" == what.split[0].downcase && what.split[1]
   next add_to_queue.call where, Common.rep_minus( where, who, what.split[1].delete_prefix("@") ) if "-rep" == what.split[0].downcase && what.split[1]

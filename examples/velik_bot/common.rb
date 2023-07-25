@@ -152,7 +152,7 @@ module Common
   end
   private_class_method :_rep_read
   def self.rep_read where, who
-    "@#{who} your current rep is #{_rep_read where, who}"
+    "@#{who}'s current rep is #{_rep_read where, who}"
   end
   def self._rep_change where, _who, _what
     who, what = _who.downcase, _what.downcase
