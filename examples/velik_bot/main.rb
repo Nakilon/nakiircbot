@@ -55,14 +55,19 @@ NakiIRCBot.start(
 
   next add_to_queue.call where, "спокойной ночи, @lezhebok" if "#ta_samaya_lera" == where && "lezhebok" == who && (what.downcase["я спать"] || what.downcase["спокойной"])
 
-  if "#vellrein" == where && Common.is_asking_track(what)
-    next add_to_queue.call where, [
-      "@#{who}, название трека отображается внизу",
-      "@#{who}, название трека внизу отображается",
-      "@#{who}, внизу отображается текущий трек",
-      "@#{who}, трек внизу отображается",
-      "@#{who}, музыка внизу отображается",
+  next unless [
+    ["#vellrein", "внизу"],
+    ["#nekochan_myp", "вверху"],
+  ].each do |w, word|
+    next unless w == where && Common.is_asking_track(what)
+    add_to_queue.call where, [
+      "@#{who}, название трека отображается #{word}",
+      "@#{who}, название трека #{word} отображается",
+      "@#{who}, #{word} отображается текущий трек",
+      "@#{who}, трек #{word} отображается",
+      "@#{who}, музыка #{word} отображается",
     ].sample
+    break
   end
 
   old = File.exist?("goons.txt") ? File.read("goons.txt") : "?"

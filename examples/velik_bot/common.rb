@@ -137,7 +137,7 @@ module Common
   end
   def self._rep_read _where, _what
     where, what = _where.downcase, _what.downcase
-    @repdb.transaction do |db|
+    @repdb.transaction do |db|  # TODO: (true)?
       db.roots.map do |root|
         _where, _, _what = root
         db[root][0] if [_where, _what] == [where, what]
