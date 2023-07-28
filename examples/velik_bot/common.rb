@@ -54,8 +54,8 @@ module Common
   end
 
   def self.get_item_name query
-    locale = JSON.load File.read "Server/project/assets/database/locales/global/ru.json"
-    all = JSON.load(File.read "Server/project/assets/database/templates/items.json").each_with_object({}) do |(id, item), h|
+    locale = JSON.load File.read "ru.json"
+    all = JSON.load(File.read "items.json").each_with_object({}) do |(id, item), h|
       fail id unless id == item["_id"]
       next if "Node" == item["_type"]
       fail unless "Item" == item["_type"]

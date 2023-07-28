@@ -1,0 +1,13 @@
+build for docker-compose
+  $ docker build -t 2.7-alpine-build-base .
+test
+  $ docker-compose run -v $(pwd)/test.rb:/usr/src/app/test.rb:ro -v $(pwd)/pevko.htm:/usr/src/app/pevko.htm:ro -v $(pwd)/slick.htm:/usr/src/app/slick.htm:ro velik_bot sh -c "gem update bundler && bundle install && bundle exec ruby test.rb"
+deploy
+  $ git clone https://github.com/Nakilon/nakiircbot.git
+  $ cd nakiircbot/examples/velik_bot
+  dev$ scp tokens.secret velik:_/nakiircbot/examples/velik_bot/
+  dev$ scp clientid.secret velik:_/nakiircbot/examples/velik_bot/
+  dev$ scp secret.secret velik:_/nakiircbot/examples/velik_bot/
+  dev$ scp ru.json velik:_/nakiircbot/examples/velik_bot/
+  dev$ scp items.json velik:_/nakiircbot/examples/velik_bot/
+  $ docker-compose up -d

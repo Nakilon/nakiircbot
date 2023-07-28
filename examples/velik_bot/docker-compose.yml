@@ -1,0 +1,52 @@
+version: "3.2"
+services:
+  velik_bot:
+    container_name: velik_bot
+    image: 2.7-alpine-build-base
+    working_dir: /usr/src/app
+    command: sh -c "gem update bundler && bundle install && bundle exec ruby main.rb"
+    volumes:
+      - type: bind
+        source: ./Gemfile
+        target: /usr/src/app/Gemfile
+        read_only: true
+      - type: bind
+        source: ./Gemfile.lock
+        target: /usr/src/app/Gemfile.lock
+      - type: bind
+        source: ./main.rb
+        target: /usr/src/app/main.rb
+        read_only: true
+      - type: bind
+        source: ./common.rb
+        target: /usr/src/app/common.rb
+        read_only: true
+      - type: bind
+        source: ./clientid.secret
+        target: /usr/src/app/clientid.secret
+        read_only: true
+      - type: bind
+        source: ./secret.secret
+        target: /usr/src/app/secret.secret
+        read_only: true
+      - type: bind
+        source: ./tokens.secret
+        target: /usr/src/app/tokens.secret
+      - type: bind
+        source: ./ru.json
+        target: /usr/src/app/ru.json
+        read_only: true
+      - type: bind
+        source: ./items.json
+        target: /usr/src/app/items.json
+        read_only: true
+      - type: bind
+        source: ./logs
+        target: /usr/src/app/logs
+      - type: bind
+        source: ./prod.repdb.yaml
+        target: /usr/src/app/prod.repdb.yaml
+      - type: bind
+        source: ./goons.txt
+        target: /usr/src/app/goons.txt
+

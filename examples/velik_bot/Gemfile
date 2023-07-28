@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "nakiircbot", path: "../.."
+gem "nakiircbot", "~>1.1.0"
 gem "nethttputils"
 gem "oga"
 
