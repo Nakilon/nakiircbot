@@ -1,6 +1,7 @@
 build for docker-compose
   $ docker build -t 2.7-alpine-build-base .
 test
+  $ mkdir logs
   $ docker-compose run -v $(pwd)/test.rb:/usr/src/app/test.rb:ro -v $(pwd)/pevko.htm:/usr/src/app/pevko.htm:ro -v $(pwd)/slick.htm:/usr/src/app/slick.htm:ro velik_bot sh -c "gem update bundler && bundle install && bundle exec ruby test.rb"
 deploy
   $ git clone https://github.com/Nakilon/nakiircbot.git
@@ -10,4 +11,7 @@ deploy
   dev$ scp secret.secret velik:_/nakiircbot/examples/velik_bot/
   dev$ scp ru.json velik:_/nakiircbot/examples/velik_bot/
   dev$ scp items.json velik:_/nakiircbot/examples/velik_bot/
+  # $ mkdir logs
   $ docker-compose up -d
+see remote logs
+  dev$ ssh velik docker logs -f velik_bots
