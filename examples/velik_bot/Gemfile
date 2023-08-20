@@ -3,5 +3,6 @@ source "https://rubygems.org"
 gem "nakiircbot", "~>1.1.0"
 gem "nethttputils"
 gem "oga"
+gem "nakischema"
 
 gem "maxitest"

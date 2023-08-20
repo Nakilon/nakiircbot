@@ -11,7 +11,11 @@ deploy
   dev$ scp secret.secret velik:_/nakiircbot/examples/velik_bot/
   dev$ scp ru.json velik:_/nakiircbot/examples/velik_bot/
   dev$ scp items.json velik:_/nakiircbot/examples/velik_bot/
+  dev$ scp cfg.yaml velik:_/nakiircbot/examples/velik_bot/
+  dev$ scp gpt.secret velik:_/nakiircbot/examples/velik_bot/
   # $ mkdir logs
   $ docker-compose up -d
 see remote logs
-  dev$ ssh velik docker logs -f velik_bots
+  dev$ ssh velik docker logs --since=5m -f velik_bot
+backup logs
+  dev$ scp velik:_/nakiircbot/examples/velik_bot/logs/txt.* ./vps_logs/

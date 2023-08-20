@@ -9,6 +9,7 @@ GEM
       minitest (>= 5.0.0, < 5.19.0)
     minitest (5.18.1)
     nakiircbot (1.1.0)
+    nakischema (0.1.4)
     nethttputils (0.4.4.0)
       addressable
     oga (3.4)
@@ -26,8 +27,9 @@ PLATFORMS
 DEPENDENCIES
   maxitest
   nakiircbot (~> 1.1.0)
+  nakischema
   nethttputils
   oga
 
 BUNDLED WITH
-   2.4.17
+   2.4.14

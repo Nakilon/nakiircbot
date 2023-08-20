@@ -49,4 +49,12 @@ services:
       - type: bind
         source: ./goons.txt
         target: /usr/src/app/goons.txt
+      - type: bind
+        source: ./cfg.yaml
+        target: /usr/src/app/prod.cfg.yaml
+        read_only: true
+      - type: bind
+        source: ./gpt.secret
+        target: /usr/src/app/gpt.secret
+        read_only: true
 
