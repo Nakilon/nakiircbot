@@ -31,14 +31,16 @@ NakiIRCBot.start(
 
   next if %w{ ynh56 }.include? who.downcase
 
-  respond = add_to_queue.curry[where]
+  respond = ->_{ add_to_queue.call where, _.gsub("\n", " ") }
 
   next if NakiIRCBot::Common.ping respond, what
 
   query = what.split
 
   if /\A@?velik_bot/ === query[0] && query[1]
-    sleep [File.mtime("gpt.touch") - Time.now + 30, 0].max if File.exist? "gpt.touch"
+    while 0 < t = File.mtime("gpt.touch") - Time.now + 30
+      sleep t
+    end if File.exist? "gpt.touch"
     FileUtils.touch "gpt.touch"
     next threaded.call ->s{->r{respond.call s+r}}["#{who}, "], query.drop(1).join(" ") do |callback, query|
       get_json = lambda do |model|
@@ -46,7 +48,7 @@ NakiIRCBot.start(
           header: {"Authorization" => "Bearer #{File.read "gpt.secret"}"},
           form: {
             "model" => model,
-            "max_tokens" => 100,
+            "max_tokens" => 200,
             "messages" => [{"role" => "user", "content" => query}],
           }
       end
@@ -54,14 +56,22 @@ NakiIRCBot.start(
         begin
           get_json["gpt-4"]
         rescue NetHTTPUtils::Error
-          fail unless 400 == $!.code && '{"detail":"Unhandled Exception: The provider does not respond!"}' == $!.body
-          get_json["gpt-3.5-turbo"]
+          # {"detail":"Unhandled Exception: The provider does not respond!"}
+          # {"detail":"Oops, no available providers (or providers that support all of your request body parameters) were found."}
+          fail unless 400 == $!.code # && '' == $!.body
+          begin
+            get_json["gpt-3.5-turbo"]
+          rescue
+            # {"detail":"Unhandled Exception: We got a status code 429 from the provider!"}
+            fail unless 400 == $!.code
+            get_json["claude-instant"]
+          end
         end
       ).tap do |json|
         Nakischema.validate json, { hash: {
           "choices" => [[
             { hash: {
-              "finish_reason" => "stop",
+              "finish_reason" => ["stop", "length", nil],
               "index" => 0..0,
               "message" => { hash: {"content" => String, "role" => "assistant"} },
             } },
