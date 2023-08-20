@@ -48,7 +48,7 @@ NakiIRCBot.start(
           header: {"Authorization" => "Bearer #{File.read "gpt.secret"}"},
           form: {
             "model" => model,
-            "max_tokens" => 200,
+            "max_tokens" => 100,
             "messages" => [{"role" => "user", "content" => query}],
           }
       end
