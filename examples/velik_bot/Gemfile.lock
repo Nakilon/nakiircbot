@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/nakilon/unicode-blocks
+  remote: https://github.com/nakilon/unicode-blocks.git
   revision: 98317573b469c5a9ade60825a7239f3e8cb719af
   specs:
     unicode-blocks (1.8.0)
