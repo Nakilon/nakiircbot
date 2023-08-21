@@ -16,7 +16,6 @@ Common.init_repdb "prod"
 
 channels, features = YAML.load_file("prod.cfg.yaml")
 
-require "nakischema"
 require "nakiircbot"
 NakiIRCBot.start(
   "irc.chat.twitch.tv", "6667", "velik_bot", "nakilon", "", *channels,
@@ -43,46 +42,7 @@ NakiIRCBot.start(
     end if File.exist? "gpt.touch"
     FileUtils.touch "gpt.touch"
     next threaded.call ->s{->r{respond.call s+r}}["#{who}, "], query.drop(1).join(" ") do |callback, query|
-      get_json = lambda do |model|
-        NetHTTPUtils.request_data "https://chimeragpt.adventblocks.cc/api/v1/chat/completions", :POST, :json,
-          header: {"Authorization" => "Bearer #{File.read "gpt.secret"}"},
-          form: {
-            "model" => model,
-            "max_tokens" => 100,
-            "messages" => [{"role" => "user", "content" => query}],
-          }
-      end
-      JSON.load(
-        begin
-          get_json["gpt-4"]
-        rescue NetHTTPUtils::Error
-          # {"detail":"Unhandled Exception: The provider does not respond!"}
-          # {"detail":"Oops, no available providers (or providers that support all of your request body parameters) were found."}
-          fail unless 400 == $!.code # && '' == $!.body
-          begin
-            get_json["gpt-3.5-turbo"]
-          rescue
-            # {"detail":"Unhandled Exception: We got a status code 429 from the provider!"}
-            fail unless 400 == $!.code
-            get_json["claude-instant"]
-          end
-        end
-      ).tap do |json|
-        Nakischema.validate json, { hash: {
-          "choices" => [[
-            { hash: {
-              "finish_reason" => ["stop", "length", nil],
-              "index" => 0..0,
-              "message" => { hash: {"content" => String, "role" => "assistant"} },
-            } },
-          ]],
-          "created" => Integer,
-          "id" => String,
-          "model" => String,
-          "object" => "chat.completion",
-          "usage" => { hash: {"completion_tokens" => Integer, "prompt_tokens" => Integer, "total_tokens" => Integer} },
-        } }
-      end["choices"][0]["message"]["content"].then &callback
+      callback.call Common.chimera query
     end
   end
 

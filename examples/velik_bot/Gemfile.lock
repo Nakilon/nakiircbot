@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/nakilon/unicode-blocks.git
+  revision: 98317573b469c5a9ade60825a7239f3e8cb719af
+  specs:
+    unicode-blocks (1.8.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -30,6 +36,7 @@ DEPENDENCIES
   nakischema
   nethttputils
   oga
+  unicode-blocks!
 
 BUNDLED WITH
    2.4.14

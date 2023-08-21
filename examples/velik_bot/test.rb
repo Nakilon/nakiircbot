@@ -308,6 +308,7 @@ fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"
   it "track" do
     negative = <<~HEREDOC.split(?\n).each do |line|
       что за трек был?
+      Ого что за трэк в 2023)
     HEREDOC
       refute Common.is_asking_track(line), line
     end
@@ -317,6 +318,8 @@ fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"
       @ta_samaya_lera привет че за трек ? качает)
       Реня скинь пожалуйста этот трек который играл
       Музыка заставляет вслушиваться в слова)) что за трек))
+      Ооо музыка топ можно трек ?)
+      катя что за трек, голос у девки приятный
       Дайте трек пожалуйста
       А можно трек мне пожалуйста?
       а можно название трека?))
@@ -326,6 +329,8 @@ fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"
       можно трек
       как трек называется?
       чо за музыка
+      что за музыка?
+      Что за музыка?
       Что это за музыка NotLikeThis
       Что за трек сейчас играет?
       что за трек? скинь название
@@ -337,10 +342,11 @@ fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"
       чё за трек?
       чо за трек
       ух чо затрэк
+      Скинь трэк)
     HEREDOC
       assert Common.is_asking_track(line), line
     end
-    Dir.glob("logs/txt.*").each do |_|
+    Dir.glob("vps_logs/txt.*").sort.each do |_|
       puts _
       ( NakiIRCBot.parse_log(_, "velik_bot").map do |line|
         line[4] if "PRIVMSG" == line[2]
