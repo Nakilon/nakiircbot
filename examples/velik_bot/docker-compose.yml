@@ -14,6 +14,10 @@ services:
         source: ./Gemfile.lock
         target: /usr/src/app/Gemfile.lock
       - type: bind
+        source: ./.bundle/config
+        target: /usr/src/app/.bundle/config
+        read_only: true
+      - type: bind
         source: ./main.rb
         target: /usr/src/app/main.rb
         read_only: true
