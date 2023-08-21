@@ -4,7 +4,7 @@ services:
     container_name: velik_bot
     image: 2.7-alpine-build-base
     working_dir: /usr/src/app
-    command: sh -c "bundle install && bundle exec ruby main.rb"
+    command: sh -c "apk add git && bundle install && bundle exec ruby main.rb"
     volumes:
       - type: bind
         source: ./Gemfile
