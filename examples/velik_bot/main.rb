@@ -37,7 +37,7 @@ NakiIRCBot.start(
   query = what.split
 
   if /\A@?velik_bot/ === query[0] && query[1]
-    while 0 < t = File.mtime("gpt.touch") - Time.now + 30
+    while 0 < t = File.mtime("gpt.touch") - Time.now + 20
       sleep t
     end if File.exist? "gpt.touch"
     FileUtils.touch "gpt.touch"

@@ -182,7 +182,7 @@ module Common
 
   require "nakischema"
   require "unicode/blocks"
-  def self.chimera query, max_tokens = 150#, temperature = 1
+  def self.chimera query, max_tokens = 150, temperature = 0
     model = nil
     get_json = lambda do |model|
       blocks = Unicode::Blocks.blocks_counted query
@@ -199,7 +199,7 @@ module Common
             )
           }],
           "max_tokens" => max_tokens,
-          # "temperature" => temperature,
+          "temperature" => temperature,
         }
     end
     JSON.load( begin
@@ -207,19 +207,21 @@ module Common
     rescue NetHTTPUtils::Error
       # {"detail":"Unhandled Exception: The provider does not respond!"}
       # {"detail":"Oops, no available providers (or providers that support all of your request body parameters) were found."}
-      fail unless 400 == $!.code # && '' == $!.body
+      # 403 {"detail":"Forbidden: flagged moderation category: sexual"}
+      fail unless 400 == $!.code || '{"detail":"Forbidden: flagged moderation category: sexual"}' == $!.body
       puts $!
       begin
         get_json["gpt-3.5-turbo"]
       rescue NetHTTPUtils::Error
         # {"detail":"Unhandled Exception: We got a status code 429 from the provider!"}
-        fail unless 400 == $!.code
+        # 403 {"detail":"Forbidden: flagged moderation category: sexual"}
+        fail unless 400 == $!.code || '{"detail":"Forbidden: flagged moderation category: sexual"}' == $!.body
         puts $!
         get_json["claude-instant"]
       end
     end ).tap do |json|
       p json
-      Nakischema.validate json, { hash: {
+      Nakischema.validate json, { hash_req: {
         "choices" => [[
           { hash: {
             "finish_reason" => ["stop", "length", nil],

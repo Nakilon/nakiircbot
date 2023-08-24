@@ -2,6 +2,7 @@ build for docker-compose
   $ docker build -t 2.7-alpine-build-base .
 test
   $ mkdir logs
+  $ mtest
   $ docker-compose run -v $(pwd)/test.rb:/usr/src/app/test.rb:ro -v $(pwd)/pevko.htm:/usr/src/app/pevko.htm:ro -v $(pwd)/slick.htm:/usr/src/app/slick.htm:ro velik_bot sh -c "gem update bundler && bundle install && bundle exec ruby test.rb"
 deploy
   $ git clone https://github.com/Nakilon/nakiircbot.git
@@ -17,5 +18,8 @@ deploy
   $ docker-compose up -d
 see remote logs
   dev$ ssh velik docker logs --since=5m -f velik_bot
-backup logs
-  dev$ scp velik:_/nakiircbot/examples/velik_bot/logs/txt.* ./vps_logs/
+backup
+  dev$ scp velik:_/nakiircbot/examples/velik_bot/prod.repdb.yaml ./
+  dev$ rsync -vrut velik:_/nakiircbot/examples/velik_bot/logs/txt.* ./vps_logs/
+Chimera CLI
+  $ bundle exec ruby -r./common -e 'Common.chimera "hello"'
