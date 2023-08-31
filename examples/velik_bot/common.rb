@@ -116,7 +116,8 @@ module Common
   def self.is_asking_track line
     line = line.downcase
     return if [
-      /\bч(е|ё|то) (это )?за (\S+ )?тр[еэ]к (был|в 2023)/
+      /\bч(е|ё|то) (это )?за (\S+ )?тр[еэ]к (был|в 2023)/,
+      /\bскинь тр[еэ]к предыдущий/i,
     ].any? do |r|
       r === line
     end
