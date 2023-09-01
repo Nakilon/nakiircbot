@@ -14,7 +14,7 @@ prev_goons_time = Time.now - 120
 require_relative "common"
 Common.init_repdb "prod"
 
-channels, goons_channels = YAML.load_file("dev.cfg.yaml")
+channels, goons_channels = YAML.load_file("prod.cfg.yaml")
 
 require "nakiircbot"
 NakiIRCBot.start(
