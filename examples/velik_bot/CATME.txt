@@ -19,7 +19,7 @@ deploy
 see remote logs
   dev$ ssh velik docker logs --since=5m -f velik_bot
 backup
-  dev$ scp velik:_/nakiircbot/examples/velik_bot/prod.repdb.yaml ./
+  dev$ scp velik:_/nakiircbot/examples/velik_bot/prod.repdb.yaml ./bu.repdb.yaml
   dev$ rsync -vrut velik:_/nakiircbot/examples/velik_bot/logs/txt.* ./vps_logs/
 Chimera CLI
   $ bundle exec ruby -r./common -e 'Common.chimera "hello"'

@@ -14,7 +14,7 @@ prev_goons_time = Time.now - 120
 require_relative "common"
 Common.init_repdb "prod"
 
-channels, features = YAML.load_file("prod.cfg.yaml")
+channels, goons_channels = YAML.load_file("dev.cfg.yaml")
 
 require "nakiircbot"
 NakiIRCBot.start(
@@ -86,16 +86,20 @@ NakiIRCBot.start(
     break
   end
 
-  old = File.exist?("goons.txt") ? File.read("goons.txt") : "?"
-  next add_to_queue.call where, "Goons were last seen at #{old}" if "\\goons" == what
-  if %w{ #ta_samaya_lera #korolikarasi }.include? where
+  require "yaml"
+  goons_file = "goons.yaml"
+  (old, old_time) = File.exist?(goons_file) ? YAML.load_file(goons_file) : ["?", nil]
+  require "time"
+  next add_to_queue.call where, "Goons were last seen at #{old} (#{Time.parse(old_time).strftime "%c"})" if "\\goons" == what && old_time
+  if goons_channels.include? where
     if 60 < Time.now - prev_goons_time
       threaded.call do
-        location = JSON.load(NetHTTPUtils.request_data("https://congested-valleygirl-9254455.herokuapp.com/goonDetectors")).first["location"]
+        _, _, location, time = Oga.parse_html(NetHTTPUtils.request_data "https://docs.google.com/spreadsheets/u/0/d/e/2PACX-1vRwLysnh2Tf7h2yHBc_bpZLQh6DiFZtDqyhHLYP022xolQUPUHkSModV31E5Y7cLh_8LZGexpXy2VuH/pubhtml/sheet?headers=false&gid=1420050773").css("td").map(&:text).tap do |_|
+          Nakischema.validate _, [["Map Selection:", "Timestamp", String, /\A\d+\/\d+\/202\d \d+:\d\d:\d\d\z/]]
+        end
         if old != location
-          add_to_queue.call "#ta_samaya_lera", "Goons have moved from #{old} to #{location}"
-          add_to_queue.call "#korolikarasi", "Goons have moved from #{old} to #{location}"
-          File.write "goons.txt", location
+          goons_channels.each{ |channel| add_to_queue.call channel, "Goons have moved from #{old} to #{location}" }
+          File.write goons_file, YAML.dump([location, time])
         end
       end
       prev_goons_time = Time.now

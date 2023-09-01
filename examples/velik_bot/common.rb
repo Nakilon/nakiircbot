@@ -28,8 +28,7 @@ end
 
 module Common
 
-  def self.clip where, query
-  request = lambda do |mtd, **form|
+  def self.request mtd, **form
     JSON.load begin
       NetHTTPUtils.request_data \
       "https://api.twitch.tv/helix/#{mtd}",
@@ -45,9 +44,15 @@ module Common
       retry
     end
   end
-  user_id = request["users", "login" => where[/\A#*(.+)/, 1]]["data"][0]["id"]
+  private_class_method :request
+  def self.login_to_id login
+    request("users", "login" => login)["data"][0]["id"]
+  end
+  def self.clip where, query
+    user_id = login_to_id(where[/\A#*(.+)/, 1])
+
   f = lambda do |cursor = nil|
-    t = request["clips", broadcaster_id: user_id, first: 100, **(cursor ? { after: cursor } : {})]
+    t = request("clips", broadcaster_id: user_id, first: 100, **(cursor ? { after: cursor } : {}))
     t["data"] + t["pagination"]["cursor"].then{ |_| _ ? f[_] : [] }
   end
     smart_match(query, f.call.sort_by{ |_| -_["view_count"] }){ |_| _["title"] }.fetch("url")
@@ -137,19 +142,23 @@ module Common
   def self.init_repdb prefix
     @repdb = YAML::Store.new "#{prefix}.repdb.yaml"
   end
-  def self._rep_read _where, _what
-    where, what = _where.downcase, _what.downcase
-    h = {}
-    @repdb.transaction do |db|  # TODO: (true)?
+  def self.rep_chart where
+    {}.tap do |h|
+    @repdb.transaction(true) do |db|  # TODO: (true)?
       db.roots.each do |root|
-        _where, who, _what = root
+        _where, who, what = root
         next if %w{ sha512_ecdsa qomg joyk73 dreame8 }.include? who
-        next unless _where == where
-        h[_what] ||= 0
-        h[_what] += db[root][0]
+        next unless _where == where.downcase
+        h[what] ||= 0
+        h[what] += db[root][0]
       end
     end
-    v = h.fetch what, 0
+    end
+  end
+  # DB is case-insensitive
+  def self._rep_read where, _what
+    h = rep_chart where
+    v = h.fetch _what.downcase, 0
     i = 1 + [0, *h.values].uniq.sort.reverse.index(v)
     "#{v} (top-#{i})"
   end
