@@ -144,7 +144,7 @@ module Common
   end
   def self.rep_chart where
     {}.tap do |h|
-    @repdb.transaction(true) do |db|  # TODO: (true)?
+      @repdb.transaction(true) do |db|  # TODO: (true)?
       db.roots.each do |root|
         _where, who, what = root
         next if %w{ sha512_ecdsa qomg joyk73 dreame8 }.include? who
@@ -152,7 +152,7 @@ module Common
         h[what] ||= 0
         h[what] += db[root][0]
       end
-    end
+      end
     end
   end
   # DB is case-insensitive
@@ -218,14 +218,20 @@ module Common
       # {"detail":"Unhandled Exception: The provider does not respond!"}
       # {"detail":"Oops, no available providers (or providers that support all of your request body parameters) were found."}
       # 403 {"detail":"Forbidden: flagged moderation category: sexual"}
-      fail unless 400 == $!.code || '{"detail":"Forbidden: flagged moderation category: sexual"}' == $!.body
+      fail unless 400 == $!.code || [
+        '{"detail":"Forbidden: flagged moderation category: sexual"}',
+        '{"error":{"message":"Forbidden: flagged moderation categories: self-harm, self-harm/intent, self-harm/instructions"}}',
+        '{"error":{"message":"Forbidden: flagged moderation category: harassment"}}',
+      ].include?($!.body)
       puts $!
       begin
         get_json["gpt-3.5-turbo"]
       rescue NetHTTPUtils::Error
         # {"detail":"Unhandled Exception: We got a status code 429 from the provider!"}
         # 403 {"detail":"Forbidden: flagged moderation category: sexual"}
-        fail unless 400 == $!.code || '{"detail":"Forbidden: flagged moderation category: sexual"}' == $!.body
+        fail unless 400 == $!.code || [
+          '{"detail":"Forbidden: flagged moderation category: sexual"}',
+        ].include?($!.body)
         puts $!
         get_json["claude-instant"]
       end
