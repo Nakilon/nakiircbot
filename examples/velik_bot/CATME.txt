@@ -14,12 +14,14 @@ deploy
   dev$ scp items.json velik:_/nakiircbot/examples/velik_bot/
   dev$ scp cfg.yaml velik:_/nakiircbot/examples/velik_bot/
   dev$ scp gpt.secret velik:_/nakiircbot/examples/velik_bot/
+  dev$ scp bu.dynamic.cfg.yaml velik:_/nakiircbot/examples/velik_bot/
   # $ mkdir logs
   $ docker-compose up -d
 see remote logs
   dev$ ssh velik docker logs --since=5m -f velik_bot
 backup
   dev$ scp velik:_/nakiircbot/examples/velik_bot/prod.repdb.yaml ./bu.repdb.yaml
+  dev$ scp velik:_/nakiircbot/examples/velik_bot/dynamic.cfg.yaml ./bu.dynamic.cfg.yaml
   dev$ rsync -vrut velik:_/nakiircbot/examples/velik_bot/logs/txt.* ./vps_logs/
 Chimera CLI
   $ bundle exec ruby -r./common -e 'Common.chimera "hello"'

@@ -47,6 +47,9 @@ services:
         source: ./prod.repdb.yaml
         target: /usr/src/app/prod.repdb.yaml
       - type: bind
+        source: ./dynamic.cfg.yaml
+        target: /usr/src/app/dynamic.cfg.yaml
+      - type: bind
         source: ./goons.yaml
         target: /usr/src/app/goons.yaml
       - type: bind

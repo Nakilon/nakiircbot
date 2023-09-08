@@ -9,15 +9,18 @@ threaded = lambda do |*args, &block|
   end
 end
 
-prev_goons_time = Time.now - 120
 
 require_relative "common"
 Common.init_repdb "prod"
 
+# static
 channels, goons_channels = YAML.load_file("prod.cfg.yaml")
 features = {
   goons_regular_report: false,
 }
+cfg = YAML::Store.new "dynamic.cfg.yaml"
+
+prev_goons_time = Time.now - 120
 
 require "nakiircbot"
 require "yaml"
@@ -41,7 +44,7 @@ NakiIRCBot.start(
 
   query = what.split
 
-  if /\A(@?velik_bot|велик)[,:]?\z/ === query[0] && query[1]
+  if /\A(@?velik_bot|velik|велик)[,:]?\z/ === query[0] && query[1] && !cfg.transaction(true){ |db| db.fetch(:gpt_ignore, {})[who.downcase] }
     while 0 < t = File.mtime("gpt.touch") - Time.now + 20
       sleep t
     end if File.exist? "gpt.touch"
@@ -49,6 +52,16 @@ NakiIRCBot.start(
     next threaded.call ->s{->r{respond.call s+r}}["#{who}, "], query.drop(1).join(" ") do |callback, query|
       callback.call Common.chimera query
     end
+  end
+
+  if "\\ignore" === query[0] && query[1]
+    t = query[1].delete_prefix("@").downcase
+    next add_to_queue.call where, "#{
+      "un" unless cfg.transaction do |db|
+        db[:gpt_ignore] ||= {}
+        db[:gpt_ignore][t] = !db[:gpt_ignore][t]
+      end
+    }ignored #{t.inspect}"
   end
 
   where.downcase!
@@ -61,6 +74,11 @@ NakiIRCBot.start(
   if /\A\\(клип|clip)\s+(?<input>.+)/ =~ what
     next threaded.call where.dup, input.dup do |where, input|
       add_to_queue.call where, Common.clip(where, input)
+    end
+  end
+  if /\A\\clip_from\s+(?<from>\S+)\s+(?<input>.+)/ =~ what
+    next threaded.call where.dup, input.dup do |where, input|
+      add_to_queue.call where, Common.clip(from, input)
     end
   end
 
