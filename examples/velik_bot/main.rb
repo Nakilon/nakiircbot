@@ -53,6 +53,11 @@ NakiIRCBot.start(
 
   where.downcase!
 
+  if %w{ \lastclip } == query
+    next threaded.call where.dup do |where|
+      add_to_queue.call where, Common.clips(where).max_by{ |_| _["created_at"] }.fetch("url")
+    end
+  end
   if /\A\\(клип|clip)\s+(?<input>.+)/ =~ what
     next threaded.call where.dup, input.dup do |where, input|
       add_to_queue.call where, Common.clip(where, input)

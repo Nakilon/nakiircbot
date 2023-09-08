@@ -48,14 +48,16 @@ module Common
   def self.login_to_id login
     request("users", "login" => login)["data"][0]["id"]
   end
-  def self.clip where, query
+  def self.clips where
     user_id = login_to_id(where[/\A#*(.+)/, 1])
-
   f = lambda do |cursor = nil|
     t = request("clips", broadcaster_id: user_id, first: 100, **(cursor ? { after: cursor } : {}))
     t["data"] + t["pagination"]["cursor"].then{ |_| _ ? f[_] : [] }
   end
-    smart_match(query, f.call.sort_by{ |_| -_["view_count"] }){ |_| _["title"] }.fetch("url")
+    f.call
+  end
+  def self.clip where, query
+    smart_match(query, clips(where).sort_by{ |_| -_["view_count"] }){ |_| _["title"] }.fetch("url")
   end
 
   def self.get_item_name query

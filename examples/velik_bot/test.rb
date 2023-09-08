@@ -379,3 +379,9 @@ fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"
   end
 
 end
+
+describe "integration" do
+  it "clip" do
+    assert_equal "https://clips.twitch.tv/RichProtectiveOcelotNotATK-6MH7oHRTHSk1lzuh", Common.clip("korolikarasi", "человекдерево")
+  end
+end
