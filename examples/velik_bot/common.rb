@@ -83,7 +83,7 @@ module Common
   require "oga"
   def self.parse_response txt
     html = Oga.parse_html txt.force_encoding "utf-8"
-    prices = html.xpath("//*[@data-element_type='container' and .//*[@data-widget_type='heading.default' and starts-with(normalize-space(.),'Продать ')]]/following-sibling::*[1]//figcaption").map do |_|
+    prices = html.xpath("//*[@data-element_type='container' and .//*[@data-widget_type='heading.default' and starts-with(normalize-space(.),'Продать ')]]/following-sibling::*[1]//figcaption[text()]").map do |_|
       [
         _.at_xpath("./text()").text,
         case t = _.at_css("*[data-display-name='detailed']").text
@@ -231,6 +231,7 @@ module Common
         # 403 {"detail":"Forbidden: flagged moderation category: sexual"}
         fail unless 400 == $!.code || [
           '{"detail":"Forbidden: flagged moderation category: sexual"}',
+          '{"error":{"message":"Forbidden: flagged moderation category: harassment"}}',
         ].include?($!.body)
         puts $!
         get_json["claude-instant"]

@@ -15,8 +15,13 @@ require_relative "common"
 Common.init_repdb "prod"
 
 channels, goons_channels = YAML.load_file("prod.cfg.yaml")
+features = {
+  goons_regular_report: false,
+}
 
 require "nakiircbot"
+require "yaml"
+require "time"
 NakiIRCBot.start(
   "irc.chat.twitch.tv", "6667", "velik_bot", "nakilon", "", *channels,
   password: "oauth:"+JSON.load(File.read("tokens.secret"))["access_token"]
@@ -86,10 +91,8 @@ NakiIRCBot.start(
     break
   end
 
-  require "yaml"
   goons_file = "goons.yaml"
   (old, old_time) = File.exist?(goons_file) ? YAML.load_file(goons_file) : ["?", nil]
-  require "time"
   next add_to_queue.call where, "Goons were last seen at #{old} (#{Time.parse(old_time).strftime "%c"})" if "\\goons" == what && old_time
   if goons_channels.include? where
     if 60 < Time.now - prev_goons_time
@@ -98,7 +101,7 @@ NakiIRCBot.start(
           Nakischema.validate _, [["Map Selection:", "Timestamp", String, /\A\d+\/\d+\/202\d \d+:\d\d:\d\d\z/]]
         end
         if old != location
-          goons_channels.each{ |channel| add_to_queue.call channel, "Goons have moved from #{old} to #{location}" }
+          goons_channels.each{ |channel| add_to_queue.call channel, "Goons have moved from #{old} to #{location}" } if features[:goons_regular_report]
           File.write goons_file, YAML.dump([location, time])
         end
       end
