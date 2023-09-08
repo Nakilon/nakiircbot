@@ -26,7 +26,7 @@ require "nakiircbot"
 require "yaml"
 require "time"
 NakiIRCBot.start(
-  "irc.chat.twitch.tv", "6667", "velik_bot", "nakilon", "", *channels,
+  "irc.chat.twitch.tv", "6667", "velik_bot", "lzhesh_zaviduesh_zlishsya", "", *channels,
   password: "oauth:"+JSON.load(File.read("tokens.secret"))["access_token"]
 ) do |str, add_to_queue, restart_with_new_password, who, where, what|
   if ":tmi.twitch.tv NOTICE * :Login authentication failed" == str
@@ -54,7 +54,7 @@ NakiIRCBot.start(
     end
   end
 
-  if "\\ignore" === query[0] && query[1]
+  if "\\ignore" === query[0] && query[1] && "lzhesh_zaviduesh_zlishsya" === who
     t = query[1].delete_prefix("@").downcase
     next add_to_queue.call where, "#{
       "un" unless cfg.transaction do |db|

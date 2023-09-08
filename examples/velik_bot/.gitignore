@@ -1,5 +1,8 @@
 /*.trash/
+/*.jp*g
+/*.png
 
 /logs/
+/gpt.touch
 
 /*.secret
