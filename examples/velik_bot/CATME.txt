@@ -16,6 +16,7 @@ deploy
   dev$ scp cfg.yaml velik:_/nakiircbot/examples/velik_bot/
   dev$ scp gpt.secret velik:_/nakiircbot/examples/velik_bot/
   dev$ scp bu.dynamic.cfg.yaml velik:_/nakiircbot/examples/velik_bot/
+  dev$ scp lastfm.secret velik:_/nakiircbot/examples/velik_bot/
   # $ mkdir logs
   $ docker-compose up -d
 see remote logs

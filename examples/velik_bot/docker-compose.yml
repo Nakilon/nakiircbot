@@ -60,4 +60,8 @@ services:
         source: ./gpt.secret
         target: /usr/src/app/gpt.secret
         read_only: true
+      - type: bind
+        source: ./lastfm.secret
+        target: /usr/src/app/lastfm.secret
+        read_only: true
 

@@ -66,6 +66,20 @@ NakiIRCBot.start(
 
   where.downcase!
 
+  if /\A\\song\z/ === query[0]
+    next( if user = {
+      "#korolikarasi" => "korolikarasi",
+    }[where]
+      next threaded.call do
+        JSON.load(
+          NetHTTPUtils.request_data "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=#{user}&api_key=#{File.read "lastfm.secret"}&format=json&limit=1"
+        )["recenttracks"]["track"][0].then{ |_| respond.call "🎶 #{_["artist"]["#text"]} - #{_["name"]}" }
+      end
+    else
+      respond.call "integration missing"
+    end )
+  end
+
   if %w{ \lastclip } == query
     next threaded.call where.dup do |where|
       add_to_queue.call where, Common.clips(where).max_by{ |_| _["created_at"] }.fetch("url")
