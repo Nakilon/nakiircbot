@@ -44,7 +44,7 @@ NakiIRCBot.start(
 
   query = what.split
 
-  if /\A(@?velik_bot|velik|велик)[,:]?\z/ === query[0] && query[1] && !cfg.transaction(true){ |db| db.fetch(:gpt_ignore, {})[who.downcase] }
+  if /\A(@?velik_bot|velik|велик)[,:]?\z/i === query[0] && query[1] && !cfg.transaction(true){ |db| db.fetch(:gpt_ignore, {})[who.downcase] }
     while 0 < t = File.mtime("gpt.touch") - Time.now + 20
       sleep t
     end if File.exist? "gpt.touch"
@@ -83,7 +83,7 @@ NakiIRCBot.start(
   end
 
   next add_to_queue.call where, Common.rep_read(  where, what.split[1].delete_prefix("@")      ) if "?rep" == what.split[0].downcase && what.split[1]
-  next add_to_queue.call where, Common.rep_read(  where, who                                   ) if "?rep" == what.split[0].downcase
+  next add_to_queue.call where, Common.rep_read_precise( where, who                            ) if "?rep" == what.split[0].downcase
   next add_to_queue.call where, Common.rep_plus(  where, who, what.split[1].delete_prefix("@") ) if "+rep" == what.split[0].downcase && what.split[1]
   next add_to_queue.call where, Common.rep_minus( where, who, what.split[1].delete_prefix("@") ) if "-rep" == what.split[0].downcase && what.split[1]
 

@@ -165,8 +165,14 @@ module Common
     "#{v} (top-#{i})"
   end
   private_class_method :_rep_read
-  def self.rep_read where, who
+  def self.rep_read_precise where, who
     "@#{who}'s current rep is #{_rep_read where, who}"
+  end
+  def self.rep_read where, who
+    h = rep_chart where
+    who, v = smart_match(who, h, &:first)
+    i = 1 + [0, *h.values].uniq.sort.reverse.index(v)
+    "@#{who}'s current rep is #{v} (top-#{i})"
   end
   def self._rep_change where, _who, _what
     who, what = _who.downcase, _what.downcase
