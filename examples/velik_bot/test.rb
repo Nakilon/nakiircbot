@@ -296,10 +296,11 @@ fail unless "Набор медикаментов" == p(Common.method(:get_item_n
 fail unless "12/70 флешетта" == p(Common.method(:get_item_name).("флешетты"))  # TwixFix
 fail unless "Куда продать %s: барахолка - 29900 ₽, Терапевт - 8343 ₽" == p(Common.method(:parse_response).(File.read "pevko.htm"))  # +барахолка -$
 fail unless "Куда продать %s: Барахольщик - 232190 ₽, Миротворец - 1416 $" == p(Common.method(:parse_response).(File.read "slick.htm"))  # -барахолка +$spaces
+    assert_equal "Куда продать %s: Терапевт - 39254 ₽, Миротворец - 203 $", p(Common.method(:parse_response).(File.read "cat.htm"))
   end
 
   it "integration" do
-    assert /\AКуда продать \"Статуэтка кота\": Терапевт - \d+ ₽, Миротворец - \d+ \$\z/, p(Common.price("кот"))
+    assert_match /\AКуда продать \"Статуэтка кота\": Терапевт - \d+ ₽, Миротворец - \d+ \$\z/, p(Common.price("кот"))
 fail unless "\"Защищенный контейнер \\\"Каппа\\\"\" не продать" == p(Common.price("каппа"))
 fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"\"" == p(Common.price("тарковская"))  # the website is stupid about quotes
   end
