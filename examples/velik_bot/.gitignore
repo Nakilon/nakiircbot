@@ -1,8 +1,15 @@
 /*.trash/
+/1.txt
+/2.txt
+
 /*.jp*g
 /*.png
 
 /logs/
 /gpt.touch
+/goons.yaml
+/dynamic.cfg.yaml
 
 /*.secret
+
+/vps_logs/
