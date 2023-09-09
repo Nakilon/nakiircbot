@@ -69,6 +69,7 @@ NakiIRCBot.start(
   if /\A\\song\z/ === query[0]
     next( if user = {
       "#korolikarasi" => "korolikarasi",
+      "#ta_samaya_lera" => "colaporter",
     }[where]
       next threaded.call do
         JSON.load(
