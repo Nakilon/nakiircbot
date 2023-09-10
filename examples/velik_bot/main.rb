@@ -50,7 +50,7 @@ NakiIRCBot.start(
     end if File.exist? "gpt.touch"
     FileUtils.touch "gpt.touch"
     next threaded.call ->s{->r{respond.call s+r}}["#{who}, "], query.drop(1).join(" ") do |callback, query|
-      callback.call Common.chimera query
+      callback.call Common.chatai query
     end
   end
 

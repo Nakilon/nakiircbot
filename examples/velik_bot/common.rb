@@ -200,11 +200,11 @@ module Common
 
   require "nakischema"
   require "unicode/blocks"
-  def self.chimera query, max_tokens = 150, temperature = 0
+  def self.chatai query, max_tokens = 150, temperature = 0
     model = nil
     get_json = lambda do |model|
       blocks = Unicode::Blocks.blocks_counted query
-      NetHTTPUtils.request_data "https://chimeragpt.adventblocks.cc/api/v1/chat/completions", :POST, :json,
+      NetHTTPUtils.request_data "https://api.naga.ac/v1/chat/completions", :POST, :json,
         header: {"Authorization" => "Bearer #{File.read "gpt.secret"}"},
         form: {
           "model" => model,
