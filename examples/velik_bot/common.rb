@@ -122,6 +122,7 @@ module Common
 
   def self.is_asking_track line
     line = line.downcase
+    return if 54 < line.size
     return if [
       /\bч(е|ё|то) (это )?за (\S+ )?тр[еэ]к (был|в 2023)/,
       /\bскинь тр[еэ]к предыдущий/i,
@@ -220,28 +221,25 @@ module Common
           "temperature" => temperature,
         }
     end
-    JSON.load( begin
-      get_json["gpt-4"]
-    rescue NetHTTPUtils::Error
-      # {"detail":"Unhandled Exception: The provider does not respond!"}
-      # {"detail":"Oops, no available providers (or providers that support all of your request body parameters) were found."}
-      # 403 {"detail":"Forbidden: flagged moderation category: sexual"}
+    handle = lambda do
       fail unless 400 == $!.code || [
         '{"detail":"Forbidden: flagged moderation category: sexual"}',
         '{"error":{"message":"Forbidden: flagged moderation categories: self-harm, self-harm/intent, self-harm/instructions"}}',
         '{"error":{"message":"Forbidden: flagged moderation category: harassment"}}',
       ].include?($!.body)
       puts $!
+    end
+    JSON.load( begin
+      get_json["gpt-4"]
+    rescue NetHTTPUtils::Error
+      # {"detail":"Unhandled Exception: The provider does not respond!"}
+      # {"detail":"Oops, no available providers (or providers that support all of your request body parameters) were found."}
+      handle.call
       begin
         get_json["gpt-3.5-turbo"]
       rescue NetHTTPUtils::Error
         # {"detail":"Unhandled Exception: We got a status code 429 from the provider!"}
-        # 403 {"detail":"Forbidden: flagged moderation category: sexual"}
-        fail unless 400 == $!.code || [
-          '{"detail":"Forbidden: flagged moderation category: sexual"}',
-          '{"error":{"message":"Forbidden: flagged moderation category: harassment"}}',
-        ].include?($!.body)
-        puts $!
+        handle.call
         get_json["claude-instant"]
       end
     end ).tap do |json|
