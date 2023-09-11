@@ -29,13 +29,13 @@ NakiIRCBot.start(
   "irc.chat.twitch.tv", "6667", "velik_bot", "lzhesh_zaviduesh_zlishsya", "", *channels,
   password: "oauth:"+JSON.load(File.read("tokens.secret"))["access_token"]
 ) do |str, add_to_queue, restart_with_new_password, who, where, what|
+
   if ":tmi.twitch.tv NOTICE * :Login authentication failed" == str
     refresh
-    next restart_with_new_password.call "oauth:"+JSON.load(File.read("tokens.secret"))["access_token"]
+    restart_with_new_password.call "oauth:"+JSON.load(File.read("tokens.secret"))["access_token"]
+    next
   end
-
   next unless who   # not PRIVMSG
-
   next if %w{ ynh56 }.include? who.downcase
 
   respond = ->_{ add_to_queue.call where, _.gsub("\n", " ") }
@@ -53,7 +53,6 @@ NakiIRCBot.start(
       callback.call Common.chatai query
     end
   end
-
   if "\\ignore" === query[0] && query[1] && "lzhesh_zaviduesh_zlishsya" === who
     t = query[1].delete_prefix("@").downcase
     next add_to_queue.call where, "#{
@@ -64,9 +63,12 @@ NakiIRCBot.start(
     }ignored #{t.inspect}"
   end
 
+  help = []
+
   where.downcase!
 
-  if /\A\\song\z/ === query[0]
+  help.push "\\song, \\песня - текущий музыкальный трек"
+  if /\A\\(song|песня)\z/ === query[0]
     next( if user = {
       "#korolikarasi" => "korolikarasi",
       "#ta_samaya_lera" => "colaporter",
@@ -77,32 +79,39 @@ NakiIRCBot.start(
         )["recenttracks"]["track"][0].then{ |_| respond.call "🎶 #{_["artist"]["#text"]} - #{_["name"]}" }
       end
     else
-      respond.call "integration missing"
+      respond.call "no integration with #{where}"
     end )
   end
 
+  help.push "\\lastclip - последний twitch клип"
   if %w{ \lastclip } == query
     next threaded.call where.dup do |where|
       add_to_queue.call where, Common.clips(where).max_by{ |_| _["created_at"] }.fetch("url")
     end
   end
-  if /\A\\(клип|clip)\s+(?<input>.+)/ =~ what
+  help.push "\\clip <запрос> - найти клип по названию"
+  if /\A\\(clip|клип)\s+(?<input>.+)/ =~ what
     next threaded.call where.dup, input.dup do |where, input|
       add_to_queue.call where, Common.clip(where, input)
     end
   end
+  help.push "\\clip_from <канал> <запрос> - найти клип с другого канала"
   if /\A\\clip_from\s+(?<from>\S+)\s+(?<input>.+)/ =~ what
     next threaded.call where.dup, input.dup do |where, input|
       add_to_queue.call where, Common.clip(from, input)
     end
   end
 
+  help.push "?rep - узнать свою репутацию на канале"
+  help.push "+rep <кто> - повысить чужую репутацию"
+  help.push "-rep <кто> - понизить чужую репутацию"
   next add_to_queue.call where, Common.rep_read(  where, what.split[1].delete_prefix("@")      ) if "?rep" == what.split[0].downcase && what.split[1]
   next add_to_queue.call where, Common.rep_read_precise( where, who                            ) if "?rep" == what.split[0].downcase
   next add_to_queue.call where, Common.rep_plus(  where, who, what.split[1].delete_prefix("@") ) if "+rep" == what.split[0].downcase && what.split[1]
   next add_to_queue.call where, Common.rep_minus( where, who, what.split[1].delete_prefix("@") ) if "-rep" == what.split[0].downcase && what.split[1]
 
-  if /\A\\(цена|price)\s+(?<input>.+)/ =~ what
+  help.push "\\price, \\цена - узнать цену на предмет в EFT"
+  if /\A\\(price|цена)\s+(?<input>.+)/ =~ what
     next threaded.call where.dup, input.dup, who.dup do |where, input, who|
       add_to_queue.call where, "@#{who}, #{ if "ушки" == input
         "Прапор купит \"Ушки ta_samaya_lera\" за #{rand 20000..30000} ₽"
@@ -115,7 +124,7 @@ NakiIRCBot.start(
   next add_to_queue.call where, "спокойной ночи, @lezhebok" if "#ta_samaya_lera" == where && "lezhebok" == who && (what.downcase["я спать"] || what.downcase["спокойной"])
 
   next unless [
-    ["#vellrein", "внизу"],
+    # ["#vellrein", "внизу"],
     ["#nekochan_myp", "вверху"],
   ].each do |w, word|
     next unless w == where && Common.is_asking_track(what)
@@ -129,6 +138,7 @@ NakiIRCBot.start(
     break
   end
 
+  help.push "\\goons - узнать, где сейчас гуны"
   goons_file = "goons.yaml"
   (old, old_time) = File.exist?(goons_file) ? YAML.load_file(goons_file) : ["?", nil]
   next add_to_queue.call where, "Goons were last seen at #{old} (#{Time.parse(old_time).strftime "%c"})" if "\\goons" == what && old_time
@@ -145,6 +155,14 @@ NakiIRCBot.start(
       end
       prev_goons_time = Time.now
     end
+  end
+
+  # help.push "\\?, \\h, \\help, \\справка <команда> - получить справку по отдельной команде"
+  if /\A\\(\?|h(elp)?|х(elp)?|справка|помощь)\z/ === query[0]
+  end
+  # help.push "\\?, \\help, \\команды - узнать доступные команды"
+  if /\A\\(\?|help|команды)\z/ === query[0]
+    next respond.call "доступные команды: #{help.map{ |_| _[/\\?(\S+?),? /, 1] }.join(", ")} -- используйте \\help <команда> для получения справки"
   end
 
 end

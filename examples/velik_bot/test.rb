@@ -1,9 +1,13 @@
 require "maxitest/autorun"
 
+require_relative "flace"
+Flace "nakischema"
+Flace "unicode/blocks"
+
 require_relative "common"
 Common.init_repdb "test"
 
-describe "" do
+describe "unit1" do
 
   it "smart_match" do
 clips = <<~HEREDOC.split("\n")
@@ -299,13 +303,21 @@ fail unless "Куда продать %s: Барахольщик - 232190 ₽, М
     assert_equal "Куда продать %s: Терапевт - 39254 ₽, Миротворец - 203 $", p(Common.method(:parse_response).(File.read "cat.htm"))
   end
 
-  it "integration" do
+end
+
+describe "integration1" do
+
+  it do
     assert_match /\AКуда продать \"Статуэтка кота\": Терапевт - \d+ ₽, Миротворец - \d+ \$\z/, p(Common.price("кот"))
 fail unless "\"Защищенный контейнер \\\"Каппа\\\"\" не продать" == p(Common.price("каппа"))
 fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"\"" == p(Common.price("тарковская"))  # the website is stupid about quotes
   end
 
-  require "nakiircbot"
+end
+
+require "nakiircbot"
+describe "unit2" do
+
   it "track" do
     negative = <<~HEREDOC.split(?\n).each do |line|
       что за трек был?
@@ -381,9 +393,20 @@ fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"
     assert_equal "@user2's current rep is 0 (top-1)", Common.rep_read("#channel", "ser2")
   end
 
+  it "\\help" do
+    e = []
+    NakiIRCBot.define_singleton_method :start do |*, &b|
+      # str, add_to_queue, restart_with_new_password, who, where, what
+      t = []; b.call nil, ->__,_{t<<_}, ->{}, nil, nil, "\\?"; e.push [t.dup, "nil who", []]
+      t = []; b.call nil, ->__,_{t<<_}, ->{}, "", "", "\\?"; e.push [t.dup, "\\?", ["доступные команды: song, lastclip, clip, clip_from, ?rep, +rep, -rep, price, goons -- используйте \\help <команда> для получения справки"]]
+    end
+    require_relative "main"
+    e.each{ |a, t, e| assert_equal e, a, "(test: #{t.inspect})" }
+  end
+
 end
 
-describe "integration" do
+describe "integration2" do
   it "clip" do
     assert_equal "https://clips.twitch.tv/RichProtectiveOcelotNotATK-6MH7oHRTHSk1lzuh", Common.clip("korolikarasi", "человекдерево")
   end

@@ -24,5 +24,14 @@ see remote logs
   dev$ ssh velik docker logs --since=5m -f velik_bot
 chat AI CLI
   $ bundle exec ruby -r./common -e "Common.chatai 'hello'"
+redeploy
+  dev$ ssh velik
+  $ cd _/nakiircbot/examples/velik_bot
+  $ git pull
+  $ docker-compose down && docker-compose up -d
+  $ exit
+  $ ssh velik docker logs -f velik_bot
+
+
 
 
