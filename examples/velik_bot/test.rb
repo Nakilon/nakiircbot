@@ -324,6 +324,9 @@ describe "unit2" do
       Ого что за трэк в 2023)
       Скинь трек предыдущий
       потом на странице гугла ткнул в расширение, чтоб убедиться, что оно видит, что за трек
+      Ну что за песня Рэн... 10 часов подряд пожалуйста
+      Что за песня при рейде звучит?
+      Лер, что за песня была?
     HEREDOC
       refute Common.is_asking_track(line), line
     end
@@ -367,6 +370,15 @@ describe "unit2" do
       ух чо затрэк
       Скинь трэк)
       Скинь трек )
+      что за песня?
+      Что за песня ?
+      а что за песня
+      Что это за песня
+      чё за песня играет?
+      че за песня молодости
+      Ктото скажет чё за песня ?
+      А я даже не вкурсе что за песня
+      Выпий суп паёк/? Что за песня такая
     HEREDOC
       assert Common.is_asking_track(line), line
     end
@@ -393,15 +405,21 @@ describe "unit2" do
     assert_equal "@user2's current rep is 0 (top-1)", Common.rep_read("#channel", "ser2")
   end
 
-  it "\\help" do
+  # str, add_to_queue, restart_with_new_password, who, where, what
+  it "loop" do
     e = []
+    prev = Thread.list.size
     NakiIRCBot.define_singleton_method :start do |*, &b|
-      # str, add_to_queue, restart_with_new_password, who, where, what
-      t = []; b.call nil, ->__,_{t<<_}, ->{}, nil, nil, "\\?"; e.push [t.dup, "nil who", []]
-      t = []; b.call nil, ->__,_{t<<_}, ->{}, "", "", "\\?"; e.push [t.dup, "\\?", ["доступные команды: song, lastclip, clip, clip_from, ?rep, +rep, -rep, price, goons -- используйте \\help <команда> для получения справки"]]
+      t = []; b.call nil, ->__,_{t<<_}, nil, nil,             nil, "\\?"       ; e.push [t.dup, "\\? who=nil", []]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "",              "", "\\?"       ; e.push [t.dup, "\\?", ["доступные команды: lastclip, clip, clip_from, ?rep, +rep, -rep, price, song, goons -- используйте \\help <команда> для получения справки по каждой"]]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "",              "", "\\song"    ; e.push [t.dup, "\\song -интегр -верх -русс +song", ["no integration with "]]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "чо за трек"; e.push [t.dup, "\\song -интегр +верх +русс -song", [/отображается/]]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "."         ; e.push [t.dup, "\\song -интегр +верх -русс -song", []]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#korolikarasi", "."         ; e.push [t.dup, "\\song +интегр -верх -русс -song", []]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#korolikarasi", "чо за трек"; Timeout.timeout(1){ sleep 0.1 until prev + 1 == Thread.list.size }; e.push [t.dup, "\\song +интегр -верх +русс -song", [/🎶/]]   # +1 is a Timeout thread itself
     end
     require_relative "main"
-    e.each{ |a, t, e| assert_equal e, a, "(test: #{t.inspect})" }
+    e.each{ |r, t, e| [e, r].transpose.each{ |e, r| assert_match e, r, "(test: #{t.inspect})" } }
   end
 
 end

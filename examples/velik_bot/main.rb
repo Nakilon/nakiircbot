@@ -67,22 +67,6 @@ NakiIRCBot.start(
 
   where.downcase!
 
-  help.push "\\song, \\песня - текущий музыкальный трек"
-  if /\A\\(song|песня)\z/ === query[0]
-    next( if user = {
-      "#korolikarasi" => "korolikarasi",
-      "#ta_samaya_lera" => "colaporter",
-    }[where]
-      next threaded.call do
-        JSON.load(
-          NetHTTPUtils.request_data "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=#{user}&api_key=#{File.read "lastfm.secret"}&format=json&limit=1"
-        )["recenttracks"]["track"][0].then{ |_| respond.call "🎶 #{_["artist"]["#text"]} - #{_["name"]}" }
-      end
-    else
-      respond.call "no integration with #{where}"
-    end )
-  end
-
   help.push "\\lastclip - последний twitch клип"
   if %w{ \lastclip } == query
     next threaded.call where.dup do |where|
@@ -105,12 +89,13 @@ NakiIRCBot.start(
   help.push "?rep - узнать свою репутацию на канале"
   help.push "+rep <кто> - повысить чужую репутацию"
   help.push "-rep <кто> - понизить чужую репутацию"
+  # TODO: should it fail on blank `what` (from tests)?
   next add_to_queue.call where, Common.rep_read(  where, what.split[1].delete_prefix("@")      ) if "?rep" == what.split[0].downcase && what.split[1]
   next add_to_queue.call where, Common.rep_read_precise( where, who                            ) if "?rep" == what.split[0].downcase
   next add_to_queue.call where, Common.rep_plus(  where, who, what.split[1].delete_prefix("@") ) if "+rep" == what.split[0].downcase && what.split[1]
   next add_to_queue.call where, Common.rep_minus( where, who, what.split[1].delete_prefix("@") ) if "-rep" == what.split[0].downcase && what.split[1]
 
-  help.push "\\price, \\цена - узнать цену на предмет в EFT"
+  help.push "\\price, \\цена - узнать цену предмета в EFT"
   if /\A\\(price|цена)\s+(?<input>.+)/ =~ what
     next threaded.call where.dup, input.dup, who.dup do |where, input, who|
       add_to_queue.call where, "@#{who}, #{ if "ушки" == input
@@ -121,13 +106,24 @@ NakiIRCBot.start(
     end
   end
 
-  next add_to_queue.call where, "спокойной ночи, @lezhebok" if "#ta_samaya_lera" == where && "lezhebok" == who && (what.downcase["я спать"] || what.downcase["спокойной"])
+  help.push "\\song, \\песня - текущий музыкальный трек"
 
+  if user = {
+    "#korolikarasi" => "korolikarasi",
+    "#ta_samaya_lera" => "colaporter",
+  }[where]
+    next threaded.call do
+      JSON.load(
+        NetHTTPUtils.request_data "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=#{user}&api_key=#{File.read "lastfm.secret"}&format=json&limit=1"
+      )["recenttracks"]["track"][0].then{ |_| respond.call "🎶 #{_["artist"]["#text"]} - #{_["name"]}" }
+    end if /\A\\(song|песня)\z/ === query[0] || Common.is_asking_track(what)
+  else
   next unless [
     # ["#vellrein", "внизу"],
     ["#nekochan_myp", "вверху"],
   ].each do |w, word|
-    next unless w == where && Common.is_asking_track(what)
+    next unless w == where
+    next unless /\A\\(song|песня)\z/ === query[0] || Common.is_asking_track(what)
     add_to_queue.call where, [
       "@#{who}, название трека отображается #{word}",
       "@#{who}, название трека #{word} отображается",
@@ -136,6 +132,8 @@ NakiIRCBot.start(
       "@#{who}, музыка #{word} отображается",
     ].sample
     break
+  end
+    next respond.call "no integration with #{where}" if /\A\\(song|песня)\z/ === query[0]
   end
 
   help.push "\\goons - узнать, где сейчас гуны"
@@ -157,12 +155,14 @@ NakiIRCBot.start(
     end
   end
 
+  next add_to_queue.call where, "спокойной ночи, @lezhebok" if "#ta_samaya_lera" == where && "lezhebok" == who && (what.downcase["я спать"] || what.downcase["спокойной"])
+
   # help.push "\\?, \\h, \\help, \\справка <команда> - получить справку по отдельной команде"
-  if /\A\\(\?|h(elp)?|х(elp)?|справка|помощь)\z/ === query[0]
+  if /\A\\(\?|h(elp)?|х(елп)?|справка|помощь)\z/ === query[0]
   end
   # help.push "\\?, \\help, \\команды - узнать доступные команды"
   if /\A\\(\?|help|команды)\z/ === query[0]
-    next respond.call "доступные команды: #{help.map{ |_| _[/\\?(\S+?),? /, 1] }.join(", ")} -- используйте \\help <команда> для получения справки"
+    next respond.call "доступные команды: #{help.map{ |_| _[/\\?(\S+?),? /, 1] }.join(", ")} -- используйте \\help <команда> для получения справки по каждой"
   end
 
 end
