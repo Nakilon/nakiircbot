@@ -107,7 +107,6 @@ NakiIRCBot.start(
   end
 
   help.push "\\song, \\песня - текущий музыкальный трек"
-
   if user = {
     "#korolikarasi" => "korolikarasi",
     "#ta_samaya_lera" => "colaporter",

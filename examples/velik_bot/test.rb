@@ -382,9 +382,16 @@ describe "unit2" do
     HEREDOC
       assert Common.is_asking_track(line), line
     end
-    Dir.glob("vps_logs/txt.*").sort.each do |_|
-      puts _
-      ( NakiIRCBot.parse_log(_, "velik_bot").map do |line|
+    Dir.glob("vps_logs/txt.*").sort.each do |path|
+      puts path
+      filename = "#{File.basename path}.marshal"
+      ( if File.exist? filename
+        Marshal.load File.binread filename
+      else
+        NakiIRCBot.parse_log(path, "velik_bot").tap do |_|
+          File.binwrite filename, Marshal.dump(_)
+        end
+      end.map do |line|
         line[4] if "PRIVMSG" == line[2]
       end.compact - positive ).each do |line|
         refute Common.is_asking_track(line), line
