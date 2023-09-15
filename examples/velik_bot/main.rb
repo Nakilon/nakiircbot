@@ -162,7 +162,7 @@ NakiIRCBot.start(
     next respond.call "доступные команды: #{help.map{ |_| _[/\\?(\S+?),? /, 1] }.join(", ")} -- используйте \\help <команда> для получения справки по каждой"
   end
 
-  next add_to_queue.call "#korolikarasi", "#{where} <#{who}> #{what}" if /карас/i =~ what
+  next add_to_queue.call "#korolikarasi", "#{where} <#{who}> #{what}" if /карас/i =~ what && "#korolikarasi" != where
   next add_to_queue.call where, "спокойной ночи, @lezhebok" if "#ta_samaya_lera" == where && "lezhebok" == who && (what.downcase["я спать"] || what.downcase["спокойной"])
 
 end
