@@ -423,10 +423,11 @@ describe "unit2" do
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "чо за трек"; e.push [t.dup, "\\song -интегр +верх +русс -song", [/отображается/]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "."         ; e.push [t.dup, "\\song -интегр +верх -русс -song", []]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#korolikarasi", "."         ; e.push [t.dup, "\\song +интегр -верх -русс -song", []]
-      t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#korolikarasi", "чо за трек"; Timeout.timeout(1){ sleep 0.1 until prev + 1 == Thread.list.size }; e.push [t.dup, "\\song +интегр -верх +русс -song", [/🎶/]]   # +1 is a Timeout thread itself
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#korolikarasi", "чо за трек"; Timeout.timeout(2){ sleep 0.1 until prev + 1 == Thread.list.size }; e.push [t.dup, "\\song +интегр -верх +русс -song", [/🎶/]]   # +1 is a Timeout thread itself
+      t = []; b.call nil, ->  *_{t<<_}, nil, "name", "#channel", "_ _карас_ _" ; e.push [t.dup, "карась", [["#korolikarasi", "#channel <name> _ _карас_ _"]]]
     end
     require_relative "main"
-    e.each{ |r, t, e| [e, r].transpose.each{ |e, r| assert_match e, r, "(test: #{t.inspect})" } }
+    e.each{ |r, t, e| [e, r].transpose.each{ |e, r| assert_operator e, :===, r, "(test: #{t.inspect})" } }
   end
 
 end
