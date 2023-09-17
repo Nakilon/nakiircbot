@@ -232,12 +232,13 @@ module Common
       ].include?($!.body)
       puts $!
     end
-    JSON.load( begin
-      get_json["gpt-4"]
-    rescue NetHTTPUtils::Error
-      # {"detail":"Unhandled Exception: The provider does not respond!"}
-      # {"detail":"Oops, no available providers (or providers that support all of your request body parameters) were found."}
-      handle.call
+    JSON.load(
+      # begin
+      #   get_json["gpt-4"]
+      # rescue NetHTTPUtils::Error
+      #   # {"detail":"Unhandled Exception: The provider does not respond!"}
+      #   # {"detail":"Oops, no available providers (or providers that support all of your request body parameters) were found."}
+      #   handle.call
       begin
         get_json["gpt-3.5-turbo"]
       rescue NetHTTPUtils::Error
@@ -245,7 +246,8 @@ module Common
         handle.call
         get_json["claude-instant"]
       end
-    end ).tap do |json|
+      # end
+    ).tap do |json|
       p json
       Nakischema.validate json, { hash_req: {
         "choices" => [[
