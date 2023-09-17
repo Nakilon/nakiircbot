@@ -138,7 +138,7 @@ NakiIRCBot.start(
   help.push "\\goons - узнать, где сейчас гуны"
   goons_file = "goons.yaml"
   (old, old_time) = File.exist?(goons_file) ? YAML.load_file(goons_file) : ["?", nil]
-  next add_to_queue.call where, "Goons were last seen at #{old} (#{Time.parse(old_time).strftime "%c"})" if "\\goons" == what && old_time
+  next add_to_queue.call where, "Goons were last seen at #{old} (#{Time.strptime(old_time, "%m/%d/%Y %T").strftime "%c"})" if "\\goons" == what && old_time
   if goons_channels.include? where
     if 60 < Time.now - prev_goons_time
       threaded.call do
