@@ -64,4 +64,8 @@ services:
         source: ./lastfm.secret
         target: /usr/src/app/lastfm.secret
         read_only: true
+      - type: bind
+        source: ./scav_names.txt
+        target: /usr/src/app/scav_names.txt
+        read_only: true
 
