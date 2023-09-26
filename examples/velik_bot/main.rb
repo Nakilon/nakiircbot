@@ -63,12 +63,18 @@ NakiIRCBot.start(
     }ignored #{t.inspect}"
   end
 
+  if "\\ктоя" === query[0].downcase
+    a, b = File.read("scav_names.txt").split("\n\n").map(&:split)
+    d = Digest::SHA512.hexdigest(who.downcase + Date.today.ajd.to_s).hex % 0x100000000
+    next respond.call "сегодня (#{Date.today.strftime "%F"}) #{who} -- #{a.rotate(d).first} #{b.rotate(d).first}"
+  end
+
   help = []
 
   where.downcase!
 
   help.push "\\lastclip - последний twitch клип"
-  if %w{ \lastclip } == query
+  if %w{ \\lastclip } == query
     next threaded.call where.dup do |where|
       add_to_queue.call where, Common.clips(where).max_by{ |_| _["created_at"] }.fetch("url")
     end
@@ -154,13 +160,6 @@ NakiIRCBot.start(
     end
   end
 
-  # help.push "\\?, \\h, \\help, \\справка <команда> - получить справку по отдельной команде"
-  if /\A\\(\?|h(elp)?|х(елп)?|справка|помощь)\z/ === query[0]
-  end
-  # help.push "\\?, \\help, \\команды - узнать доступные команды"
-  if /\A\\(\?|help|команды)\z/ === query[0]
-    next respond.call "доступные команды: #{help.map{ |_| _[/\\?(\S+?),? /, 1] }.join(", ")} -- используйте \\help <команда> для получения справки по каждой"
-  end
 
   # next add_to_queue.call "#korolikarasi", "##{where[1]} <#{who}> #{what.delete "░█▄▀▐▌"}" if /[кk][аоao0][рp][аa][сc]/i =~ what && "#korolikarasi" != where
   next add_to_queue.call where, "спокойной ночи, @lezhebok" if "#ta_samaya_lera" == where && "lezhebok" == who && (what.downcase["я спать"] || what.downcase["спокойной"])

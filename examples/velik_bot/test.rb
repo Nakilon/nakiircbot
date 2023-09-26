@@ -417,18 +417,31 @@ describe "unit2" do
     e = []
     prev = Thread.list.size
     NakiIRCBot.define_singleton_method :start do |*, &b|
-      t = []; b.call nil, ->__,_{t<<_}, nil, nil,             nil, "\\?"       ; e.push [t.dup, "\\? who=nil", []]
-      t = []; b.call nil, ->__,_{t<<_}, nil,  "",              "", "\\?"       ; e.push [t.dup, "\\?", ["доступные команды: lastclip, clip, clip_from, ?rep, +rep, -rep, price, song, goons -- используйте \\help <команда> для получения справки по каждой"]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "",              "", "\\song"    ; e.push [t.dup, "\\song -интегр -верх -русс +song", ["no integration with "]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "чо за трек"; e.push [t.dup, "\\song -интегр +верх +русс -song", [/отображается/]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "."         ; e.push [t.dup, "\\song -интегр +верх -русс -song", []]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#korolikarasi", "."         ; e.push [t.dup, "\\song +интегр -верх -русс -song", []]
-      t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#korolikarasi", "чо за трек"; Timeout.timeout(5){ sleep 0.5 until prev + 1 == Thread.list.size }; e.push [t.dup, "\\song +интегр -верх +русс -song", [/🎶/]]   # +1 is a Timeout thread itself
-      t = []; b.call nil, ->  *_{t<<_}, nil, "name", "#channel",      "_ _K0PAC_ ░█▄▀▐▌" ; e.push [t.dup, "карась", [["#korolikarasi", "#? <name> _ _K0PAC_ "]]]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#korolikarasi", "чо за трек"; Timeout.timeout(10){ sleep 0.5 until prev + 1 == Thread.list.size }; e.push [t.dup, "\\song +интегр -верх +русс -song", [/🎶/]]   # +1 is a Timeout thread itself
+      # t = []; b.call nil, ->  *_{t<<_}, nil, "name", "#channel",      "_ _K0PAC_ ░█▄▀▐▌" ; e.push [t.dup, "карась", [["#korolikarasi", "#? <name> _ _K0PAC_ "]]]
+      t = []; b.call nil, ->  *_{t<<_}, nil, "name", "#channel",      "_ _K0PAC_ ░█▄▀▐▌" ; e.push [t.dup, "карась", []]
       t = []; b.call nil, ->  *_{t<<_}, nil, "name", "#korolikarasi", "_ _карас_ _" ; e.push [t.dup, "самокарась", []]
+      [
+        [Date.new, "name", "#channel", "Стасик Тайчин", "reference"],
+        [Date.new+1, "name", "#channel", "Радик Бритва", "different date"],
+        [Date.new, "name0", "#channel", "Сергей Погон", "different name"],
+        [Date.new, "name", "#channel0", "Стасик Тайчин", "different channel"],
+        [Date.new, "NAME", "#channel", "Стасик Тайчин", "capslock"],
+      ].each do |date, who, where, name, test|
+        Date.stub :today, date do
+          t = []; b.call nil, ->__,_{t<<_}, nil, who, where, "\\ктоя" ; e.push [t.dup, "\\ктоя #{test}", [/\) #{who} -- #{name}\z/]]
+        end
+      end
     end
     require_relative "main"
-    e.each{ |r, t, e| [e, r].transpose.each{ |e, r| assert_operator e, :===, r, "(test: #{t.inspect})" } }
+    e.each do |r, t, e|
+      assert_equal e.size, r.size, t
+      [e, r].transpose.each{ |e, r| assert_operator e, :===, r, "(test: #{t.inspect})" }
+    end
   end
 
 end
