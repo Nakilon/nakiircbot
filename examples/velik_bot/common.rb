@@ -57,7 +57,7 @@ module Common
     f.call
   end
   def self.clip where, query
-    smart_match(query, clips(where).sort_by{ |_| -_["view_count"] }){ |_| _["title"] }.fetch("url")
+    smart_match(query, clips(where).sort_by{ |_| -_["view_count"] }){ |_| _["title"] }.fetch("url", "no clips found")
   end
 
   def self.get_item_name query

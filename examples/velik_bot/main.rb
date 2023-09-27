@@ -63,13 +63,14 @@ NakiIRCBot.start(
     }ignored #{t.inspect}"
   end
 
+  help = []
+
+  help.push "\\ктоя - узнать, какой Дикий ты сегодня"
   if "\\ктоя" === query[0].downcase
     a, b = File.read("scav_names.txt").split("\n\n").map(&:split)
     d = Digest::SHA512.hexdigest(who.downcase + Date.today.ajd.to_s).hex % 0x100000000
     next respond.call "сегодня (#{Date.today.strftime "%F"}) #{who} -- #{a.rotate(d).first} #{b.rotate(d).first}"
   end
-
-  help = []
 
   where.downcase!
 
@@ -93,8 +94,8 @@ NakiIRCBot.start(
   end
 
   help.push "?rep - узнать свою репутацию на канале"
-  help.push "+rep <кто> - повысить чужую репутацию"
-  help.push "-rep <кто> - понизить чужую репутацию"
+  help.push "+rep <кто> - повысить чужую репутацию (доступно раз в сутки по отношению к одному человеку)"
+  help.push "-rep <кто> - понизить чужую репутацию (доступно раз в сутки по отношению к одному человеку)"
   # TODO: should it fail on blank `what` (from tests)?
   next add_to_queue.call where, Common.rep_read(  where, what.split[1].delete_prefix("@")      ) if "?rep" == what.split[0].downcase && what.split[1]
   next add_to_queue.call where, Common.rep_read_precise( where, who                            ) if "?rep" == what.split[0].downcase
@@ -112,7 +113,7 @@ NakiIRCBot.start(
     end
   end
 
-  help.push "\\song, \\песня - текущий музыкальный трек"
+  help.push "\\song, \\песня - узнать текущий музыкальный трек стримера"
   if user = {
     "#korolikarasi" => "korolikarasi",
     "#ta_samaya_lera" => "colaporter",
@@ -141,7 +142,7 @@ NakiIRCBot.start(
     next respond.call "no integration with #{where}" if /\A\\(song|песня)\z/ === query[0]
   end
 
-  help.push "\\goons - узнать, где сейчас гуны"
+  help.push "\\goons - узнать, где сейчас гуны, согласно 'гунтрекеру'"
   goons_file = "goons.yaml"
   (old, old_time) = File.exist?(goons_file) ? YAML.load_file(goons_file) : ["?", nil]
   next add_to_queue.call where, "Goons were last seen at #{old} (#{Time.strptime(old_time, "%m/%d/%Y %T").strftime "%c"})" if "\\goons" == what && old_time
@@ -160,6 +161,12 @@ NakiIRCBot.start(
     end
   end
 
+  help.push "\\?, \\h, \\help [<команда>] - узнать все доступные команды или получить справку по указанной"
+  if /\A\\(\?|h(elp)?)\z/ === query[0]
+    cmds = help.map{ |_| [_[/(\\?\S+?),? /, 1], _] }.to_h
+    next respond.call "доступные команды: #{cmds.keys.join(", ")} -- используйте #{query[0]} <команда> для получения справки по каждой" unless query[1]
+    next respond.call cmds.fetch query[1], "я не знаю команду #{query[1]}, я знаю только: #{cmds.keys.join(", ")}"
+  end
 
   # next add_to_queue.call "#korolikarasi", "##{where[1]} <#{who}> #{what.delete "░█▄▀▐▌"}" if /[кk][аоao0][рp][аa][сc]/i =~ what && "#korolikarasi" != where
   next add_to_queue.call where, "спокойной ночи, @lezhebok" if "#ta_samaya_lera" == where && "lezhebok" == who && (what.downcase["я спать"] || what.downcase["спокойной"])

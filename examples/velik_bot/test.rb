@@ -334,14 +334,22 @@ describe "unit2" do
       @VELLREIN Кинь плз в чат ссылку на трэк
       @VELLREIN а что это за чудесная музыка играет?
       @ta_samaya_lera привет че за трек ? качает)
+      @tot_samyi_denis_ че за песня
+      веоик что за песня
+      велик что за песня?
+      ВЕЛИК ЧТО ЗА ПЕСНЯ
       Реня скинь пожалуйста этот трек который играл
       Музыка заставляет вслушиваться в слова)) что за трек))
+      Уаааая что за песня такая , ашалеееть машала
       Ооо музыка топ можно трек ?)
       катя что за трек, голос у девки приятный
       как трек называется ,срочно дайте дайте!
       тёть Лер, а что за трек играет? Kappa
+      а что за трек ? не успел зашазамить
+      скинь этот трек название
       А можно трек? Что в донате
       Дайте трек пожалуйста
+      че за депресивный трек
       А можно трек мне пожалуйста?
       а можно название трека?))
       а можно название трека?)
@@ -354,9 +362,11 @@ describe "unit2" do
       чо за музыка
       что за музыка?
       Что за музыка?
+      Чо за музыка
       Что это за музыка NotLikeThis
       Что за трек сейчас играет?
       что за трек? скинь название
+      Можно название трека?
       блин чо за трек
       А что за трек?
       а чё за трек?
@@ -370,6 +380,8 @@ describe "unit2" do
       ух чо затрэк
       Скинь трэк)
       Скинь трек )
+      чо за песня
+      что за песня
       что за песня?
       Что за песня ?
       а что за песня
@@ -384,7 +396,7 @@ describe "unit2" do
     end
     Dir.glob("vps_logs/txt.*").sort.each do |path|
       puts path
-      filename = "#{File.basename path}.marshal"
+      filename = "cache/#{File.basename path}.marshal"
       ( if File.exist? filename
         Marshal.load File.binread filename
       else
@@ -417,6 +429,9 @@ describe "unit2" do
     e = []
     prev = Thread.list.size
     NakiIRCBot.define_singleton_method :start do |*, &b|
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "",              "", "\\?"       ; e.push [t.dup, "\\?", ["доступные команды: \\ктоя, \\lastclip, \\clip, \\clip_from, ?rep, +rep, -rep, \\price, \\song, \\goons, \\? -- используйте \\? <команда> для получения справки по каждой"]]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "",              "", "\\? \\?"   ; e.push [t.dup, "\\? \\?", ["\\?, \\h, \\help [<команда>] - узнать все доступные команды или получить справку по указанной"]]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "",              "", "\\? ?"     ; e.push [t.dup, "\\? ?", ["я не знаю команду ?, я знаю только: \\ктоя, \\lastclip, \\clip, \\clip_from, ?rep, +rep, -rep, \\price, \\song, \\goons, \\?"]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "",              "", "\\song"    ; e.push [t.dup, "\\song -интегр -верх -русс +song", ["no integration with "]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "чо за трек"; e.push [t.dup, "\\song -интегр +верх +русс -song", [/отображается/]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "."         ; e.push [t.dup, "\\song -интегр +верх -русс -song", []]
@@ -440,7 +455,7 @@ describe "unit2" do
     require_relative "main"
     e.each do |r, t, e|
       assert_equal e.size, r.size, t
-      [e, r].transpose.each{ |e, r| assert_operator e, :===, r, "(test: #{t.inspect})" }
+      [e, r].transpose.each{ |e, r| assert_operator e, :===, r, "test: #{t.inspect}" }
     end
   end
 
