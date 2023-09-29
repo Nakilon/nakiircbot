@@ -428,16 +428,17 @@ describe "unit2" do
   it "loop" do
     e = []
     prev = Thread.list.size
+    File.write "dynamic.cfg.yaml", ""
+    File.write "quotes.yaml", ""
     NakiIRCBot.define_singleton_method :start do |*, &b|
-      t = []; b.call nil, ->__,_{t<<_}, nil,  "",              "", "\\?"       ; e.push [t.dup, "\\?", ["доступные команды: \\ктоя, \\lastclip, \\clip, \\clip_from, ?rep, +rep, -rep, \\price, \\song, \\goons, \\? -- используйте \\? <команда> для получения справки по каждой"]]
-      t = []; b.call nil, ->__,_{t<<_}, nil,  "",              "", "\\? \\?"   ; e.push [t.dup, "\\? \\?", ["\\?, \\h, \\help [<команда>] - узнать все доступные команды или получить справку по указанной"]]
-      t = []; b.call nil, ->__,_{t<<_}, nil,  "",              "", "\\? ?"     ; e.push [t.dup, "\\? ?", ["я не знаю команду ?, я знаю только: \\ктоя, \\lastclip, \\clip, \\clip_from, ?rep, +rep, -rep, \\price, \\song, \\goons, \\?"]]
-      t = []; b.call nil, ->__,_{t<<_}, nil,  "",              "", "\\song"    ; e.push [t.dup, "\\song -интегр -верх -русс +song", ["no integration with "]]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\?"       ; e.push [t.dup, "\\?", [/\Aдоступные команды: \\.+ -- используйте \\\? <команда> для получения справки по каждой\z/]]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\? \\?"   ; e.push [t.dup, "\\? \\?", ["\\?, \\h, \\help [<команда>] - узнать все доступные команды или получить справку по указанной"]]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\? ?"     ; e.push [t.dup, "\\? ?", [/\Aя не знаю команду \?, я знаю только: \\.+/]]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\song"    ; e.push [t.dup, "\\song -интегр -верх -русс +song", ["no integration with #channel"]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "чо за трек"; e.push [t.dup, "\\song -интегр +верх +русс -song", [/отображается/]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "."         ; e.push [t.dup, "\\song -интегр +верх -русс -song", []]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#korolikarasi", "."         ; e.push [t.dup, "\\song +интегр -верх -русс -song", []]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#korolikarasi", "чо за трек"; Timeout.timeout(10){ sleep 0.5 until prev + 1 == Thread.list.size }; e.push [t.dup, "\\song +интегр -верх +русс -song", [/🎶/]]   # +1 is a Timeout thread itself
-      # t = []; b.call nil, ->  *_{t<<_}, nil, "name", "#channel",      "_ _K0PAC_ ░█▄▀▐▌" ; e.push [t.dup, "карась", [["#korolikarasi", "#? <name> _ _K0PAC_ "]]]
       t = []; b.call nil, ->  *_{t<<_}, nil, "name", "#channel",      "_ _K0PAC_ ░█▄▀▐▌" ; e.push [t.dup, "карась", []]
       t = []; b.call nil, ->  *_{t<<_}, nil, "name", "#korolikarasi", "_ _карас_ _" ; e.push [t.dup, "самокарась", []]
       [
@@ -450,6 +451,39 @@ describe "unit2" do
         Date.stub :today, date do
           t = []; b.call nil, ->__,_{t<<_}, nil, who, where, "\\ктоя" ; e.push [t.dup, "\\ктоя #{test}", [/\) #{who} -- #{name}\z/]]
         end
+      end
+      [
+        ["#channel", "name",    "empty random",     "\\q",                 "no quotes yet, go ahead and use '\\qadd <text>' to add some!"],
+        ["#channel", "name",    "empty index",      "\\q 1",               "no quotes yet, go ahead and use '\\qadd <text>' to add some!"],
+        ["#channel", "name",    "empty search",     "\\q a",               "no quotes yet, go ahead and use '\\qadd <text>' to add some!"],
+        ["#channel", "name",    "del denied",       "\\qdel 1",            "only channel owner add those added using \\access_quote are allowed to add quotes"],
+        ["#channel", "name",    "access denied",    "\\access_quote name", "only channel owner can toggle \\qadd and \\qdel access"],
+        ["#channel", "channel", "access 1",         "\\access_quote name", "added \\qadd and \\qdel access for \"name\""],
+        ["#channel", "name",    "empty del",        "\\qdel 1",            "quote #1 not found"],
+        ["#channel", "channel", "access 2",         "\\access_quote name", "removed \\qadd and \\qdel access for \"name\""],
+        ["#channel", "name",    "del denied again", "\\qdel 1",            "only channel owner add those added using \\access_quote are allowed to add quotes"],
+        ["#channel", "name",    "add denied",       "\\qadd 1",            "only channel owner add those added using \\access_quote are allowed to add quotes"],
+        ["#channel", "channel", "access 3",         "\\access_quote name", "added \\qadd and \\qdel access for \"name\""],
+        ["#channel", "name",    "add a b",          "\\qadd a b",          "quote #1 added"],
+        ["#channel", "channel", "add c d",          "\\qadd c d",          "quote #2 added"],
+        ["#channel", "name",    "add e f",          "\\qadd e f",          "quote #3 added"],
+        ["#channal", "channal", "add elsewhere",    "\\qadd i j",          "quote #1 added"],
+        ["#channel", "name",    "del 1",            "\\qdel 1",            "quote #1 deleted"],
+        ["#channel", "name",    "del два",          "\\qdel два",          "bad index \"два\", must be a natural number"],
+        ["#channel", "name",    "add g h",          "\\qadd g h",          "quote #4 added"],
+        ["#channel", "name",    "del 3",            "\\qdel 3",            "quote #3 deleted"],
+        ["#channel", "name",    "index 4",          "\\q 4",               "#4: g h"],
+        ["#channel", "name",    "index 3",          "\\q 3",               "quote #3 not found"],
+        ["#channel", "name",    "index 2",          "\\q 2",               "#2: c d"],
+        ["#channel", "name",    "index 1",          "\\q 1",               "quote #1 not found"],
+        ["#channel", "name",    "search",           "\\q ai dj",           "#2: c d"],
+        # ["#channel", "name", "random"], # TODO
+      ].each do |where, who, test, cmd, *expectation|
+        where = where.chars.map{ |c| [c, c.upcase].sample }.join
+        who   = who.  chars.map{ |c| [c, c.upcase].sample }.join
+        t = []
+        b.call nil, ->__,_{t<<_}, nil, who, where, cmd
+        e.push [t.dup, "access,quote :: #{test}", expectation]
       end
     end
     require_relative "main"

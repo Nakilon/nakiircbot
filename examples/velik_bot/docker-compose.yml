@@ -57,6 +57,9 @@ services:
         target: /usr/src/app/prod.cfg.yaml
         read_only: true
       - type: bind
+        source: ./quotes.yaml
+        target: /usr/src/app/quotes.yaml
+      - type: bind
         source: ./gpt.secret
         target: /usr/src/app/gpt.secret
         read_only: true
