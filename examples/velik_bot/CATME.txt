@@ -14,6 +14,7 @@ deploy
   dev$ scp ru.json velik:_/nakiircbot/examples/velik_bot/
   dev$ scp items.json velik:_/nakiircbot/examples/velik_bot/
   dev$ scp cfg.yaml velik:_/nakiircbot/examples/velik_bot/
+  dev$ scp bu.quotes.yaml velik:_/nakiircbot/examples/velik_bot/
   dev$ scp gpt.secret velik:_/nakiircbot/examples/velik_bot/
   dev$ scp bu.repdb.yaml velik:_/nakiircbot/examples/velik_bot/prod.repdb.yaml
   dev$ scp bu.dynamic.cfg.yaml velik:_/nakiircbot/examples/velik_bot/dynamic.cfg.yaml

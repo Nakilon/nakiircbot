@@ -13,5 +13,6 @@ desc "backup repdb, dynamic.cfg, logs"
 task :backup do
   sh "scp velik:_/nakiircbot/examples/velik_bot/prod.repdb.yaml ./bu.repdb.yaml"
   sh "scp velik:_/nakiircbot/examples/velik_bot/dynamic.cfg.yaml ./bu.dynamic.cfg.yaml"
+  sh "scp velik:_/nakiircbot/examples/velik_bot/quotes.yaml ./bu.quotes.yaml"
   sh "rsync -vrut velik:_/nakiircbot/examples/velik_bot/logs/txt.* ./vps_logs/"
 end
