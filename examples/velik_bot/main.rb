@@ -156,7 +156,7 @@ NakiIRCBot.start(
   help.push "\\price, \\цена - узнать цену предмета в EFT"
   if /\A\\(price|цена)\s+(?<input>.+)/ =~ what
     next threaded.call where.dup, input.dup, who.dup do |where, input, who|
-      respond.call "@#{who}, #{ if "ушки" == input
+      respond.call "#{ if "ушки" == input
         "Прапор купит \"Ушки ta_samaya_lera\" за #{rand 20000..30000} ₽"
       else
         Common.price input

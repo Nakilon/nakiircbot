@@ -96,7 +96,7 @@ module Common
       *("барахолка #{item["lastLowPrice"]}-#{item["lastLowPrice"]}" if item["high24hPrice"]),
       *("#{trader} #{price}" if price),
     ].then do |ways|
-      ways.empty? ? "#{item["name"]} не продать" : "Куда продать #{item["name"]}: #{ways.join ", "}"
+      ways.empty? ? "#{item["name"]} не продать" : "куда продать #{item["name"]}: #{ways.join ", "}"
     end
   end
   private_class_method :parse_response
