@@ -60,7 +60,7 @@ module Common
     smart_match(query, clips(where).sort_by{ |_| -_["view_count"] }){ |_| _["title"] }.fetch("url", "no clips found")
   end
 
-  def self.get_item_name query
+  def self.get_item_id query
     locale = JSON.load File.read "ru.json"
     all = JSON.load(File.read "items.json").each_with_object({}) do |(id, item), h|
       fail id unless id == item["_id"]
@@ -71,53 +71,73 @@ module Common
       next if "566965d44bdc2d814c8b4571" == item.fetch("_parent")   # LootContainer
       next if "62f109593b54472778797866" == item.fetch("_parent")   # RandomLootContainer
       next if "566abbb64bdc2d144c8b457d" == item.fetch("_parent")   # Stash
-      h.include?((t = locale.fetch("#{id} ShortName"  ).downcase)) or next(h[t] = locale.fetch "#{id} Name")
-      h.include?((t = locale.fetch("#{id} Name"       ).downcase)) or next(h[t] = locale.fetch "#{id} Name")
-      h.include?((t = locale.fetch("#{id} Description").downcase)) or next(h[t] = locale.fetch "#{id} Name")
+      # we need items.json to filter out fake items
+      # we need ru.json because items.json may have bad (not localized) names
+      h.include?((t = locale.fetch("#{id} ShortName"  ).downcase)) or next(h[t] = id)
+      h.include?((t = locale.fetch("#{id} Name"       ).downcase)) or next(h[t] = id)
+      h.include?((t = locale.fetch("#{id} Description").downcase)) or next(h[t] = id)
     end.compact
-    # p all.size
-    # p all.keys.uniq.size
     all.keys.group_by(&:itself).each{ |k, g| fail k.inspect if 1 < g.size }
-    all.fetch smart_match query, all.keys, &:itself
+    all.fetch(smart_match query, all.keys, &:itself).then do |id|
+      {
+        "614451b71e5874611e2c7ae5" => "5d40407c86f774318526545a",
+      }.fetch id, id
+    end
   end
-  private_class_method :get_item_name
+  private_class_method :get_item_id
 
   require "oga"
-  def self.parse_response txt
-    html = Oga.parse_html txt.force_encoding "utf-8"
-    prices = html.xpath("//*[@data-element_type='container' and .//*[@data-widget_type='heading.default' and starts-with(normalize-space(.),'Продать ')]]/following-sibling::*[1]//figcaption[text()]").map do |_|
-      [
-        _.at_xpath("./text()").text,
-        case t = _.at_css("*[data-display-name='detailed']").text
-        when /\A\s*(\d+(?: \d+)*)\s+₽\z/ ; [$1.scan(/\d+/).join, "₽"]
-        when /\A\s*\$(\d+(?: \d+)*)\s*\z/ ; [$1.scan(/\d+/).join, "$"]
-        when "—\n", "Забанен\n" ; nil
-        else ; fail "error: bad price value: #{t.inspect}"
-        end
-      ]
-    end.select(&:last).to_h
+  def self.parse_response response
+    return "не удалось найти предмет с id=%{id}" unless item = response["data"]["items"][0]
+    (trader, price) = item["sellFor"].map do |_|
+      [_["vendor"]["name"], _["priceRUB"]] unless "Барахолка" == _["vendor"]["name"]
+    end.compact.max_by(&:last)
     [
-      *("барахолка - #{html.at_xpath("//figcaption[text()='Барахолка']//*[@data-name='entity_field_field_price']").text.gsub(/(\d) (\d)/, '\1\2')}" if prices.delete "Барахолка"),
-      *prices.group_by{ |_, (_, currency)| currency }.map{ |c, g| g.max_by{ |t, (price, c)| price.to_i }.then{ |t, (p, c)| "#{t} - #{p} #{c}" } }
+      *("барахолка #{item["lastLowPrice"]}-#{item["lastLowPrice"]}" if item["high24hPrice"]),
+      *("#{trader} #{price}" if price),
     ].then do |ways|
-      ways.empty? ? "%s не продать" : "Куда продать %s: #{ways.join ", "}"
+      ways.empty? ? "#{item["name"]} не продать" : "Куда продать #{item["name"]}: #{ways.join ", "}"
     end
   end
   private_class_method :parse_response
 
+  require "nakischema"
+
+  SCHEMA_PRICE = { hash: {
+    "data" => { hash: {
+      "items" => { size: 0..1, each: { hash: {
+        "name" => /\S/,
+        "lastLowPrice" => 0..1000000000,
+        "high24hPrice" => [nil, 1..1000000000],
+        "width" => 1..6,
+        "height" => 1..6,
+        "sellFor" => { size: 0..10, each: { hash: {
+          "priceRUB" => 1..1000000000,
+          "vendor" => { hash: {"name" => /\S/} },
+        } } }
+      } } }
+    } }
+  } }
+  @prev_price_timestamp = Time.now - 12
   def self.price query
-    name = get_item_name query
-    parse_response( NetHTTPUtils.request_data( (
-      JSON.load( NetHTTPUtils.request_data "https://tarkov.team/_drts/entity/directory__listing/query/items_dir_ltg/", form: {
-        _type_: :json,
-        no_url: 0,
-        num: 15,
-        query: name,
-        v: "1.3.105-2023-20-0",
-      } ).min_by do |_|
-        DidYouMean::Levenshtein.distance name, _["title"]
-      end or return "can't find #{name.inspect}"
-    ).fetch "url" ).tap{ |_| File.write "temp.htm", _ } ) % name.inspect
+    id = get_item_id query
+    sleep [@prev_price_timestamp + 11 - Time.now, 0].max
+    @prev_price_timestamp = Time.now
+    parse_response( ::JSON.load( ::NetHTTPUtils.request_data("https://api.tarkov.dev/", :POST, :json, form: {
+      "query" => "{ items (ids:\"#{id}\",lang:ru) {
+        name
+        lastLowPrice
+        high24hPrice
+        width
+        height
+        sellFor {
+          priceRUB
+          vendor { name }
+        }
+      } }"
+    } ) ).tap do |_|
+      ::Nakischema.validate _, SCHEMA_PRICE
+    end ) % {id: id}
   end
 
   def self.is_asking_track line
@@ -202,7 +222,6 @@ module Common
     _rep_change(where, who, what){ |_| _ - 1 }
   end
 
-  require "nakischema"
   require "unicode/blocks"
   def self.chatai query, max_tokens = 150, temperature = 0
     model = nil

@@ -1,7 +1,6 @@
 require "maxitest/autorun"
 
 require_relative "flace"
-Flace "nakischema"
 Flace "unicode/blocks"
 
 require_relative "common"
@@ -293,24 +292,14 @@ fail unless "это тильт" == smart_match("тильт", clips, &:itself)
 fail unless "МАШИНА ЛЕРА" == smart_match("лера машина", clips, &:itself)
   end
 
-  it "#get_item_name #parse_response" do
-fail unless "Статуэтка кота" == p(Common.method(:get_item_name).("кот"))
-fail unless "Бутылка пива \"Певко светлое\"" == p(Common.method(:get_item_name).("пивко"))
-fail unless "Набор медикаментов" == p(Common.method(:get_item_name).("мед."))
-fail unless "12/70 флешетта" == p(Common.method(:get_item_name).("флешетты"))  # TwixFix
-fail unless "Куда продать %s: барахолка - 29900 ₽, Терапевт - 8343 ₽" == p(Common.method(:parse_response).(File.read "pevko.htm"))  # +барахолка -$
-fail unless "Куда продать %s: Барахольщик - 232190 ₽, Миротворец - 1416 $" == p(Common.method(:parse_response).(File.read "slick.htm"))  # -барахолка +$spaces
-    assert_equal "Куда продать %s: Терапевт - 39254 ₽, Миротворец - 203 $", p(Common.method(:parse_response).(File.read "cat.htm"))
+  it "#get_item_id" do
+    assert_equal "59e3658a86f7741776641ac4", Common.method(:get_item_id).("кот")
+    assert_equal "62a09f32621468534a797acb", Common.method(:get_item_id).("пивко")
+    assert_equal "5d1b3a5d86f774252167ba22", Common.method(:get_item_id).("мед.")
+    assert_equal "5d6e6911a4b9361bd5780d52", Common.method(:get_item_id).("флешетты")
   end
-
-end
-
-describe "integration1" do
-
-  it do
-    assert_match /\AКуда продать \"Статуэтка кота\": Терапевт - \d+ ₽, Миротворец - \d+ \$\z/, p(Common.price("кот"))
-fail unless "\"Защищенный контейнер \\\"Каппа\\\"\" не продать" == p(Common.price("каппа"))
-fail unless "can't find \"Бутылка водки \\\"Тарковская\\\"\"" == p(Common.price("тарковская"))  # the website is stupid about quotes
+  it "#parse_response" do
+    100.times{ p Common.method(:parse_response).(Nakischema.fixture Common::SCHEMA_PRICE) }
   end
 
 end
@@ -498,5 +487,10 @@ end
 describe "integration2" do
   it "clip" do
     assert_equal "https://clips.twitch.tv/RichProtectiveOcelotNotATK-6MH7oHRTHSk1lzuh", Common.clip("korolikarasi", "человекдерево")
+  end
+  it "price" do
+    assert_match "Защищенный контейнер \"Каппа\" не продать", p(Common.price("каппа"))
+    assert_match /\AКуда продать Статуэтка кота: барахолка \d+-\d+, Терапевт \d+\z/, p(Common.price("кот"))
+    assert_match /\AКуда продать Бутылка водки \"Тарковская\": барахолка \d+-\d+, Терапевт \d+\z/, p(Common.price("тарковская"))   # дублирующаяся водка, тестирует исключение в get_item_id
   end
 end
