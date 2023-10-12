@@ -149,6 +149,8 @@ module Common
       /\.\.\.\s+\S+/,
       /\bпри\b/i,
       /\bбыла\b/i,
+      /\bпримерно\b/i,
+      /\bреагирует\b/i,
     ].any? do |r|
       r === line
     end
