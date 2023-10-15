@@ -193,23 +193,33 @@ NakiIRCBot.start(
     next respond.call "no integration with #{where}" if /\A\\(song|песня)\z/ === query[0]
   end
 
+  #                      \goons
+  #                          reg       reg
+  # 60< include moved   UMn  UMn  --   UM
+  # 60< exclude moved   UMn  UMn  --   --
+  # 60> include moved   UMn  UMn  --   --
+  # 60> exclude moved   UMn  UMn  --   --
+  # 60< include stayed  URn  URn  --   U-
+  # 60< exclude stayed  URn  URn  --   --
+  # 60> include stayed  URn  URn  --   --
+  # 60> exclude stayed  URn  URn  --   --
   help.push "\\goons - узнать, где сейчас гуны, согласно 'гунтрекеру'"
   goons_file = "goons.yaml"
   (old, old_time) = File.exist?(goons_file) ? YAML.load_file(goons_file) : ["?", nil]
-  next respond.call "Goons were last seen at #{old} (#{Time.strptime(old_time, "%m/%d/%Y %T").strftime "%c"})" if "\\goons" == what && old_time
-  if goons_channels.include? where
-    if 60 < Time.now - prev_goons_time
+  if "\\goons" === query[0].downcase || goons_channels.include?(where) && 60 < Time.now - prev_goons_time && features[:goons_regular_report]
       threaded.call do
         _, _, location, time = Oga.parse_html(NetHTTPUtils.request_data "https://docs.google.com/spreadsheets/u/0/d/e/2PACX-1vRwLysnh2Tf7h2yHBc_bpZLQh6DiFZtDqyhHLYP022xolQUPUHkSModV31E5Y7cLh_8LZGexpXy2VuH/pubhtml/sheet?headers=false&gid=1420050773").css("td").map(&:text).tap do |_|
           Nakischema.validate _, [["Map Selection:", "Timestamp", String, /\A\d+\/\d+\/202\d \d+:\d\d:\d\d\z/]]
         end
         if old != location
-          goons_channels.each{ |channel| add_to_queue.call channel, "Goons have moved from #{old} to #{location}" } if features[:goons_regular_report]
+        (goons_channels | [where]).each{ |channel| add_to_queue.call channel, "Goons have moved from #{old} to #{location}" }
           File.write goons_file, YAML.dump([location, time])
+      elsif "\\goons" === query[0].downcase
+        respond.call "Goons were last seen at #{old} (#{Time.strptime(time, "%m/%d/%Y %T").strftime "%c"})"
         end
+      next if "\\goons" === query[0].downcase
       end
       prev_goons_time = Time.now
-    end
   end
 
   help.push "\\?, \\h, \\help [<команда>] - узнать все доступные команды или получить справку по указанной"

@@ -2397,13 +2397,13 @@
 ? - "#riisuka"
   - twixfix
   - riisuka
-: - 6
-  - 1695854834
+: - 8
+  - 1697310845
 ? - "#riisuka"
   - riisuka
   - twixfix
-: - 3
-  - 1695414924
+: - 4
+  - 1697218227
 ? - "#korolikarasi"
   - lzhesh_zaviduesh_zlishsya
   - goodness_evil
@@ -2442,8 +2442,8 @@
 ? - "#riisuka"
   - korolikarasi
   - riisuka
-: - 1
-  - 1694641627
+: - 0
+  - 1697300328
 ? - "#riisuka"
   - korolikarasi
   - twixfix
@@ -2552,8 +2552,8 @@
 ? - "#riisuka"
   - lzhesh_zaviduesh_zlishsya
   - дота
-: - -1
-  - 1695516305
+: - -2
+  - 1697304194
 ? - "#riisuka"
   - lzhesh_zaviduesh_zlishsya
   - lobsterpizza5k
@@ -2714,3 +2714,38 @@
   - automod
 : - -1
   - 1697078234
+? - "#riisuka"
+  - riisuka
+  - oleg123123123123123123
+: - 1
+  - 1697218179
+? - "#riisuka"
+  - twixfix
+  - oleg123123123123123123
+: - -1
+  - 1697218212
+? - "#riisuka"
+  - tot_samyi_denis_
+  - twixfix
+: - 0
+  - 1697310878
+? - "#riisuka"
+  - twixfix
+  - tot_samyi_denis_
+: - 0
+  - 1697310882
+? - "#korolikarasi"
+  - pepebrzyy
+  - korolikarasi
+: - -1
+  - 1697232127
+? - "#riisuka"
+  - tot_samyi_denis_
+  - lzhesh_zaviduesh_zlishsya
+: - -1
+  - 1697304222
+? - "#riisuka"
+  - lzhesh_zaviduesh_zlishsya
+  - velik_bot
+: - 1
+  - 1697388343
