@@ -123,6 +123,9 @@ module Common
     id = get_item_id query
     sleep [@prev_price_timestamp + 11 - Time.now, 0].max
     @prev_price_timestamp = Time.now
+    # https://api.tarkov.dev/graphql
+    # https://github.com/the-hideout/tarkov-api/blob/main/schema.js
+    # TODO: why 'item' threw an error if it is listed among possible queries?
     parse_response( ::JSON.load( ::NetHTTPUtils.request_data("https://api.tarkov.dev/", :POST, :json, form: {
       "query" => "{ items (ids:\"#{id}\",lang:ru) {
         name
