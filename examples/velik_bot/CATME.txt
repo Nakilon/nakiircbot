@@ -32,6 +32,8 @@ redeploy
   $ docker-compose down && docker-compose up -d
   $ exit
   dev$ ssh velik docker logs -f velik_bot
+update rep dump
+  $ bundle exec ruby -r./common -raws-upload -e "Common.init_repdb 'bu'; NakiCommon.aws_upload JSON.dump([Time.now.strftime('%F'), Common.rep_chart('#korolikarasi').group_by(&:last).transform_values{ |_| _.map &:first }.sort]), \"velik-bot-rep.nakilon.su/#{Common.login_to_id 'korolikarasi'}.json\", File.read('access_key.aws.secret'), File.read('secret_access_key.aws.secret')"
 
 
 
