@@ -435,6 +435,7 @@ describe "unit2" do
     NakiIRCBot.define_singleton_method :start do |*, &b|
       t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\?"       ; e.push [t.dup, "\\?", [/\Aдоступные команды: \\.+ -- используйте \\\? <команда> для получения справки по каждой\z/]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\? \\?"   ; e.push [t.dup, "\\? \\?", ["\\?, \\h, \\help [<команда>] - узнать все доступные команды или получить справку по указанной"]]
+      t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\? \\h"   ; e.push [t.dup, "\\? \\?", ["\\?, \\h, \\help [<команда>] - узнать все доступные команды или получить справку по указанной"]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\? ?"     ; e.push [t.dup, "\\? ?", [/\Aя не знаю команду \?, я знаю только: \\.+/]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\song"    ; e.push [t.dup, "\\song -интегр -верх -русс +song", ["no integration with #channel"]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "чо за трек"; e.push [t.dup, "\\song -интегр +верх +русс -song", [/отображается/]]

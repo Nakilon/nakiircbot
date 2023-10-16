@@ -224,9 +224,9 @@ NakiIRCBot.start(
 
   help.push "\\?, \\h, \\help [<команда>] - узнать все доступные команды или получить справку по указанной"
   if /\A\\(\?|h(elp)?)\z/ === query[0]
-    cmds = help.map{ |_| [_[/(\\?\S+?),? /, 1], _] }.to_h
-    next respond.call "доступные команды: #{cmds.keys.join(", ")} -- используйте #{query[0]} <команда> для получения справки по каждой" unless query[1]
-    next respond.call cmds.fetch query[1], "я не знаю команду #{query[1]}, я знаю только: #{cmds.keys.join(", ")}"
+    main_cmds = help.map{ |_| [_[/(\\?\S+?),? /, 1], _] }.to_h
+    next respond.call "доступные команды: #{main_cmds.keys.join(", ")} -- используйте #{query[0]} <команда> для получения справки по каждой" unless query[1]
+    next respond.call help.flat_map{ |line| line[/(.+?) -/,].scan(/(?:\A|, )(\S+?)(?=,? )/).flatten.map{ |_| [_, line] } }.to_h.fetch query[1], "я не знаю команду #{query[1]}, я знаю только: #{main_cmds.keys.join(", ")}"
   end
 
   # next add_to_queue.call "#korolikarasi", "##{where[1]} <#{who}> #{what.delete "░█▄▀▐▌"}" if /[кk][аоao0][рp][аa][сc]/i =~ what && "#korolikarasi" != where
