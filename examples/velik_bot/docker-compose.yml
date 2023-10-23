@@ -64,6 +64,10 @@ services:
         target: /usr/src/app/gpt.secret
         read_only: true
       - type: bind
+        source: ./zuki.secret
+        target: /usr/src/app/zuki.secret
+        read_only: true
+      - type: bind
         source: ./lastfm.secret
         target: /usr/src/app/lastfm.secret
         read_only: true

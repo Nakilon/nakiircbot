@@ -232,10 +232,15 @@ module Common
   require "unicode/blocks"
   def self.chatai query, max_tokens = 150, temperature = 0
     model = nil
-    get_json = lambda do |model|
       blocks = Unicode::Blocks.blocks_counted query
-      NetHTTPUtils.request_data "https://api.naga.ac/v1/chat/completions", :POST, :json,
-        header: {"Authorization" => "Bearer #{File.read "gpt.secret"}"},
+    [
+      # ["zukijourney.xyzbot.net/unf", "zuki.secret", "gpt-4"],
+      ["api.naga.ac/v1", "gpt.secret", "gpt-3.5-turbo"],
+      # ["api.naga.ac/v1", "gpt.secret", "claude-instant"],   # deprecated?
+    ].each do |endpoint, secret, model|
+      return JSON.load( begin
+        NetHTTPUtils.request_data "https://#{endpoint}/chat/completions", :POST, :json,
+          header: {"Authorization" => "Bearer #{File.read secret}"},
         form: {
           "model" => model,
           "messages" => [{
@@ -249,33 +254,17 @@ module Common
           "max_tokens" => max_tokens,
           "temperature" => temperature,
         }
-    end
-    handle = lambda do
+      rescue NetHTTPUtils::Error
       fail unless 400 == $!.code || [
         '{"detail":"Forbidden: flagged moderation category: sexual"}',
         '{"error":{"message":"Forbidden: flagged moderation categories: self-harm, self-harm/intent, self-harm/instructions"}}',
         '{"error":{"message":"Forbidden: flagged moderation category: harassment"}}',
+        '{"error":{"message":"Oops, no sources were found for this model!"}}',
       ].include?($!.body)
       puts $!
-    end
-    JSON.load(
-      # begin
-      #   get_json["gpt-4"]
-      # rescue NetHTTPUtils::Error
-      #   # {"detail":"Unhandled Exception: The provider does not respond!"}
-      #   # {"detail":"Oops, no available providers (or providers that support all of your request body parameters) were found."}
-      #   handle.call
-      begin
-        get_json["gpt-3.5-turbo"]
-      rescue NetHTTPUtils::Error
-        # {"detail":"Unhandled Exception: We got a status code 429 from the provider!"}
-        handle.call
-        get_json["claude-instant"]
-      end
-      # end
-    ).tap do |json|
-      p json
-      Nakischema.validate json, { hash_req: {
+        next
+      end ).tap do |json|
+        Nakischema.validate p(json), { hash_req: {
         "choices" => [[
           { hash: {
             "finish_reason" => ["stop", "length", nil],
@@ -290,6 +279,8 @@ module Common
         "usage" => { hash: {"completion_tokens" => Integer, "prompt_tokens" => Integer, "total_tokens" => Integer} },
       } }
     end["choices"][0]["message"]["content"]
+    end
+    fail "rejected by all providers"
   end
 
 end
