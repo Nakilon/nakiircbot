@@ -1,8 +1,28 @@
 <!DOCTYPE HTML>
 <html>
-  <body style="font-family: sans-serif">
+  <style>
+    body {
+      font-family: sans-serif;
+      /*background-color: #f9f9f9;*/
+      margin: 0;
+    }
+    table {
+      font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+      font-size: 17px;
+      width: 320px;
+      text-align: center;
+      border-collapse: collapse;
+    }
+    div{ text-align: right; }
+    th{ text-transform: uppercase; }
+    td:nth-child(1),th:nth-child(1) { background-color: #a970ff; color: #f2eaff; }
+    td:nth-child(2),th:nth-child(2) { background-color: #cdadfe; color: black;   }
+    a                { text-decoration: none }
+    a:has(+a)::after { content: ", " }
+  </style>
+  <body>
+    <table rules="all"><tbody id="table"></tbody></table>
     <div id="div">loading...</div>
-    <table id="table" rules="all" style="border-style: solid"></table>
     <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
     <script src="index.js">></script>
   </body>
