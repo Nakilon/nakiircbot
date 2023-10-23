@@ -154,6 +154,8 @@ module Common
       /\bбыла\b/i,
       /\bпримерно\b/i,
       /\bреагирует\b/i,
+      /\bодин\b/i,
+      /\bнорм\b/i,
     ].any? do |r|
       r === line
     end
