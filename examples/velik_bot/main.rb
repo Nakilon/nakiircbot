@@ -49,7 +49,7 @@ NakiIRCBot.start(
   where.downcase!
 
   if "#vellrein" === where && "4ertovka_ashley" === who.downcase
-    unless File.exist?("ashley.touch") && File.mtime("ashley.touch") + 600 > Time.now
+    unless File.exist?("ashley.touch") && File.mtime("ashley.touch") + 1800 > Time.now
       FileUtils.touch "ashley.touch"
       next chatai.call "4ertovka_ashley", "скажи что-нибудь едкое и неуважительное для 4ertovka_ashley в контексте ее сообщения \"#{what}\""
     end
