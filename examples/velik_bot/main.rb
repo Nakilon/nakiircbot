@@ -47,15 +47,14 @@ NakiIRCBot.start(
   end
 
   where.downcase!
+  query = what.split
 
-  if "#vellrein" === where && "4ertovka_ashley" === who.downcase
+  if "#vellrein" === where && "4ertovka_ashley" === who.downcase && 1 < query.size
     unless File.exist?("ashley.touch") && File.mtime("ashley.touch") + 1800 > Time.now
       FileUtils.touch "ashley.touch"
       next chatai.call "4ertovka_ashley", "скажи что-нибудь едкое и неуважительное для 4ertovka_ashley в контексте ее сообщения \"#{what}\""
     end
   end
-
-  query = what.split
 
   if /\A(@?velik_bot|velik|велик)[,:]?\z/i === query[0] && query[1] && !cfg.transaction(true){ |db| db.fetch(:gpt_ignore, {})[who.downcase] }
     next chatai.call who, query.drop(1).join(" ")
