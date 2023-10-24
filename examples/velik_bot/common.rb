@@ -240,6 +240,7 @@ module Common
     ].each do |endpoint, secret, model|
       return JSON.load( begin
         NetHTTPUtils.request_data "https://#{endpoint}/chat/completions", :POST, :json,
+          max_start_http_retry_delay: 300,
           header: {"Authorization" => "Bearer #{File.read secret}"},
         form: {
           "model" => model,
@@ -255,7 +256,7 @@ module Common
           "temperature" => temperature,
         }
       rescue NetHTTPUtils::Error
-      fail unless 400 == $!.code || [
+      fail unless 502 == $!.code || 400 == $!.code || [
         '{"detail":"Forbidden: flagged moderation category: sexual"}',
         '{"error":{"message":"Forbidden: flagged moderation categories: self-harm, self-harm/intent, self-harm/instructions"}}',
         '{"error":{"message":"Forbidden: flagged moderation category: harassment"}}',
@@ -281,6 +282,15 @@ module Common
     end["choices"][0]["message"]["content"]
     end
     fail "rejected by all providers"
+  end
+
+  # TODO: add mutex?
+  def self.threaded *args
+    Thread.new *args do |*args|
+      yield *args
+    rescue StandardError, WebMock::NetConnectNotAllowedError
+      puts $!.full_message
+    end
   end
 
 end

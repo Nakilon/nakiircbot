@@ -1,13 +1,5 @@
 STDOUT.sync = true
 
-# TODO: add mutex
-threaded = lambda do |*args, &block|
-  Thread.new *args do |*args|
-    block.call *args
-  rescue StandardError, WebMock::NetConnectNotAllowedError
-    puts $!.full_message
-  end
-end
 
 
 require_relative "common"
@@ -44,16 +36,29 @@ NakiIRCBot.start(
 
   next if NakiIRCBot::Common.ping respond, what
 
-  query = what.split
-
-  if /\A(@?velik_bot|velik|велик)[,:]?\z/i === query[0] && query[1] && !cfg.transaction(true){ |db| db.fetch(:gpt_ignore, {})[who.downcase] }
+  chatai = lambda do |who, what|
     while 0 < t = File.mtime("gpt.touch") - Time.now + 20
       sleep t
     end if File.exist? "gpt.touch"
     FileUtils.touch "gpt.touch"
-    next threaded.call ->s{->r{respond.call s+r}}["#{who}, "], query.drop(1).join(" ") do |callback, query|
-      callback.call Common.chatai query
+    next Common::threaded ->s{->r{respond.call s+r}}["#{who}, "], what do |callback, query|
+      callback.call Common::chatai query
     end
+  end
+
+  where.downcase!
+
+  if "#vellrein" === where && "4ertovka_ashley" === who.downcase
+    unless File.exist?("ashley.touch") && File.mtime("ashley.touch") + 600 > Time.now
+      FileUtils.touch "ashley.touch"
+      next chatai.call "4ertovka_ashley", "скажи что-нибудь едкое и неуважительное для 4ertovka_ashley в контексте ее сообщения \"#{what}\""
+    end
+  end
+
+  query = what.split
+
+  if /\A(@?velik_bot|velik|велик)[,:]?\z/i === query[0] && query[1] && !cfg.transaction(true){ |db| db.fetch(:gpt_ignore, {})[who.downcase] }
+    next chatai.call who, query.drop(1).join(" ")
   end
   if "\\ignore" === query[0] && query[1] && "lzhesh_zaviduesh_zlishsya" === who
     t = query[1].delete_prefix("@").downcase
@@ -65,7 +70,6 @@ NakiIRCBot.start(
     }ignored #{t.inspect}"
   end
 
-  where.downcase!
   help = []
 
   help.push "\\access_quote <кто> -- изменить права указанного пользователя на добавление цитат"
@@ -127,19 +131,19 @@ NakiIRCBot.start(
 
   help.push "\\lastclip - последний twitch клип"
   if %w{ \\lastclip } == query
-    next threaded.call where.dup do |where|
+    next Common::threaded where.dup do |where|
       respond.call Common.clips(where).max_by{ |_| _["created_at"] }.fetch("url")
     end
   end
   help.push "\\clip <запрос> - найти клип по названию"
   if /\A\\(clip|клип)\s+(?<input>.+)/ =~ what
-    next threaded.call where.dup, input.dup do |where, input|
+    next Common::threaded where.dup, input.dup do |where, input|
       respond.call Common.clip(where, input)
     end
   end
   help.push "\\clip_from <канал> <запрос> - найти клип с другого канала"
   if /\A\\clip_from\s+(?<from>\S+)\s+(?<input>.+)/ =~ what
-    next threaded.call where.dup, input.dup do |where, input|
+    next Common::threaded where.dup, input.dup do |where, input|
       respond.call Common.clip(from, input)
     end
   end
@@ -155,7 +159,7 @@ NakiIRCBot.start(
 
   help.push "\\price, \\цена - узнать цену предмета в EFT"
   if /\A\\(price|цена)\s+(?<input>.+)/ =~ what
-    next threaded.call where.dup, input.dup, who.dup do |where, input, who|
+    next Common::threaded where.dup, input.dup, who.dup do |where, input, who|
       respond.call "#{ if "ушки" == input
         "Прапор купит \"Ушки ta_samaya_lera\" за #{rand 20000..30000} ₽"
       else
@@ -169,7 +173,7 @@ NakiIRCBot.start(
     "#korolikarasi" => "korolikarasi",
     "#ta_samaya_lera" => "colaporter",
   }[where]
-    next threaded.call do
+    next Common::threaded do
       JSON.load(
         NetHTTPUtils.request_data "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=#{user}&api_key=#{File.read "lastfm.secret"}&format=json&limit=1"
       )["recenttracks"]["track"][0].then{ |_| respond.call "🎶 #{_["artist"]["#text"]} - #{_["name"]}" }
@@ -207,7 +211,7 @@ NakiIRCBot.start(
   goons_file = "goons.yaml"
   (old, old_time) = File.exist?(goons_file) ? YAML.load_file(goons_file) : ["?", nil]
   if "\\goons" === query[0].downcase || goons_channels.include?(where) && 60 < Time.now - prev_goons_time && features[:goons_regular_report]
-      threaded.call do
+      Common::threaded do
         _, _, location, time = Oga.parse_html(NetHTTPUtils.request_data "https://docs.google.com/spreadsheets/u/0/d/e/2PACX-1vRwLysnh2Tf7h2yHBc_bpZLQh6DiFZtDqyhHLYP022xolQUPUHkSModV31E5Y7cLh_8LZGexpXy2VuH/pubhtml/sheet?headers=false&gid=1420050773").css("td").map(&:text).tap do |_|
           Nakischema.validate _, [["Map Selection:", "Timestamp", String, /\A\d+\/\d+\/202\d \d+:\d\d:\d\d\z/]]
         end

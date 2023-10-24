@@ -25,7 +25,9 @@ deploy
 see remote logs
   dev$ ssh velik docker logs --since=5m -f velik_bot
 chat AI CLI
-  $ bundle exec ruby -r./common -e "Common.chatai 'hello'"
+  dev$ bundle exec ruby -r./common -e "Common.chatai 'hello'"
+  $ docker exec -ti velik_bot sh
+  # bundle exec ruby -e "require './common'; p Common.chatai 'hello'"
 redeploy
   dev$ ssh velik
   $ cd _/nakiircbot/examples/velik_bot

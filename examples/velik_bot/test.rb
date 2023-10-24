@@ -307,7 +307,7 @@ end
 require "nakiircbot"
 describe "unit2" do
 
-  it "track" do
+  it "song" do
     negative = <<~HEREDOC.split(?\n).each do |line|
       что за трек был?
       Ого что за трэк в 2023)
@@ -489,10 +489,41 @@ describe "unit2" do
         e.push [t.dup, "access,quote :: #{test}", expectation]
       end
     end
-    require_relative "main"
+    load "main.rb"
     e.each do |r, t, e|
       assert_equal e.size, r.size, t
       [e, r].transpose.each{ |e, r| assert_operator e, :===, r, "test: #{t.inspect}" }
+    end
+  end
+
+  require "webmock/minitest"
+  WebMock.disable_net_connect!
+  require "nakicommon"
+  using ::NakiCommon
+  it "ashley" do
+    File.delete "ashley.touch" if File.exist? "ashley.touch"
+    e = []
+    NakiIRCBot.define_singleton_method :start do |*, &b|
+      Common.stub :threaded, ->*args,&b{b.call *args} do
+        Common.stub :chatai, ->*args{args.assert_one} do
+          cmd = lambda do |name, channel, who, input, *expectations|
+            output = []
+            b.call nil, ->__,_{output<<_}, nil, who, channel, input
+            e.push [output, expectations, name]
+          end
+          cmd.call "0", "#vellre1n", "4ertovka_ashley", "0"
+          cmd.call "1", "#vellrein", "name",            "1"
+          cmd.call "2", "#vellrein", "4ertovka_ashley", "2", /2"\z/
+          cmd.call "3", "#vellrein", "4ertovka_ashley", "3"
+          cmd.call "4", "#vellrein", "name",            "4"
+          Time.stub(:now, Time.now + 90000){ cmd.call "5", "#vellrein", "4ertovka_ashley", "5", /5"\z/ }
+        end
+      end
+    end
+    load "main.rb"
+    e.each do |r, e, name|
+      assert_equal e.size, r.size, "failure #{name}"
+      [e, r].transpose.each{ |e, r| assert_operator e, :===, r }
     end
   end
 
