@@ -527,6 +527,8 @@ describe "unit2" do
     Common.stub :threaded, ->&b{b.call} do
       mock_start do |&check|
         check.call      "#channel", "user", "\\song",     "-интегр -верх -русс +song", "no integration with #channel"
+        check.call      "#channel", "user", "чо за трек", "-интегр -верх +русс -song"
+        check.call     "#vellrein", "user", "чо за трек", "-интегр -верх +русс -song ren", "я бы тебе сказал, что за музыка сейчас играет, но Рен ленится настроить интеграцию"
         check.call "#nekochan_myp", "user", "чо за трек", "-интегр +верх +русс -song", /отображается/
         check.call "#nekochan_myp", "user", ".",          "-интегр +верх -русс -song"
         check.call "#korolikarasi", "user", ".",          "+интегр -верх -русс -song"

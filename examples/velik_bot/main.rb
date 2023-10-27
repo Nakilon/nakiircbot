@@ -194,6 +194,7 @@ NakiIRCBot.start(
     break
   end
     next respond.call "no integration with #{where}" if /\A\\(song|песня)\z/ === query[0]
+    next respond.call "я бы тебе сказал, что за музыка сейчас играет, но Рен ленится настроить интеграцию" if "#vellrein" === where && Common.is_asking_track(what)
   end
 
   #                      \goons
