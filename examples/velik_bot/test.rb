@@ -310,7 +310,21 @@ using ::NakiCommon
 ENV["SECRET_BUCKET_AND_PATH"] = "velik-bot-rep.nakilon.su/test"
 require "webmock/minitest"
 
-require "nakiircbot"
+describe "" do
+
+  require "nakiircbot"
+  def mock_start &test_block
+    NakiIRCBot.define_singleton_method :start, &( ->&assert{ lambda do |*, &bot_loop|
+      test_block.call do |channel, who, input, test_name, *expectations|
+        assert.call test_name, expectations, [].tap{ |o| bot_loop.call nil, ->__,_{o<<_}, nil, who, channel, input }
+      end
+    end }.call do |test_name, expectations, reality|
+      assert_equal expectations.size, reality.size, "failure #{test_name}"
+      [expectations, reality].transpose.each{ |e, r| assert_operator e, :===, r }
+    end )
+    load "main.rb"
+  end
+
 describe "unit2" do
 
   before do
@@ -452,11 +466,6 @@ describe "unit2" do
       t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\? \\?"   ; e.push [t.dup, "\\? \\?", ["\\?, \\h, \\help [<команда>] - узнать все доступные команды или получить справку по указанной"]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\? \\h"   ; e.push [t.dup, "\\? \\?", ["\\?, \\h, \\help [<команда>] - узнать все доступные команды или получить справку по указанной"]]
       t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\? ?"     ; e.push [t.dup, "\\? ?", [/\Aя не знаю команду \?, я знаю только: \\.+/]]
-      t = []; b.call nil, ->__,_{t<<_}, nil,  "",      "#channel", "\\song"    ; e.push [t.dup, "\\song -интегр -верх -русс +song", ["no integration with #channel"]]
-      t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "чо за трек"; e.push [t.dup, "\\song -интегр +верх +русс -song", [/отображается/]]
-      t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#nekochan_myp", "."         ; e.push [t.dup, "\\song -интегр +верх -русс -song", []]
-      t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#korolikarasi", "."         ; e.push [t.dup, "\\song +интегр -верх -русс -song", []]
-      t = []; b.call nil, ->__,_{t<<_}, nil,  "", "#korolikarasi", "чо за трек"; Timeout.timeout(10){ sleep 0.5 until prev + 1 == Thread.list.size }; e.push [t.dup, "\\song +интегр -верх +русс -song", [/🎶/]]   # +1 is a Timeout thread itself
       t = []; b.call nil, ->  *_{t<<_}, nil, "name", "#channel",      "_ _K0PAC_ ░█▄▀▐▌" ; e.push [t.dup, "карась", []]
       t = []; b.call nil, ->  *_{t<<_}, nil, "name", "#korolikarasi", "_ _карас_ _" ; e.push [t.dup, "самокарась", []]
       [
@@ -511,6 +520,21 @@ describe "unit2" do
     end
   end
 
+  it "\\song" do
+    stub_request(:get, "https://ws.audioscrobbler.com/2.0/").with(query: hash_including({})).to_return body: JSON.dump(
+      {"recenttracks" => {"track" => [ {"artist" => {"#text" => "artist"}, "name" => "song"} ] } }
+    )
+    Common.stub :threaded, ->&b{b.call} do
+      mock_start do |&check|
+        check.call      "#channel", "user", "\\song",     "-интегр -верх -русс +song", "no integration with #channel"
+        check.call "#nekochan_myp", "user", "чо за трек", "-интегр +верх +русс -song", /отображается/
+        check.call "#nekochan_myp", "user", ".",          "-интегр +верх -русс -song"
+        check.call "#korolikarasi", "user", ".",          "+интегр -верх -русс -song"
+        check.call "#korolikarasi", "user", "чо за трек", "+интегр -верх +русс -song", "🎶 artist - song"
+      end
+    end
+  end
+
   it "ashley" do
     File.delete "ashley.touch" if File.exist? "ashley.touch"
     e = []
@@ -548,6 +572,7 @@ describe "integration2" do
   it "clip" do
     assert_equal "https://clips.twitch.tv/RichProtectiveOcelotNotATK-6MH7oHRTHSk1lzuh", Common.clip("korolikarasi", "человекдерево")
   end
+
   it "price" do
     assert_match "Защищенный контейнер \"Каппа\" не продать", p(Common.price("каппа"))
     assert_match /\Aкуда продать Статуэтка кота: барахолка \d+-\d+, Терапевт \d+\z/, p(Common.price("кот"))
@@ -566,4 +591,15 @@ describe "integration2" do
         URI.open("https://storage.yandexcloud.net/#{ENV["SECRET_BUCKET_AND_PATH"]}/#{Common.login_to_id "velik_bot"}.json", &:read)
     end
   end
+
+  it "\\song" do
+    Common.stub :threaded, ->&b{b.call} do
+      mock_start do |&check|
+        check.call "#korolikarasi", "user", "чо за трек", nil, /\A🎶 /
+      end
+    end
+  end
+
+end
+
 end

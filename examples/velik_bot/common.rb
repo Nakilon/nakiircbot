@@ -228,7 +228,7 @@ module Common
   require "unicode/blocks"
   def self.chatai query, max_tokens = 150, temperature = 0
     model = nil
-      blocks = Unicode::Blocks.blocks_counted query
+      blocks = ::Unicode::Blocks.blocks_counted query
     [
       # ["zukijourney.xyzbot.net/unf", "zuki.secret", "gpt-4"],
       ["api.naga.ac/v1", "gpt.secret", "gpt-3.5-turbo"],
