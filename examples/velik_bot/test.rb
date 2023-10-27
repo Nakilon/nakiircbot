@@ -427,7 +427,7 @@ describe "unit2" do
   end
 
   it "rep" do
-    stub_request(:get, "https://api.twitch.tv/helix/users?login=channel").to_return body: JSON.dump({"data" => [{"id" => "686896959"}]})
+    stub_request(:get, "https://api.twitch.tv/helix/users?login=channel").to_return body: JSON.dump({"data" => [{"id" => "0"}]})
     stub_request(:put, /\Ahttps:\/\/storage\.yandexcloud\.net\//)
     Common.instance_variable_get(:@repdb).transaction{ |db| db.roots.each &db.method(:delete) }
     Common.rep_plus "#channel", "user1", "user1"
@@ -561,7 +561,9 @@ describe "integration2" do
       Common.stub :threaded, ->*args,&b{b.call *args} do
         Common.rep_plus "#velik_bot", "user", random_user
       end
-      assert_equal "[\"2023-10-27\",[[1,[\"#{random_user}\"]]]]", URI.open("https://storage.yandexcloud.net/#{ENV["SECRET_BUCKET_AND_PATH"]}/#{Common.login_to_id "velik_bot"}.json", &:read)
+      assert_equal \
+        "[\"2023-10-27\",[[1,[\"#{random_user}\"]]]]",
+        URI.open("https://storage.yandexcloud.net/#{ENV["SECRET_BUCKET_AND_PATH"]}/#{Common.login_to_id "velik_bot"}.json", &:read)
     end
   end
 end

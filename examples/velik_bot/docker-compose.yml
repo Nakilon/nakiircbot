@@ -4,6 +4,8 @@ services:
     container_name: velik_bot
     image: 2.7-alpine-build-base
     working_dir: /usr/src/app
+    environment:
+      - SECRET_BUCKET_AND_PATH
     command: sh -c "apk add git && bundle install && bundle exec ruby main.rb"
     volumes:
       - type: bind
@@ -20,6 +22,10 @@ services:
       - type: bind
         source: ./common.rb
         target: /usr/src/app/common.rb
+        read_only: true
+      - type: bind
+        source: ./twitch.rb
+        target: /usr/src/app/twitch.rb
         read_only: true
       - type: bind
         source: ./clientid.secret

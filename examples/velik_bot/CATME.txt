@@ -23,7 +23,7 @@ deploy
   dev$ scp access_key.aws.secret velik:_/nakiircbot/examples/velik_bot/
   dev$ scp secret_access_key.aws.secret velik:_/nakiircbot/examples/velik_bot/
   # $ mkdir logs
-  $ docker-compose up -d
+  $ SECRET_BUCKET_AND_PATH=velik-bot-rep.nakilon.su docker-compose up -d
 see remote logs
   dev$ ssh velik docker logs --since=5m -f velik_bot
 chat AI CLI
@@ -34,7 +34,7 @@ redeploy
   dev$ ssh velik
   $ cd _/nakiircbot/examples/velik_bot
   $ git pull
-  $ docker-compose down && docker-compose up -d
+  $ docker-compose down && SECRET_BUCKET_AND_PATH=velik-bot-rep.nakilon.su docker-compose up -d
   $ exit
   dev$ ssh velik docker logs -f velik_bot
 update rep dump
