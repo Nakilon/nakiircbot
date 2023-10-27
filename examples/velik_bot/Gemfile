@@ -7,3 +7,6 @@ gem "nakischema"
 gem "unicode-blocks", github: "nakilon/unicode-blocks"
 
 gem "maxitest"
+gem "webmock"
+gem "nakicommon", github: "nakilon/nakicommon"
+gem "nakicommon-aws-upload", github: "nakilon/nakicommon"

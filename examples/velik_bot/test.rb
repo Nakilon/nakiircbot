@@ -304,8 +304,21 @@ fail unless "МАШИНА ЛЕРА" == smart_match("лера машина", clip
 
 end
 
+require "nakicommon"
+using ::NakiCommon
+
+ENV["SECRET_BUCKET_AND_PATH"] = "velik-bot-rep.nakilon.su/test"
+require "webmock/minitest"
+
 require "nakiircbot"
 describe "unit2" do
+
+  before do
+    WebMock.disable_net_connect!
+  end
+  after do
+    WebMock.enable_net_connect!
+  end
 
   it "song" do
     negative = <<~HEREDOC.split(?\n).each do |line|
@@ -414,6 +427,8 @@ describe "unit2" do
   end
 
   it "rep" do
+    stub_request(:get, "https://api.twitch.tv/helix/users?login=channel").to_return body: JSON.dump({"data" => [{"id" => "686896959"}]})
+    stub_request(:put, /\Ahttps:\/\/storage\.yandexcloud\.net\//)
     Common.instance_variable_get(:@repdb).transaction{ |db| db.roots.each &db.method(:delete) }
     Common.rep_plus "#channel", "user1", "user1"
     Common.rep_plus "#channel", "user1", "user2"
@@ -496,10 +511,6 @@ describe "unit2" do
     end
   end
 
-  require "webmock/minitest"
-  WebMock.disable_net_connect!
-  require "nakicommon"
-  using ::NakiCommon
   it "ashley" do
     File.delete "ashley.touch" if File.exist? "ashley.touch"
     e = []
@@ -531,6 +542,9 @@ describe "unit2" do
 end
 
 describe "integration2" do
+  before{ WebMock.enable_net_connect! }
+  after{ WebMock.disable_net_connect! }
+
   it "clip" do
     assert_equal "https://clips.twitch.tv/RichProtectiveOcelotNotATK-6MH7oHRTHSk1lzuh", Common.clip("korolikarasi", "человекдерево")
   end
@@ -538,5 +552,16 @@ describe "integration2" do
     assert_match "Защищенный контейнер \"Каппа\" не продать", p(Common.price("каппа"))
     assert_match /\Aкуда продать Статуэтка кота: барахолка \d+-\d+, Терапевт \d+\z/, p(Common.price("кот"))
     assert_match /\Aкуда продать Бутылка водки \"Тарковская\": барахолка \d+-\d+, Терапевт \d+\z/, p(Common.price("тарковская"))   # дублирующаяся водка, тестирует исключение в get_item_id
+  end
+  it "rep" do
+    Common.instance_variable_get(:@repdb).transaction{ |db| db.roots.each &db.method(:delete) }
+    require "open-uri"
+    require "securerandom"
+    SecureRandom.uuid.then do |random_user|
+      Common.stub :threaded, ->*args,&b{b.call *args} do
+        Common.rep_plus "#velik_bot", "user", random_user
+      end
+      assert_equal "[\"2023-10-27\",[[1,[\"#{random_user}\"]]]]", URI.open("https://storage.yandexcloud.net/#{ENV["SECRET_BUCKET_AND_PATH"]}/#{Common.login_to_id "velik_bot"}.json", &:read)
+    end
   end
 end

@@ -47,6 +47,14 @@ services:
         source: ./prod.repdb.yaml
         target: /usr/src/app/prod.repdb.yaml
       - type: bind
+        source: ./access_key.aws.secret
+        target: /usr/src/app/access_key.aws.secret
+        read_only: true
+      - type: bind
+        source: ./secret_access_key.aws.secret
+        target: /usr/src/app/secret_access_key.aws.secret
+        read_only: true
+      - type: bind
         source: ./dynamic.cfg.yaml
         target: /usr/src/app/dynamic.cfg.yaml
       - type: bind

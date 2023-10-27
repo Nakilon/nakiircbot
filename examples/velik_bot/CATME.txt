@@ -20,6 +20,8 @@ deploy
   dev$ scp bu.repdb.yaml velik:_/nakiircbot/examples/velik_bot/prod.repdb.yaml
   dev$ scp bu.dynamic.cfg.yaml velik:_/nakiircbot/examples/velik_bot/dynamic.cfg.yaml
   dev$ scp lastfm.secret velik:_/nakiircbot/examples/velik_bot/
+  dev$ scp access_key.aws.secret velik:_/nakiircbot/examples/velik_bot/
+  dev$ scp secret_access_key.aws.secret velik:_/nakiircbot/examples/velik_bot/
   # $ mkdir logs
   $ docker-compose up -d
 see remote logs

@@ -16,6 +16,7 @@ end
 require "nethttputils"
 require "json"
 
+# TODO: deprecate, use module twitch
 def refresh
   puts "refreshing token"
   File.write "tokens.secret", NetHTTPUtils.request_data("https://id.twitch.tv/oauth2/token", :POST, form: {
@@ -26,32 +27,17 @@ def refresh
   } )
 end
 
+require_relative "twitch"
+Twitch.configure File.read("clientid.secret"), File.read("secret.secret"), "tokens.secret"
 module Common
 
-  def self.request mtd, **form
-    JSON.load begin
-      NetHTTPUtils.request_data \
-      "https://api.twitch.tv/helix/#{mtd}",
-      form: form,
-      header: {
-        "Authorization" => "Bearer #{JSON.load(File.read("tokens.secret"))["access_token"]}",
-        "client-id" => File.read("clientid.secret")
-      }
-    rescue NetHTTPUtils::Error
-      fail unless '{"error":"Unauthorized","status":401,"message":"Invalid OAuth token"}' == $!.body
-      refresh
-      sleep 5
-      retry
-    end
-  end
-  private_class_method :request
   def self.login_to_id login
-    request("users", "login" => login)["data"][0]["id"]
+    Twitch.request("users", "login" => login)["data"][0]["id"]
   end
   def self.clips where
     user_id = login_to_id(where[/\A#*(.+)/, 1])
   f = lambda do |cursor = nil|
-    t = request("clips", broadcaster_id: user_id, first: 100, **(cursor ? { after: cursor } : {}))
+    t = Twitch.request("clips", broadcaster_id: user_id, first: 100, **(cursor ? { after: cursor } : {}))
     t["data"] + t["pagination"]["cursor"].then{ |_| _ ? f[_] : [] }
   end
     f.call
@@ -205,6 +191,8 @@ module Common
     i = 1 + [0, *h.values].uniq.sort.reverse.index(v)
     "@#{who}'s current rep is #{v} (top-#{i})"
   end
+  require "aws-upload"
+  require "nakicommon"
   def self._rep_change where, _who, _what
     who, what = _who.downcase, _what.downcase
     is_admin = ("##{who}" == where.downcase)  # TODO: move out to the chat protocol description
@@ -212,12 +200,20 @@ module Common
       if only this was that easy
       do you think you are the smartest one?
       try harder
+      wow, 400 IQ move
     HEREDOC
     @repdb.transaction do |db|
       db[[where, who, what]].then do |rep, timestamp|
         return "@#{_who} wait another 24h to change @#{_what}'s rep" if timestamp && timestamp + 86400 > Time.now.to_i && !is_admin
         db[[where, who, what]] = [yield(rep||0), Time.now.to_i]
       end
+    end
+    threaded rep_chart(where) do |_|
+      ::NakiCommon.aws_upload \
+        ::JSON.dump([::Time.now.strftime("%F"), _.group_by(&:last).transform_values{ |_| _.map &:first }.sort]),
+        "#{::ENV.nakifetch "SECRET_BUCKET_AND_PATH"}/#{login_to_id where.delete_prefix ?#}.json",
+        ::File.read("access_key.aws.secret"),
+        ::File.read("secret_access_key.aws.secret")
     end
     "@#{_what}'s rep is now #{_rep_read where, _what}"
   end

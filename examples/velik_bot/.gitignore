@@ -1,15 +1,19 @@
+# common non-project
 /*.trash/
 /1.txt
 /2.txt
 
+# project dev artifacts
 /*.jp*g
 /*.png
 
+# project data
 /logs/
 /gpt.touch
 /goons.yaml
 /dynamic.cfg.yaml
 
+# project secrets
 /*.secret
 
 /vps_logs/
