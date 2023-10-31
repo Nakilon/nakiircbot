@@ -6,3 +6,5 @@ Features:
 * async message queue
 
 TODO: get rid of some twitch hardcode
+
+The most mature bot is here: https://github.com/Nakilon/velik_bot
