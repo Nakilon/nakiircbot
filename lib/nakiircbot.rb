@@ -201,6 +201,8 @@ module NakiIRCBot
         [
           DateTime.parse($1).to_time,
           *case _
+          when /\A> PRIVMSG #([a-z\d_]+) :/
+            [$1, ">", bot_name, $']
           when /\A> /,
                "< :tmi.twitch.tv 002 #{bot_name} :Your host is tmi.twitch.tv",
                "< :tmi.twitch.tv 003 #{bot_name} :This server is rather new",
