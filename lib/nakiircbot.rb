@@ -1,16 +1,15 @@
 module NakiIRCBot
   require "base64"
 
-  Reconnect = ::Class.new ::RuntimeError
-  Queue = ::Queue.new
-  def self.start server, port, bot_name, master_name, welcome001, *channels, identity: nil, password: nil, masterword: nil, processors: [], tags: false
-    # @@channels.replace channels.dup
-
+  def self.start server, port, bot_name, master_name, *channels, identity: nil, password: nil, masterword: nil, processors: [], tags: false
     abort "matching bot_name and master_name may cause infinite recursion" if bot_name == master_name
+
+    reconnect_error = ::Class.new ::RuntimeError
+    chat_queue = ::Queue.new
+
     require "fileutils"
     ::FileUtils.mkdir_p "logs"
     require "logger"
-    # TODO: check how I've implemented the logger in trovobot
     original_formatter = ::Logger::Formatter.new
     logger = ::Logger.new "logs/txt", "daily",
                         progname: bot_name, datetime_format: "%y%m%d %H%M%S",
@@ -23,8 +22,6 @@ module NakiIRCBot
     logger.level = ::ENV["LOGLEVEL_#{name}"].to_sym if ::ENV.include? "LOGLEVEL_#{name}"
     puts "#{name} logger.level = #{logger.level}"
 
-    # https://stackoverflow.com/a/49476047/322020
-
     require "socket"
     socket = ::Module.new do
       @logger = logger
@@ -32,6 +29,9 @@ module NakiIRCBot
       @port = port
 
       @socket = nil
+      def self.update
+        @socket = nil
+      end
       @mutex = ::Mutex.new
       def self.socket
         reconnect = lambda do
@@ -43,7 +43,7 @@ module NakiIRCBot
             sleep 5
             retry
           end
-          raise Reconnect
+          raise reconnect_error
         end
         @mutex.synchronize do
           reconnect.call if @socket.nil?
@@ -57,7 +57,7 @@ module NakiIRCBot
         end
       end
       private_class_method :socket
-      def self.write str
+      def self.write str  # send to socket without logging
         socket{ |_| _.send str + "\n", 0 }
       end
       def self.log str
@@ -67,20 +67,20 @@ module NakiIRCBot
       @buffer = ""
       def self.read
         until i = @buffer.index(?\n)
-          @buffer.concat( socket do |s|
+          @buffer.concat socket{ |s|
             return unless select [s], nil, nil, 1
-            s.read(s.nread).tap{ |_| raise SocketError, "empty read" if _.empty? }
-          end )
+            s.read(s.nread).tap{ |_| raise ::SocketError, "empty read" if _.empty? }
+          }
         end
         @buffer.slice!(0..i).chomp
       end
     end
     prev_privmsg_time = ::Time.now
-    queue_thread = ::Thread.new do
-      ::Thread.current.abort_on_exception = true
+    ::Thread.new do
+      ::Thread.current.abort_on_exception = true  # it has never happened, right? so I don't know what it would cause really
       loop do
-        sleep [prev_privmsg_time + 5 - Time.now, 0].max
-        addr, msg = Queue.pop
+        sleep [prev_privmsg_time + 5 - ::Time.now, 0].max
+        addr, msg = chat_queue.pop
         fail "I should not PRIVMSG myself" if bot_name == addr = addr.codepoints.pack("U*").tr("\x00\x0A\x0D", "")
         privmsg = "PRIVMSG #{addr} :#{msg.to_s.codepoints.pack("U*").chomp[/^(\x01*)(.*)/m,2].gsub("\x00", "[NUL]").gsub("\x0A", "[LF]").gsub("\x0D", "[CR]")}"
         privmsg[-4..-1] = "..." until privmsg.bytesize <= 475
@@ -89,43 +89,42 @@ module NakiIRCBot
       end
     end
 
+    # https://stackoverflow.com/a/49476047/322020 -- about PASS, NICK, USER
     # https://en.wikipedia.org/wiki/List_of_Internet_Relay_Chat_commands
     loop do
-      Queue.clear
+      chat_queue.clear
       prev_socket_time = prev_privmsg_time = ::Time.now
       loop do
         unless socket_str = socket.read
-          socket.instance_variable_set :@socket, nil if ::Time.now - prev_socket_time > 300
+          socket.update if ::Time.now - prev_socket_time > 300
           next ::Thread.pass
         end
         prev_socket_time = ::Time.now
-        str = socket_str.force_encoding("utf-8").scrub
-        if /\A:\S+ 372 /.match? str   # MOTD
-          logger.debug "< #{str}"
-        elsif /\APING :/.match? str
+        case str = socket_str.force_encoding("utf-8").scrub
+        when /\A:\S+ 372 /,   # MOTD
+             /\APING :/
           logger.debug "< #{str}"
         else
           logger.info "< #{str}"
+          next socket.update if /\AERROR :Closing Link: /.match? str
         end
-        break if /\AERROR :Closing Link: /.match? str
 
         # if str[/^:\S+ 433 * #{Regexp.escape bot_name} :Nickname is already in use\.$/]
         #   socket_log.call "NICK #{bot_name + "_"}"
         #   next
         # end
 
+        # https://www.alien.net.au/irc/irc2numerics.html
+
         # next socket.send("JOIN #{$2}"+"\n"),0 if str[/^:(.+?)!\S+ KICK (\S+) #{Regexp.escape bot_name} /i]
         case str
-          when /\A:[a-z.]+ 001 #{::Regexp.escape bot_name} :Welcome to the #{::Regexp.escape welcome001} #{::Regexp.escape bot_name}\z/
-            # we join only when we are sure we are on the correct server
-            # TODO: maybe abort if the server is wrong?
-            socket.log "JOIN #{channels.join ","}"
-            next
-
           when /\A:tmi.twitch.tv 001 #{::Regexp.escape bot_name} :Welcome, GLHF!\z/
             socket.log "JOIN #{channels.join ","}"
             socket.log "CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands"
             tags = true
+            next
+          when /\A:[a-z.]+ 001 #{::Regexp.escape bot_name} :Welcome[ ,]/
+            socket.log "JOIN #{channels.join ","}"
             next
           when /\A:NickServ!NickServ@services\. NOTICE #{::Regexp.escape bot_name} :This nickname is registered. Please choose a different nickname, or identify via \x02\/msg NickServ identify <password>\x02\.\z/,
                /\A:NickServ!NickServ@services\.libera\.chat NOTICE #{::Regexp.escape bot_name} :This nickname is registered. Please choose a different nickname, or identify via \x02\/msg NickServ IDENTIFY #{Regexp.escape bot_name} <password>\x02\z/
@@ -139,7 +138,7 @@ module NakiIRCBot
           when /\AAUTHENTICATE \+\z/
             logger.warn "password"
             next socket.write "AUTHENTICATE #{::Base64.strict_encode64 "\0#{identity || bot_name}\0#{password}"}"
-          when /\A:[a-z]+\.libera\.chat 903 #{bot_name} :SASL authentication successful\z/
+          when /\A:[a-z]+\.libera\.chat 903 #{::Regexp.escape bot_name} :SASL authentication successful\z/
             next socket.log "CAP END"
 
           when /\APING :/
@@ -154,19 +153,21 @@ module NakiIRCBot
 
         begin
           yield str,
-            ->(where, what){ Queue.push [where, what] },
-            ->(new_password){ password.replace new_password; socket.instance_variable_set :@socket, nil },
             */\A#{'\S+ ' if tags}:(?<who>[^!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/.match(str).to_a.drop(1).tap{ |who, where, what|
               logger.warn "#{where} <#{who}> #{what}" if what
-            }
+            },
+            add_to_chat_queue: ->(where, what){ chat_queue.push [where, what] },
+            socket_write_and_log: socket.public_method(:log),
+            restart_with_new_password: ->(new_password){ password.replace new_password; socket.update }
         rescue
           puts $!.full_message
-          Queue.push ["##{bot_name}", "error: #{$!}, #{$!.backtrace.first}"]
+          chat_queue.push ["##{bot_name}", "error: #{$!}, #{$!.backtrace.first}"]
         end
 
-      rescue Reconnect
+      rescue reconnect_error
         # https://ircv3.net/specs/extensions/sasl-3.1.html
         socket.log "CAP REQ :sasl" if password
+        logger.warn "password"
         socket.write "PASS #{password.strip}"   # https://dev.twitch.tv/docs/irc/authenticate-bot/
         socket.log "NICK #{bot_name}"
         socket.log "USER #{bot_name} #{bot_name} #{bot_name} #{bot_name}"
