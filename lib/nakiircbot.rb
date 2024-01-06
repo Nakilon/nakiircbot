@@ -1,10 +1,11 @@
 module NakiIRCBot
   require "base64"
 
+  ReconnectError = ::Class.new ::RuntimeError
+  CHAT_QUEUE_DELAY = 5
   def self.start server, port, bot_name, master_name, *channels, identity: nil, password: nil, masterword: nil, processors: [], tags: false
     abort "matching bot_name and master_name may cause infinite recursion" if bot_name == master_name
 
-    reconnect_error = ::Class.new ::RuntimeError
     chat_queue = ::Queue.new
 
     require "fileutils"
@@ -43,7 +44,7 @@ module NakiIRCBot
             sleep 5
             retry
           end
-          raise reconnect_error
+          raise ReconnectError
         end
         @mutex.synchronize do
           reconnect.call if @socket.nil?
@@ -79,7 +80,7 @@ module NakiIRCBot
     ::Thread.new do
       ::Thread.current.abort_on_exception = true  # it has never happened, right? so I don't know what it would cause really
       loop do
-        sleep [prev_privmsg_time + 5 - ::Time.now, 0].max
+        sleep [prev_privmsg_time + CHAT_QUEUE_DELAY - ::Time.now, 0].max
         addr, msg = chat_queue.pop
         fail "I should not PRIVMSG myself" if bot_name == addr = addr.codepoints.pack("U*").tr("\x00\x0A\x0D", "")
         privmsg = "PRIVMSG #{addr} :#{msg.to_s.codepoints.pack("U*").chomp[/^(\x01*)(.*)/m,2].gsub("\x00", "[NUL]").gsub("\x0A", "[LF]").gsub("\x0D", "[CR]")}"
@@ -152,10 +153,9 @@ module NakiIRCBot
         end
 
         begin
-          yield str,
-            */\A#{'\S+ ' if tags}:(?<who>[^!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/.match(str).to_a.drop(1).tap{ |who, where, what|
-              logger.warn "#{where} <#{who}> #{what}" if what
-            },
+          who, where, what = */\A#{'\S+ ' if tags}:(?<who>[^!]+)!\S+ PRIVMSG (?<where>\S+) :(?<what>.+)/.match(str).to_a.drop(1)
+          logger.warn "#{where} <#{who}> #{what}" if what
+          yield str, who, where, what,
             add_to_chat_queue: ->(where, what){ chat_queue.push [where, what] },
             socket_write_and_log: socket.public_method(:log),
             restart_with_new_password: ->(new_password){ password.replace new_password; socket.update }
@@ -164,7 +164,7 @@ module NakiIRCBot
           chat_queue.push ["##{bot_name}", "error: #{$!}, #{$!.backtrace.first}"]
         end
 
-      rescue reconnect_error
+      rescue ReconnectError
         # https://ircv3.net/specs/extensions/sasl-3.1.html
         socket.log "CAP REQ :sasl" if password
         logger.warn "password"
@@ -300,4 +300,13 @@ module NakiIRCBot
       end
     end.compact.tap{ |_| fail unless 1 == _.map(&:first).map(&:day).uniq.size }
   end
+
+  def self.test start
+    server = ::TCPServer.new 6667
+    ::Thread.new do
+      ::Thread.current.abort_on_exception = true
+      start.call
+    end.tap{ yield server.accept }.kill
+  end
+
 end
