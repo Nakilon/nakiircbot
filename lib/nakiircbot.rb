@@ -120,7 +120,7 @@ module NakiIRCBot
         # next socket.send("JOIN #{$2}"+"\n"),0 if str[/^:(.+?)!\S+ KICK (\S+) #{Regexp.escape bot_name} /i]
         case str
           when /\A:tmi.twitch.tv 001 #{::Regexp.escape bot_name} :Welcome, GLHF!\z/
-            socket.log "JOIN #{channels.join ","}"
+            channels.each_slice(10){ |slice| socket.log "JOIN #{slice.join ","}" }
             socket.log "CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands"
             tags = true
             next
@@ -220,6 +220,7 @@ module NakiIRCBot
           when /\A< (\S+) :tmi\.twitch\.tv USERSTATE ##{bot_name}\z/ # wtf?
           when /\Aexception: /
           when "reconnect",
+               "password",
                "socket: reconnecting",
                /\Asocket: exception: /,
                "< :tmi.twitch.tv 001 #{bot_name} :Welcome, GLHF!"
