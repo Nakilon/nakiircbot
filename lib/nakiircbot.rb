@@ -3,9 +3,7 @@ module NakiIRCBot
 
   ReconnectError = ::Class.new ::RuntimeError
   CHAT_QUEUE_DELAY = 5
-  def self.start server, port, bot_name, master_name, *channels, identity: nil, password: nil, masterword: nil, processors: [], tags: false
-    abort "matching bot_name and master_name may cause infinite recursion" if bot_name == master_name
-
+  def self.start server, port, bot_name, *channels, owner: nil, identity: nil, password: nil, masterword: nil, processors: [], tags: false
     chat_queue = ::Queue.new
 
     require "fileutils"
