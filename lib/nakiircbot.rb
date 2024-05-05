@@ -75,7 +75,7 @@ module NakiIRCBot
       end
     end
     prev_privmsg_time = ::Time.now
-    ::Thread.new do
+    chat_queue_thread = ::Thread.new do
       ::Thread.current.abort_on_exception = true  # it has never happened, right? so I don't know what it would cause really
       loop do
         sleep [prev_privmsg_time + CHAT_QUEUE_DELAY - ::Time.now, 0].max
@@ -174,6 +174,8 @@ module NakiIRCBot
 
     end
 
+  ensure
+    chat_queue_thread.kill while chat_queue_thread.alive?
   end
 
   module Common
@@ -305,7 +307,18 @@ module NakiIRCBot
     ::Thread.new do
       ::Thread.current.abort_on_exception = true
       start.call
-    end.tap{ yield server.accept }.kill
+    end.tap do |thread|
+      socket = server.accept
+      begin
+        yield \
+          ->{ select [socket], nil, nil, 1 },
+          ->{ ::Timeout.timeout(1.5){ socket.gets } },
+          ->_{ socket.puts _ }
+      ensure
+        server.shutdown rescue Errno::ENOTCONN
+        thread.kill while thread.alive?
+      end
+    end
   end
 
 end
