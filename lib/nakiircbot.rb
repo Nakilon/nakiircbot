@@ -159,7 +159,7 @@ module NakiIRCBot
             restart_with_new_password: ->(new_password){ password.replace new_password; socket.update }
         rescue
           puts $!.full_message
-          chat_queue.push ["##{bot_name}", "error: #{$!}, #{$!.backtrace.first}"]
+          chat_queue.push ["##{bot_name}", "error"]
         end
 
       rescue ReconnectError
@@ -315,7 +315,8 @@ module NakiIRCBot
           ->{ ::Timeout.timeout(1.5){ socket.gets } },
           ->_{ socket.puts _ }
       ensure
-        server.shutdown rescue Errno::ENOTCONN
+        # puts "shutting down test server"
+        server.close #rescue Errno::ENOTCONN
         thread.kill while thread.alive?
       end
     end
