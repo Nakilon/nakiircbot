@@ -3,7 +3,7 @@ module NakiIRCBot
 
   ReconnectError = ::Class.new ::RuntimeError
   CHAT_QUEUE_DELAY = 5
-  def self.start server, port, bot_name, *channels, owner: nil, identity: nil, password: nil, masterword: nil, processors: [], tags: false
+  def self.start server, port, bot_name, msg_size_lmt_mtd = :bytesize, msg_size_lmt_val = 475, *channels, owner: nil, identity: nil, password: nil, masterword: nil, processors: [], tags: false
     chat_queue = ::Queue.new
 
     require "fileutils"
@@ -82,7 +82,7 @@ module NakiIRCBot
         addr, msg = chat_queue.pop
         fail "I should not PRIVMSG myself" if bot_name == addr = addr.codepoints.pack("U*").tr("\x00\x0A\x0D", "")
         privmsg = "PRIVMSG #{addr} :#{msg.to_s.codepoints.pack("U*").chomp[/^(\x01*)(.*)/m,2].gsub("\x00", "[NUL]").gsub("\x0A", "[LF]").gsub("\x0D", "[CR]")}"
-        privmsg[-4..-1] = "..." until privmsg.bytesize <= 475
+        privmsg[-4..-1] = "..." until privmsg.public_method(msg_size_lmt_mtd).() <= msg_size_lmt_val
         prev_privmsg_time = ::Time.now
         socket.log privmsg
       end
