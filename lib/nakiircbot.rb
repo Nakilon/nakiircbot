@@ -3,7 +3,7 @@ module NakiIRCBot
 
   ReconnectError = ::Class.new ::RuntimeError
   CHAT_QUEUE_DELAY = 5
-  def self.start server, port, bot_name, msg_size_lmt_mtd = :bytesize, msg_size_lmt_val = 475, *channels, owner: nil, identity: nil, password: nil, masterword: nil, processors: [], tags: false
+  def self.start server, port, bot_name, msg_size_lmt_mtd = :bytesize, msg_size_lmt_val = 475, channels, owner: nil, identity: nil, password: nil, masterword: nil, processors: [], tags: false
     chat_queue = ::Queue.new
 
     require "fileutils"
@@ -308,12 +308,13 @@ module NakiIRCBot
       ::Thread.current.abort_on_exception = true
       start.call
     end.tap do |thread|
-      socket = server.accept
+      socket = [server.accept]
       begin
         yield \
-          ->{ select [socket], nil, nil, 1 },
-          ->{ ::Timeout.timeout(1.5){ socket.gets } },
-          ->_{ socket.puts _ }
+          ->{ select [socket[0]], nil, nil, 1 },
+          ->_=1.5{ ::Timeout.timeout(1.5){ socket[0].gets } },
+          ->_{ socket[0].puts _ },
+          ->{ socket[0].shutdown; socket = [server.accept] }
       ensure
         # puts "shutting down test server"
         server.close #rescue Errno::ENOTCONN
